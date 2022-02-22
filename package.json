@@ -1,0 +1,219 @@
+{
+	"name": "opvs",
+	"displayName": "1Password",
+	"description": "Connect VS Code to 1Password",
+	"version": "0.1.0",
+	"license": "MIT",
+	"publisher": "1password",
+	"preview": true,
+	"main": "./dist/extension.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/1password/opvs.git"
+	},
+	"homepage": "https://github.com/1password/opvs",
+	"engines": {
+		"vscode": "^1.64.0",
+		"node": "^16.12.0"
+	},
+	"scripts": {
+		"build": "NODE_ENV=production yarn compile",
+		"compile": "node -r esbuild-register compile.ts",
+		"eslint": "eslint -c .eslintrc.json 'src/**/*.ts'",
+		"prepare": "husky install",
+		"prettier": "prettier --check src/",
+		"test": "jest",
+		"typecheck": "tsc --noEmit",
+		"vscode:prepublish": "yarn build",
+		"watch": "yarn compile --watch"
+	},
+	"keywords": [
+		"1password",
+		"secrets",
+		"extension-api"
+	],
+	"galleryBanner": {
+		"color": "#0a2d4d",
+		"theme": "dark"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "opvs.open1Password",
+				"title": "Open 1Password",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.chooseAccount",
+				"title": "Choose account",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.chooseVault",
+				"title": "Choose vault",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.getValueFromItem",
+				"title": "Get item value",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.saveValueToItem",
+				"title": "Save to vault item",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.createPassword",
+				"title": "Generate password",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.getEditable",
+				"title": "Get item file or secure note for editing",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.saveEditable",
+				"title": "Save active file to vault item",
+				"category": "1Password",
+				"icon": "$(save)"
+			},
+			{
+				"command": "opvs.injectSecrets",
+				"title": "Inject secrets into active file",
+				"category": "1Password",
+				"icon": "$(unlock)"
+			},
+			{
+				"command": "opvs.resetExtensions",
+				"title": "Reset extensions",
+				"category": "1Password"
+			},
+			{
+				"command": "opvs.openLogs",
+				"title": "Open logs",
+				"category": "1Password"
+			}
+		],
+		"configuration": [
+			{
+				"type": "object",
+				"title": "1Password",
+				"id": "opvs",
+				"properties": {
+					"opvs.general.accountId": {
+						"order": 0,
+						"type": "string",
+						"default": null,
+						"description": "The ID of the account to perform operations with."
+					},
+					"opvs.general.accountUrl": {
+						"order": 1,
+						"type": "string",
+						"default": null,
+						"description": "The URL of the account to perform operations with."
+					},
+					"opvs.general.vaultId": {
+						"order": 2,
+						"type": "string",
+						"default": null,
+						"description": "The ID of the vault to perform operations with."
+					},
+					"opvs.items.cacheValues": {
+						"order": 3,
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Use CLI cache when performing operations. Learn more about [caching](https://developer.1password.com/docs/cli/reference#cache-item-and-vault-information)."
+					},
+					"opvs.items.passwordRecipe": {
+						"order": 4,
+						"type": "string",
+						"default": "letters,digits,symbols,32",
+						"markdownDescription": "The recipe to use when generating passwords. Learn more about [password recipes](https://developer.1password.com/docs/cli/reference/management-commands/item#generate-a-password)."
+					},
+					"opvs.items.replaceWithReference": {
+						"order": 5,
+						"type": "boolean",
+						"default": true,
+						"markdownDescription": "Insert secret references when storing and creating values. Learn more about [secret references](https://developer.1password.com/docs/cli/secrets-reference-syntax)."
+					},
+					"opvs.editor.suggestStorage": {
+						"order": 6,
+						"type": "boolean",
+						"default": true,
+						"description": "Suggest storing a value when it looks like a secret."
+					},
+					"opvs.extensions.enabled": {
+						"order": 7,
+						"type": "boolean",
+						"default": false,
+						"description": "Allow other extensions to request access to 1Password values."
+					},
+					"opvs.debug.enabled": {
+						"order": 8,
+						"type": "boolean",
+						"default": false,
+						"description": "Log debugger data. Reload required."
+					}
+				}
+			}
+		],
+		"menus": {
+			"editor/title": [
+				{
+					"when": "opvs.injectable == true",
+					"command": "opvs.injectSecrets",
+					"group": "navigation"
+				},
+				{
+					"when": "opvs.vaultFile == true",
+					"command": "opvs.saveEditable",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"prettier": "@1password/front-end-style/prettierrc.json",
+	"lint-staged": {
+		"src/**/*": [
+			"prettier --write"
+		],
+		"src/**/*.ts": [
+			"eslint -c .eslintrc.json --fix"
+		]
+	},
+	"dependencies": {
+		"lookpath": "^1.2.2",
+		"open": "^8.4.0"
+	},
+	"devDependencies": {
+		"@1password/front-end-style": "^6.0.0",
+		"@types/jest": "^27.4.1",
+		"@types/node": "16.x",
+		"@types/semver": "^7.3.9",
+		"@types/uuid": "^8.3.4",
+		"@types/vscode": "^1.64.0",
+		"@typescript-eslint/eslint-plugin": "^5.12.1",
+		"copy": "^0.3.2",
+		"esbuild": "^0.14.18",
+		"esbuild-register": "^3.3.2",
+		"eslint-plugin-jsdoc": "^37.7.0",
+		"eslint-plugin-no-unsanitized": "^4.0.1",
+		"eslint-plugin-prettier": "^4.0.0",
+		"eslint-plugin-sonarjs": "^0.11.0",
+		"eslint-plugin-unicorn": "^40.1.0",
+		"husky": "^7.0.4",
+		"jest": "^27.5.1",
+		"lint-staged": "^12.3.4",
+		"prettier-plugin-organize-imports": "^2.3.4",
+		"ts-jest": "^27.1.3",
+		"typescript": "^4.5.5"
+	}
+}

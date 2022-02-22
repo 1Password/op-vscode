@@ -1,0 +1,37 @@
+{
+	"extends": ["./node_modules/@1password/front-end-style/eslintrc.yml"],
+	"overrides": [
+		{
+			"files": ["*.ts"],
+			"parserOptions": {
+				"project": ["./tsconfig.json"]
+			},
+			"rules": {
+				"unicorn/prefer-node-protocol": "off",
+				"no-shadow": "off",
+				"unicorn/filename-case": "off",
+				"jsdoc/require-jsdoc": "off",
+				"@typescript-eslint/no-explicit-any": "off",
+				"@typescript-eslint/no-unsafe-argument": "off",
+				"@typescript-eslint/naming-convention": [
+					"warn",
+					{
+						"selector": "default",
+						"format": ["PascalCase", "camelCase", "UPPER_CASE"]
+					}
+				],
+				"import/no-unresolved": [
+					"error",
+					{
+						"ignore": ["vscode"]
+					}
+				],
+				"unicorn/no-null": "off",
+				"no-case-declarations": "off",
+				"sonarjs/no-small-switch": "off",
+				"sonarjs/no-nested-template-literals": "off"
+			}
+		}
+	],
+	"parser": "@typescript-eslint/parser"
+}

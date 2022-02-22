@@ -1,0 +1,12 @@
+package-lock.json
+.prettierrc
+.eslintrc
+.nvmrc
+.gitignore
+.vscodeignore
+.vscode/
+compile.ts
+jest.config.js
+types/
+src/
+node_modules/
