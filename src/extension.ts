@@ -3,12 +3,9 @@ import pckg from "../package.json";
 import { config, ConfigKey } from "./configuration";
 import { DEBUG } from "./constants";
 import { Core } from "./core/core";
-import { Extensible } from "./core/extensible";
 import { logger } from "./logger";
 
-export const activate = (
-	context: ExtensionContext,
-): InstanceType<typeof Extensible> => {
+export const activate = (context: ExtensionContext): void => {
 	config.configure(context);
 
 	logger.logInfo(`Starting 1Password for VS Code.`);
@@ -20,6 +17,5 @@ export const activate = (
 		logger.setOutputLevel("DEBUG");
 	}
 
-	const core = new Core(context);
-	return new Extensible(core);
+	new Core(context);
 };
