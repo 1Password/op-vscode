@@ -170,8 +170,6 @@
 		"@1password/front-end-style": "^6.0.0",
 		"@types/jest": "^27.4.1",
 		"@types/node": "17.0.23",
-		"@types/semver": "^7.3.9",
-		"@types/uuid": "^8.3.4",
 		"@types/vscode": "^1.65.0",
 		"@typescript-eslint/eslint-plugin": "^5.17.0",
 		"copy": "^0.3.2",
