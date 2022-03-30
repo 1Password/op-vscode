@@ -81,11 +81,6 @@
 				"icon": "$(unlock)"
 			},
 			{
-				"command": "opvs.resetExtensions",
-				"title": "Reset extensions",
-				"category": "1Password"
-			},
-			{
 				"command": "opvs.openLogs",
 				"title": "Open logs",
 				"category": "1Password"
@@ -139,14 +134,8 @@
 						"default": true,
 						"description": "Suggest storing a value when it looks like a secret."
 					},
-					"opvs.extensions.enabled": {
-						"order": 7,
-						"type": "boolean",
-						"default": false,
-						"description": "Allow other extensions to request access to 1Password values."
-					},
 					"opvs.debug.enabled": {
-						"order": 8,
+						"order": 7,
 						"type": "boolean",
 						"default": false,
 						"description": "Log debugger data. Reload required."
