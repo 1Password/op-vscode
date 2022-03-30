@@ -75,17 +75,6 @@
 				"category": "1Password"
 			},
 			{
-				"command": "opvs.getEditable",
-				"title": "Get item file or secure note for editing",
-				"category": "1Password"
-			},
-			{
-				"command": "opvs.saveEditable",
-				"title": "Save active file to vault item",
-				"category": "1Password",
-				"icon": "$(save)"
-			},
-			{
 				"command": "opvs.injectSecrets",
 				"title": "Inject secrets into active file",
 				"category": "1Password",
@@ -170,11 +159,6 @@
 				{
 					"when": "opvs.injectable == true",
 					"command": "opvs.injectSecrets",
-					"group": "navigation"
-				},
-				{
-					"when": "opvs.vaultFile == true",
-					"command": "opvs.saveEditable",
 					"group": "navigation"
 				}
 			]

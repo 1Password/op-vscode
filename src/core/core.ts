@@ -11,7 +11,6 @@ import { config, ConfigKey } from "../configuration";
 import { COMMANDS, DEBUG, QUALIFIED_EXTENSION_ID, STATE } from "../constants";
 import { logger } from "../logger";
 import { CLI } from "./cli";
-import { Editable } from "./editable";
 import { Editor } from "./editor";
 import { General } from "./general";
 import { Injection } from "./injection";
@@ -98,7 +97,6 @@ export class Core {
 		this.items = new Items(this);
 
 		new Editor(this);
-		new Editable(this);
 		new Injection(this);
 
 		void this.cli.validate().then(async () => {
