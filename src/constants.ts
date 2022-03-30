@@ -13,7 +13,6 @@ export const COMMANDS = {
 	SAVE_VALUE_TO_ITEM: makeCommand("saveValueToItem"),
 	INJECT_SECRETS: makeCommand("injectSecrets"),
 	CREATE_PASSWORD: makeCommand("createPassword"),
-	RESET_EXTENSIONS: makeCommand("resetExtensions"),
 	GET_EDITABLE: makeCommand("getEditable"),
 	SAVE_EDITABLE: makeCommand("saveEditable"),
 	OPEN_LOGS: makeCommand("openLogs"),
@@ -21,9 +20,6 @@ export const COMMANDS = {
 
 export const STATE = {
 	DISABLE_CONFIG_REMINDER: "disableConfigReminder",
-	PERMITTED_EXTENSIONS: "permittedExtensions",
-	BLOCKED_EXTENSIONS: "blockedExtensions",
-	EXTENSION_STORAGE: "extensionStorage",
 };
 
 export const URLS = {

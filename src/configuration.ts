@@ -17,7 +17,6 @@ export enum ConfigKey {
 	ItemsPasswordRecipe = "items.passwordRecipe",
 	ItemsReplaceWithReference = "items.replaceWithReference",
 	EditorSuggestStorage = "editor.suggestStorage",
-	ExtensionsEnabled = "extensions.enabled",
 	DebugEnabled = "debug.enabled",
 }
 
@@ -26,7 +25,6 @@ interface ConfigItems {
 	[ConfigKey.VaultId]: string;
 	[ConfigKey.ItemsReplaceWithReference]: boolean;
 	[ConfigKey.EditorSuggestStorage]: boolean;
-	[ConfigKey.ExtensionsEnabled]: boolean;
 	[ConfigKey.DebugEnabled]: boolean;
 }
 
