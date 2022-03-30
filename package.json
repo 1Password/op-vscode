@@ -75,26 +75,10 @@
 				"category": "1Password"
 			},
 			{
-				"command": "opvs.getEditable",
-				"title": "Get item file or secure note for editing",
-				"category": "1Password"
-			},
-			{
-				"command": "opvs.saveEditable",
-				"title": "Save active file to vault item",
-				"category": "1Password",
-				"icon": "$(save)"
-			},
-			{
 				"command": "opvs.injectSecrets",
 				"title": "Inject secrets into active file",
 				"category": "1Password",
 				"icon": "$(unlock)"
-			},
-			{
-				"command": "opvs.resetExtensions",
-				"title": "Reset extensions",
-				"category": "1Password"
 			},
 			{
 				"command": "opvs.openLogs",
@@ -150,14 +134,8 @@
 						"default": true,
 						"description": "Suggest storing a value when it looks like a secret."
 					},
-					"opvs.extensions.enabled": {
-						"order": 7,
-						"type": "boolean",
-						"default": false,
-						"description": "Allow other extensions to request access to 1Password values."
-					},
 					"opvs.debug.enabled": {
-						"order": 8,
+						"order": 7,
 						"type": "boolean",
 						"default": false,
 						"description": "Log debugger data. Reload required."
@@ -170,11 +148,6 @@
 				{
 					"when": "opvs.injectable == true",
 					"command": "opvs.injectSecrets",
-					"group": "navigation"
-				},
-				{
-					"when": "opvs.vaultFile == true",
-					"command": "opvs.saveEditable",
 					"group": "navigation"
 				}
 			]

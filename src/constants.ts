@@ -13,8 +13,6 @@ export const COMMANDS = {
 	SAVE_VALUE_TO_ITEM: makeCommand("saveValueToItem"),
 	INJECT_SECRETS: makeCommand("injectSecrets"),
 	CREATE_PASSWORD: makeCommand("createPassword"),
-	GET_EDITABLE: makeCommand("getEditable"),
-	SAVE_EDITABLE: makeCommand("saveEditable"),
 	OPEN_LOGS: makeCommand("openLogs"),
 };
 
