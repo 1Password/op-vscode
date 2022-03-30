@@ -9,9 +9,9 @@
 	"main": "./dist/extension.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/1password/opvs.git"
+		"url": "https://gitlab.1password.io/dev/b5/opvs/"
 	},
-	"homepage": "https://github.com/1password/opvs",
+	"homepage": "https://gitlab.1password.io/dev/b5/opvs/",
 	"engines": {
 		"vscode": "^1.64.0",
 		"node": "^16.12.0"
