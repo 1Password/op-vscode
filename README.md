@@ -8,7 +8,7 @@
 
 This is an extension for Visual Studio Code, please refer to the [Extension API](https://code.visualstudio.com/api) documentation.
 
-Requires [Node](https://nodejs.org/en/) (this [version](./.nvmrc) recommended), [VS Code](https://code.visualstudio.com/), and [vsce](https://github.com/microsoft/vscode-vsce) installed globally.
+Requires [Node](https://nodejs.org/en/), [VS Code](https://code.visualstudio.com/), and [vsce](https://github.com/microsoft/vscode-vsce) installed globally.
 
 ### Dependencies
 
@@ -102,7 +102,7 @@ This will run `yarn build` to create a minified version of the extension, and th
 
 To publish a new version of the extension, first make sure you are logged into the publisher account used for publishing new releases via `vsce login 1Password`.
 
-Bump up the version in [`package.json`](./package.json), then run:
+Bump up the version in `package.json`, then run:
 
 ```shell
 vsce publish

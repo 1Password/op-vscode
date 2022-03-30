@@ -13,7 +13,7 @@
 	},
 	"homepage": "https://gitlab.1password.io/dev/b5/opvs/",
 	"engines": {
-		"vscode": "^1.64.0",
+		"vscode": "^1.65.0",
 		"node": "^16.12.0"
 	},
 	"scripts": {
