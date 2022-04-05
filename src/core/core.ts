@@ -92,7 +92,7 @@ export class Core {
 		// TODO: revisit this, it was too aggressive
 		// config.onDidChange(this.configure.bind(this));
 
-		this.cli = new CLI(this);
+		this.cli = new CLI();
 		this.general = new General(this);
 		this.items = new Items(this);
 

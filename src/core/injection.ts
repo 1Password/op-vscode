@@ -1,3 +1,4 @@
+import { inject } from "@1password/1password-js";
 import {
 	commands,
 	ProgressLocation,
@@ -7,7 +8,6 @@ import {
 	workspace,
 } from "vscode";
 import { COMMANDS, EXTENSION_ID, REGEXP } from "../constants";
-import { execute } from "../utils";
 import { Core } from "./core";
 
 export class Injection {
@@ -67,17 +67,13 @@ export class Injection {
 
 	private async injectSecrets(currentDocument: TextDocument) {
 		const input = currentDocument.getText().replace(/"/gm, '\\"');
-		const command = await this.core.cli.execute<string>("Inject", {
-			options: {
-				force: true,
-			},
-			asString: true,
-		});
-		const result = execute([`echo "${input}" | ${command}`]);
+		const command = await this.core.cli.execute<ReturnType<typeof inject>>(() =>
+			inject(input),
+		);
 
 		const injectedDocument = await workspace.openTextDocument({
 			language: currentDocument.languageId,
-			content: result,
+			content: command as string,
 		});
 
 		await window.showTextDocument(injectedDocument, { preview: true });

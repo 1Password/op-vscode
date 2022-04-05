@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {
-	Category,
-	FieldType,
-	VaultItem,
-	VaultItemField,
-	VaultItemFile,
-	VaultItemURL,
-} from "../src/core/cli";
+import { Field, File, Item } from "@1password/1password-js";
 import { generateUUID, randomNumber, sample } from "./utils";
 
-export const createItem = (overrides: Partial<VaultItem> = {}): VaultItem => {
+export const createItem = (overrides: Partial<Item> = {}): Item => {
 	const id = randomNumber();
 	const uuid = generateUUID();
 	return {
@@ -18,39 +11,57 @@ export const createItem = (overrides: Partial<VaultItem> = {}): VaultItem => {
 		vault: {
 			id: `vault-123`,
 		},
-		category: Category.Login,
+		category: "LOGIN",
 		last_edited_by: "user-123",
 		created_at: new Date().toString(),
 		updated_at: new Date().toString(),
 		fields: [createItemField()],
+		version: 1,
+		sections: [],
 		...overrides,
 	};
 };
 
-export const createItemField = (
-	overrides: Partial<VaultItemField> = {},
-): VaultItemField => {
-	const type = sample(Object.values(FieldType));
+export const createItemField = (overrides: Partial<Field> = {}): Field => {
+	const type = sample([
+		"STRING",
+		"CONCEALED",
+		"OTP",
+		"URL",
+		"ADDRESS",
+		"DATE",
+		"MONTH_YEAR",
+		"EMAIL",
+		"PHONE",
+		"REFERENCE",
+	]);
 	return {
 		id: generateUUID(),
-		type,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		type: type as any,
 		label: `${type} field ${randomNumber()}`,
 		value: "Some Value",
 		...overrides,
 	};
 };
 
-export const createItemFile = (
-	overrides: Partial<VaultItemFile> = {},
-): VaultItemFile => ({
+export const createItemFile = (overrides: Partial<File> = {}): File => ({
 	id: generateUUID(),
 	name: `File ${randomNumber()}`,
 	size: 260,
 	content_path: "/path/to/file.txt",
+	section: {
+		id: `section-123`,
+	},
 	...overrides,
 });
 
-export const createItemUrlField = (primary = true): VaultItemURL => ({
+export const createItemUrlField = (
+	primary = true,
+): {
+	primary: boolean;
+	href: string;
+} => ({
 	primary,
 	href: `https://1password.com/${generateUUID()}`,
 });

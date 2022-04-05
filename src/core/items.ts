@@ -1,30 +1,26 @@
+import {
+	Field,
+	FieldAssignment,
+	FieldAssignmentType,
+	File,
+	Item,
+	item,
+	OutputCategory,
+	vault,
+} from "@1password/1password-js";
 import { commands, env, Range, Selection, window } from "vscode";
 import { config, ConfigKey } from "../configuration";
 import { COMMANDS, REGEXP } from "../constants";
-import {
-	Category,
-	CLIField,
-	FieldInputType,
-	FieldType,
-	Vault,
-	VaultItem,
-	VaultItemField,
-	VaultItemFile,
-} from "./cli";
 import type { Core } from "./core";
 
 export interface ReferenceMetaData {
 	item: {
 		title: string;
-		category: Category;
+		category: OutputCategory;
 		createdAt: string;
 		updatedAt: string;
 	};
-	field: {
-		label: string;
-		type: FieldType;
-		value: string;
-	};
+	field: Pick<Field, "label" | "type" | "value">;
 }
 
 export interface SaveItemInput {
@@ -33,26 +29,31 @@ export interface SaveItemInput {
 }
 
 export interface GetItemResult {
-	vaultItem: VaultItem;
-	field: VaultItemField;
+	vaultItem: Item;
+	field: Field;
 }
 
 export const safeReferenceValue = (label: string, id: string): string =>
 	REGEXP.REFERENCE_PERMITTED.test(label) ? label : id;
 
+const isField = (input: any): input is Field => "label" in input;
+
+// This is whack.
 export const createSecretReference = (
 	vaultValue: string,
-	item: VaultItem,
-	fieldOrFile: VaultItemField | VaultItemFile,
+	vaultItem: Item,
+	fieldOrFile: Field | File,
 ): string => {
-	const fieldValue =
-		"label" in fieldOrFile
-			? safeReferenceValue(fieldOrFile.label, fieldOrFile.id)
-			: safeReferenceValue(fieldOrFile.name, fieldOrFile.id);
+	const fieldValue = isField(fieldOrFile)
+		? safeReferenceValue(fieldOrFile.label, fieldOrFile.id)
+		: // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		  safeReferenceValue(fieldOrFile.name, fieldOrFile.id);
 
 	return `op://${vaultValue}/${safeReferenceValue(
-		item.title,
-		item.id,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		vaultItem.title,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		vaultItem.id,
 	)}/${fieldValue}`;
 };
 
@@ -98,9 +99,13 @@ export class Items {
 			return this.getItemCallback();
 		}
 
-		const vaultItem = await this.core.cli.execute<VaultItem>("GetItem", {
-			args: [itemValue],
-		});
+		const vaultItem = await this.core.cli.execute<ReturnType<typeof item.get>>(
+			() =>
+				item.get(itemValue, {
+					vault: this.core.vaultId,
+					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+				}),
+		);
 
 		if (!vaultItem) {
 			return this.getItemCallback();
@@ -139,13 +144,14 @@ export class Items {
 			return;
 		}
 
-		const vaultItem = await this.core.cli.execute<VaultItem>("GetItem", {
-			args: [itemId],
-			options: {
-				vault: vaultId,
-			},
-			showError: false,
-		});
+		const vaultItem = await this.core.cli.execute<ReturnType<typeof item.get>>(
+			() =>
+				item.get(itemId, {
+					vault: vaultId,
+					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+				}),
+			false,
+		);
 
 		if (!vaultItem) {
 			throw new Error("Could not find vault item.");
@@ -169,10 +175,7 @@ export class Items {
 			field: {
 				label: field.label,
 				type: field.type,
-				value:
-					field.type.toLowerCase() === FieldType.Concealed
-						? undefined
-						: field.value,
+				value: field.type === "CONCEALED" ? undefined : field.value,
 			},
 		};
 	}
@@ -198,7 +201,7 @@ export class Items {
 		}
 
 		const generatePassword = input === generatePasswordArg;
-		let fields: CLIField[] = [];
+		let fields: FieldAssignment[] = [];
 
 		if (!generatePassword) {
 			fields = await this.createFieldAssignments(input);
@@ -208,17 +211,18 @@ export class Items {
 			}
 		}
 
-		const vaultItem = await this.core.cli.execute<VaultItem>("CreateItem", {
-			args: fields,
-			options: {
+		const vaultItem = await this.core.cli.execute<
+			ReturnType<typeof item.create>
+		>(() =>
+			item.create(fields, {
 				title: itemTitle,
 				category: "Login",
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				"generate-password": generatePassword
+				vault: this.core.vaultId,
+				generatePassword: generatePassword
 					? config.get<string>(ConfigKey.ItemsPasswordRecipe)
 					: false,
-			},
-		});
+			}),
+		);
 
 		if (!vaultItem) {
 			return;
@@ -249,10 +253,10 @@ export class Items {
 			return;
 		}
 
-		const vault = await this.core.cli.execute<Vault>("GetVault", {
-			args: [this.core.vaultId],
-		});
-		const vaultValue = safeReferenceValue(vault.name, vault.id);
+		const vaultLookup = await this.core.cli.execute<
+			ReturnType<typeof vault.get>
+		>(() => vault.get(this.core.vaultId));
+		const vaultValue = safeReferenceValue(vaultLookup.name, vaultLookup.id);
 
 		if (editor && !editor.document.isClosed) {
 			const useReference = config.get<boolean>(
@@ -291,26 +295,26 @@ export class Items {
 
 	private async createFieldAssignments(
 		input: SaveItemInput[],
-	): Promise<CLIField[]> {
-		const fields: CLIField[] = [];
+	): Promise<FieldAssignment[]> {
+		const fields: FieldAssignment[] = [];
 		const isOnlyOne = input.length === 1;
 
 		for (const set of input) {
 			const { itemValue } = set;
 
-			let fieldType: FieldInputType;
+			let fieldType: FieldAssignmentType;
 			let suggestedLabel: string;
 			switch (true) {
 				case REGEXP.EMAIL.test(itemValue):
-					fieldType = FieldInputType.Email;
+					fieldType = "email";
 					suggestedLabel = "email";
 					break;
 				case REGEXP.CREDIT_CARD.test(itemValue):
-					fieldType = FieldInputType.Text;
+					fieldType = "text";
 					suggestedLabel = "credit card";
 					break;
 				default:
-					fieldType = FieldInputType.Password;
+					fieldType = "password";
 					suggestedLabel = "value";
 					break;
 			}
@@ -335,7 +339,7 @@ export class Items {
 
 	private async insertSavedItem(
 		input: SaveItemInput[] | typeof generatePasswordArg,
-		vaultItem: VaultItem,
+		vaultItem: Item,
 	): Promise<void> {
 		const editor = window.activeTextEditor;
 		if (!editor || editor.document.isClosed) {
@@ -345,10 +349,11 @@ export class Items {
 		const useReference = config.get<boolean>(
 			ConfigKey.ItemsUseSecretReferences,
 		);
-		const vault = await this.core.cli.execute<Vault>("GetVault", {
-			args: [this.core.vaultId],
-		});
-		const vaultValue = safeReferenceValue(vault.name, vault.id);
+
+		const vaultLookup = await this.core.cli.execute<
+			ReturnType<typeof vault.get>
+		>(() => vault.get(this.core.vaultId));
+		const vaultValue = safeReferenceValue(vaultLookup.name, vaultLookup.id);
 
 		if (input === generatePasswordArg) {
 			const selections = editor?.selections;

@@ -13,7 +13,6 @@ import {
 import { config, ConfigKey } from "../configuration";
 import { COMMANDS, REGEXP } from "../constants";
 import { combineRegexp, titleCase } from "../utils";
-import { FieldType } from "./cli";
 import { Core, createInternalUrl, UriAction } from "./core";
 import { ReferenceMetaData } from "./items";
 
@@ -199,7 +198,7 @@ export class Editor {
 				`- Label: ${metaData.field.label}\n- Type: ${titleCase(
 					metaData.field.type,
 				)}\n- Value: ${
-					metaData.field.type.toLowerCase() === FieldType.Concealed
+					metaData.field.type === "CONCEALED"
 						? "_Hidden_"
 						: `\`${metaData.field.value}\``
 				}`,
