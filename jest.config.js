@@ -8,4 +8,7 @@ module.exports = {
 		"^.+\\.(ts|js)?$": "ts-jest",
 	},
 	testPathIgnorePatterns: ["<rootDir>/dist", "<rootDir>/node_modules"],
+	moduleNameMapper: {
+		vscode: "<rootDir>/test/vscode-mock.ts",
+	},
 };
