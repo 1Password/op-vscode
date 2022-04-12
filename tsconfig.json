@@ -10,5 +10,5 @@
 		"types": ["node", "jest"],
 		"baseUrl": "."
 	},
-	"include": ["src/"]
+	"include": ["src/", "test/"]
 }
