@@ -122,11 +122,11 @@
 						"default": "letters,digits,symbols,32",
 						"markdownDescription": "The recipe to use when generating passwords. Learn more about [password recipes](https://developer.1password.com/docs/cli/reference/management-commands/item#generate-a-password)."
 					},
-					"opvs.items.replaceWithReference": {
+					"opvs.items.useSecretReferences": {
 						"order": 5,
 						"type": "boolean",
 						"default": true,
-						"markdownDescription": "Insert secret references when storing and creating values. Learn more about [secret references](https://developer.1password.com/docs/cli/secrets-reference-syntax)."
+						"markdownDescription": "Use secret reference syntax for storing and retrieving values. Learn more about [secret references](https://developer.1password.com/docs/cli/secrets-reference-syntax)."
 					},
 					"opvs.editor.suggestStorage": {
 						"order": 6,
@@ -170,6 +170,7 @@
 		"@1password/front-end-style": "^6.0.0",
 		"@types/jest": "^27.4.1",
 		"@types/node": "17.0.23",
+		"@types/uuid": "^8.3.4",
 		"@types/vscode": "^1.65.0",
 		"@typescript-eslint/eslint-plugin": "^5.17.0",
 		"copy": "^0.3.2",
@@ -180,11 +181,13 @@
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-sonarjs": "^0.13.0",
 		"eslint-plugin-unicorn": "^40.1.0",
+		"fishery": "^2.2.2",
 		"husky": "^7.0.4",
 		"jest": "^27.5.1",
 		"lint-staged": "^12.3.7",
 		"prettier-plugin-organize-imports": "^2.3.4",
 		"ts-jest": "^27.1.4",
-		"typescript": "^4.6.3"
+		"typescript": "^4.6.3",
+		"uuid": "^8.3.2"
 	}
 }

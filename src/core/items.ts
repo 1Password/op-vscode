@@ -11,7 +11,7 @@ import {
 	VaultItemField,
 	VaultItemFile,
 } from "./cli";
-import { Core } from "./core";
+import type { Core } from "./core";
 
 export interface ReferenceMetaData {
 	item: {
@@ -61,31 +61,13 @@ const generatePasswordArg = "generate-pasword";
 export class Items {
 	public constructor(private core: Core) {
 		this.core.context.subscriptions.push(
-			commands.registerCommand(
-				COMMANDS.GET_VALUE_FROM_ITEM,
-				async (
-					callback: null | ((result?: GetItemResult) => Promise<void>),
-					prefill?: {
-						itemValue?: string;
-						fieldValue?: string;
-					},
-					plugin?: {
-						name: string;
-						label: string;
-					},
-				) =>
-					this.getItem(
-						callback === null ? undefined : this.valueActions.bind(this),
-						prefill,
-						plugin,
-					),
+			commands.registerCommand(COMMANDS.GET_VALUE_FROM_ITEM, async () =>
+				this.getItem(),
 			),
 			commands.registerCommand(
 				COMMANDS.SAVE_VALUE_TO_ITEM,
-				async (input?: SaveItemInput[]) => {
-					input = input || (await this.getSelections());
-					await this.saveItem(input);
-				},
+				async (input?: SaveItemInput[]) =>
+					await this.saveItem(input || (await this.getSelections())),
 			),
 			commands.registerCommand(
 				COMMANDS.CREATE_PASSWORD,
@@ -94,22 +76,9 @@ export class Items {
 		);
 	}
 
-	private async getItem(
-		callback?: (result?: GetItemResult) => Promise<void>,
-		prefill?: {
-			itemValue?: string;
-			fieldValue?: string;
-		},
-		plugin?: {
-			name: string;
-			label: string;
-		},
-	): Promise<GetItemResult | void> {
-		const done = async (result?: GetItemResult) =>
-			callback ? await callback(result) : result;
-
+	public async getItem(): Promise<GetItemResult | void> {
 		if (!this.core.cli.valid) {
-			return done();
+			return this.getItemCallback();
 		}
 
 		if (!this.core.vaultId) {
@@ -117,23 +86,16 @@ export class Items {
 				'You must choose a vault before looking up items. When you want to choose an account run the "1Password: Choose vault" command.',
 			);
 
-			return done();
+			return this.getItemCallback();
 		}
 
-		let itemValue = prefill?.itemValue;
-		if (!itemValue) {
-			let message = "Enter a vault item name or ID:";
-			if (plugin) {
-				message = `${plugin.name} is requesting a 1Password vault item for "${plugin.label}". ${message}`;
-			}
+		const itemValue = await window.showInputBox({
+			title: "Enter a vault item name or ID:",
+			ignoreFocusOut: true,
+		});
 
-			itemValue = await window.showInputBox({
-				title: message,
-				ignoreFocusOut: true,
-			});
-		}
 		if (!itemValue) {
-			return done();
+			return this.getItemCallback();
 		}
 
 		const vaultItem = await this.core.cli.execute<VaultItem>("GetItem", {
@@ -141,33 +103,31 @@ export class Items {
 		});
 
 		if (!vaultItem) {
-			return done();
+			return this.getItemCallback();
 		}
 
-		let fieldValue = prefill?.fieldValue;
-		if (!fieldValue) {
-			const fieldsWithValues = vaultItem.fields.filter((field) =>
-				Boolean(field.value),
-			);
-			if (fieldsWithValues.length === 0) {
-				await window.showWarningMessage("This item has no fields with values.");
-				return await done();
-			}
-
-			fieldValue = await window.showQuickPick(
-				fieldsWithValues.map((field) => field.label),
-				{
-					title: "Choose which field to use",
-					ignoreFocusOut: true,
-				},
-			);
+		const fieldsWithValues = vaultItem.fields.filter((field) =>
+			Boolean(field.value),
+		);
+		if (fieldsWithValues.length === 0) {
+			await window.showWarningMessage("This item has no fields with values.");
+			return await this.getItemCallback();
 		}
+
+		const fieldValue = await window.showQuickPick(
+			fieldsWithValues.map((field) => field.label),
+			{
+				title: "Choose which field to use",
+				ignoreFocusOut: true,
+			},
+		);
+
 		if (!fieldValue) {
-			return done();
+			return this.getItemCallback();
 		}
 
 		const field = vaultItem.fields.find((f) => f.label === fieldValue);
-		return done({ vaultItem, field });
+		return this.getItemCallback({ vaultItem, field });
 	}
 
 	public async getReferenceMetadata(
@@ -188,7 +148,7 @@ export class Items {
 		});
 
 		if (!vaultItem) {
-			throw new Error("Could not find vault item details.");
+			throw new Error("Could not find vault item.");
 		}
 
 		const field = vaultItem.fields.find(
@@ -196,7 +156,7 @@ export class Items {
 		);
 
 		if (!field) {
-			throw new Error("Could not find field details.");
+			throw new Error("Could not find vault item field.");
 		}
 
 		return {
@@ -217,15 +177,17 @@ export class Items {
 		};
 	}
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	private async saveItem(
+	public async saveItem(
 		input?: SaveItemInput[] | typeof generatePasswordArg,
 	): Promise<void> {
+		if (!this.core.cli.valid) {
+			return;
+		}
+
 		if (!input || input?.length === 0) {
 			return;
 		}
 
-		const editor = window.activeTextEditor;
 		const itemTitle = await window.showInputBox({
 			title: "What do you want to call this item?",
 			ignoreFocusOut: true,
@@ -236,55 +198,22 @@ export class Items {
 		}
 
 		const generatePassword = input === generatePasswordArg;
-		const fields: CLIField[] = [];
+		let fields: CLIField[] = [];
 
 		if (!generatePassword) {
-			const isOnlyOne = input.length === 1;
-
-			for (const set of input) {
-				const { itemValue } = set;
-
-				let fieldType: FieldInputType;
-				let suggestedLabel: string;
-				switch (true) {
-					case REGEXP.EMAIL.test(itemValue):
-						fieldType = FieldInputType.Email;
-						suggestedLabel = "email";
-						break;
-					case REGEXP.CREDIT_CARD.test(itemValue):
-						fieldType = FieldInputType.Text;
-						suggestedLabel = "credit card";
-						break;
-					default:
-						fieldType = FieldInputType.Password;
-						suggestedLabel = "value";
-						break;
-				}
-
-				const fieldLabel = await window.showInputBox({
-					title: isOnlyOne
-						? "What do you want this field to be called?"
-						: `What do you want to call the field with the value "${itemValue}"?`,
-					value: suggestedLabel,
-					ignoreFocusOut: true,
-				});
-
-				if (!fieldLabel) {
-					return;
-				}
-
-				fields.push([fieldLabel, fieldType, itemValue]);
-			}
+			fields = await this.createFieldAssignments(input);
 
 			if (fields.length === 0) {
 				return;
 			}
 		}
+
 		const vaultItem = await this.core.cli.execute<VaultItem>("CreateItem", {
 			args: fields,
 			options: {
 				title: itemTitle,
 				category: "Login",
+				// eslint-disable-next-line @typescript-eslint/naming-convention
 				"generate-password": generatePassword
 					? config.get<string>(ConfigKey.ItemsPasswordRecipe)
 					: false,
@@ -295,55 +224,14 @@ export class Items {
 			return;
 		}
 
-		const useReference = config.get<boolean>(
-			ConfigKey.ItemsReplaceWithReference,
-		);
-
-		if (editor && !editor.document.isClosed) {
-			const vault = await this.core.cli.execute<Vault>("GetVault", {
-				args: [this.core.vaultId],
-			});
-			const vaultValue = safeReferenceValue(vault.name, vault.id);
-
-			if (input === generatePasswordArg) {
-				const selections = editor?.selections;
-				if (selections.length === 1) {
-					const field = vaultItem.fields.find(
-						(field) => field.label === "password",
-					);
-					await editor.edit((editBuilder) =>
-						editBuilder.insert(
-							selections[0].active,
-							useReference
-								? createSecretReference(vaultValue, vaultItem, field)
-								: field.value,
-						),
-					);
-				}
-			} else if (useReference) {
-				for (const set of input) {
-					const { itemValue, location } = set;
-					// TODO: this is finding by value, so if there are two items with the
-					// same value this will break. Find a better way to find the field
-					const field = vaultItem.fields.find(
-						(field) => field.value === itemValue,
-					);
-					await editor.edit((editBuilder) =>
-						editBuilder.replace(
-							location,
-							createSecretReference(vaultValue, vaultItem, field),
-						),
-					);
-				}
-			}
-		}
+		await this.insertSavedItem(input, vaultItem);
 
 		await window.showInformationMessage(
 			`Item titled "${itemTitle}" saved successfully to your vault.`,
 		);
 	}
 
-	private async valueActions(result?: GetItemResult): Promise<void> {
+	private async getItemCallback(result?: GetItemResult): Promise<void> {
 		if (!result) {
 			return;
 		}
@@ -357,17 +245,20 @@ export class Items {
 			await window.showInformationMessage(
 				"Copied vault item value to the clipboard.",
 			);
+
+			return;
 		}
 
 		const vault = await this.core.cli.execute<Vault>("GetVault", {
 			args: [this.core.vaultId],
 		});
 		const vaultValue = safeReferenceValue(vault.name, vault.id);
-		const useReference = config.get<boolean>(
-			ConfigKey.ItemsReplaceWithReference,
-		);
 
 		if (editor && !editor.document.isClosed) {
+			const useReference = config.get<boolean>(
+				ConfigKey.ItemsUseSecretReferences,
+			);
+
 			await editor.edit((editBuilder) => {
 				for (const selection of selections) {
 					editBuilder.replace(
@@ -396,5 +287,103 @@ export class Items {
 			itemValue: editor.document.getText(selection),
 			location: selection,
 		}));
+	}
+
+	private async createFieldAssignments(
+		input: SaveItemInput[],
+	): Promise<CLIField[]> {
+		const fields: CLIField[] = [];
+		const isOnlyOne = input.length === 1;
+
+		for (const set of input) {
+			const { itemValue } = set;
+
+			let fieldType: FieldInputType;
+			let suggestedLabel: string;
+			switch (true) {
+				case REGEXP.EMAIL.test(itemValue):
+					fieldType = FieldInputType.Email;
+					suggestedLabel = "email";
+					break;
+				case REGEXP.CREDIT_CARD.test(itemValue):
+					fieldType = FieldInputType.Text;
+					suggestedLabel = "credit card";
+					break;
+				default:
+					fieldType = FieldInputType.Password;
+					suggestedLabel = "value";
+					break;
+			}
+
+			const fieldLabel = await window.showInputBox({
+				title: isOnlyOne
+					? "What do you want this field to be called?"
+					: `What do you want to call the field with the value "${itemValue}"?`,
+				value: suggestedLabel,
+				ignoreFocusOut: true,
+			});
+
+			if (!fieldLabel) {
+				return;
+			}
+
+			fields.push([fieldLabel, fieldType, itemValue]);
+		}
+
+		return fields;
+	}
+
+	private async insertSavedItem(
+		input: SaveItemInput[] | typeof generatePasswordArg,
+		vaultItem: VaultItem,
+	): Promise<void> {
+		const editor = window.activeTextEditor;
+		if (!editor || editor.document.isClosed) {
+			return;
+		}
+
+		const useReference = config.get<boolean>(
+			ConfigKey.ItemsUseSecretReferences,
+		);
+		const vault = await this.core.cli.execute<Vault>("GetVault", {
+			args: [this.core.vaultId],
+		});
+		const vaultValue = safeReferenceValue(vault.name, vault.id);
+
+		if (input === generatePasswordArg) {
+			const selections = editor?.selections;
+			if (selections.length === 1) {
+				const field = vaultItem.fields.find(
+					(field) => field.label === "password",
+				);
+				await editor.edit((editBuilder) =>
+					editBuilder.insert(
+						selections[0].active,
+						useReference
+							? createSecretReference(vaultValue, vaultItem, field)
+							: field.value,
+					),
+				);
+			}
+
+			return;
+		}
+
+		if (useReference) {
+			for (const set of input) {
+				const { itemValue, location } = set;
+				// TODO: this is finding by value, so if there are two items with the
+				// same value this will break. Find a better way to find the field
+				const field = vaultItem.fields.find(
+					(field) => field.value === itemValue,
+				);
+				await editor.edit((editBuilder) =>
+					editBuilder.replace(
+						location,
+						createSecretReference(vaultValue, vaultItem, field),
+					),
+				);
+			}
+		}
 	}
 }
