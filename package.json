@@ -37,7 +37,8 @@
 		"theme": "dark"
 	},
 	"categories": [
-		"Other"
+		"Other",
+		"Snippets"
 	],
 	"activationEvents": [
 		"onStartupFinished"
@@ -151,7 +152,12 @@
 					"group": "navigation"
 				}
 			]
-		}
+		},
+		"snippets": [
+			{
+				"path": "./src/opvs.code-snippets"
+			}
+		]
 	},
 	"prettier": "@1password/front-end-style/prettierrc.json",
 	"lint-staged": {
