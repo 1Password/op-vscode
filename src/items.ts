@@ -6,7 +6,7 @@ import type {
 	Item,
 	OutputCategory,
 } from "@1password/1password-js";
-import { item, vault } from "@1password/1password-js";
+import { item } from "@1password/1password-js";
 import type { Range, Selection } from "vscode";
 import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
@@ -248,10 +248,10 @@ export class Items {
 			return;
 		}
 
-		const vaultLookup = await this.core.cli.execute<
-			ReturnType<typeof vault.get>
-		>(() => vault.get(this.core.vaultId));
-		const vaultValue = safeReferenceValue(vaultLookup.name, vaultLookup.id);
+		const vaultValue = safeReferenceValue(
+			this.core.vaultName,
+			this.core.vaultId,
+		);
 
 		if (editor && !editor.document.isClosed) {
 			const useReference = config.get<boolean>(
@@ -345,10 +345,10 @@ export class Items {
 			ConfigKey.ItemsUseSecretReferences,
 		);
 
-		const vaultLookup = await this.core.cli.execute<
-			ReturnType<typeof vault.get>
-		>(() => vault.get(this.core.vaultId));
-		const vaultValue = safeReferenceValue(vaultLookup.name, vaultLookup.id);
+		const vaultValue = safeReferenceValue(
+			this.core.vaultName,
+			this.core.vaultId,
+		);
 
 		if (input === generatePasswordArg) {
 			const selections = editor?.selections;

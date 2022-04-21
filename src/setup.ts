@@ -8,6 +8,7 @@ export class Setup {
 	accountId?: string;
 	accountUrl?: string;
 	vaultId?: string;
+	vaultName?: string;
 
 	public constructor(private core: Core) {
 		this.core.context.subscriptions.push(
@@ -22,6 +23,16 @@ export class Setup {
 		);
 	}
 
+	private vaultNameState() {
+		return `${STATE.VAULT_NAME_PREFIX}-${this.vaultId}`;
+	}
+
+	private setAccountUrlFlag() {
+		setGlobalFlags({
+			account: this.accountUrl,
+		});
+	}
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	public async configure(): Promise<void> {
 		if (!this.core.cli.valid) {
@@ -31,6 +42,13 @@ export class Setup {
 		this.accountId = config.get<string>(ConfigKey.AccountId);
 		this.accountUrl = config.get<string>(ConfigKey.AccountUrl);
 		this.vaultId = config.get<string>(ConfigKey.VaultId);
+
+		// Store vault name in the extension state because the user
+		// already chooses its ID and the two are paired
+		this.vaultName = this.core.context.globalState.get<string>(
+			this.vaultNameState(),
+		);
+
 		let promptForVault = true;
 
 		const dontRemindMe = "Don't remind me";
@@ -52,11 +70,11 @@ export class Setup {
 			);
 
 			if (response === chooseAccount) {
-				const { id, url } = await this.chooseAccount();
-				this.accountId = id;
-				this.accountUrl = url;
+				await this.chooseAccount();
 				promptForVault = false;
 			}
+		} else {
+			this.setAccountUrlFlag();
 		}
 
 		if (!this.accountId || !this.accountUrl) {
@@ -75,7 +93,7 @@ export class Setup {
 			return;
 		}
 
-		if (!this.vaultId && !reminderDisabled) {
+		if ((!this.vaultId || !this.vaultName) && !reminderDisabled) {
 			if (promptForVault) {
 				const chooseVault = "Choose vault";
 
@@ -85,10 +103,10 @@ export class Setup {
 				);
 
 				if (response === chooseVault) {
-					this.vaultId = await this.chooseVault();
+					await this.chooseVault();
 				}
 			} else {
-				this.vaultId = await this.chooseVault();
+				await this.chooseVault();
 			}
 		}
 
@@ -105,15 +123,13 @@ export class Setup {
 		}
 	}
 
-	public async chooseAccount(
-		force = false,
-	): Promise<{ id: string; url: string }> {
+	public async chooseAccount(force = false): Promise<void> {
 		if (!this.core.cli.valid) {
 			return;
 		}
 
 		if (!force && this.accountId && this.accountUrl) {
-			return { id: this.accountId, url: this.accountUrl };
+			return;
 		}
 
 		const accountsList = await this.core.cli.execute<
@@ -159,21 +175,17 @@ export class Setup {
 			this.accountUrl = account.url;
 			await config.set(ConfigKey.AccountId, account.user_uuid);
 			await config.set(ConfigKey.AccountUrl, account.url);
-			setGlobalFlags({
-				account: account.url,
-			});
+			this.setAccountUrlFlag();
 		}
-
-		return { id: this.accountId, url: this.accountUrl };
 	}
 
-	public async chooseVault(setup = false): Promise<string> {
+	public async chooseVault(force = false): Promise<void> {
 		if (!this.core.cli.valid) {
 			return;
 		}
 
-		if (!setup && this.vaultId) {
-			return this.vaultId;
+		if (!force && this.vaultId && this.vaultName) {
+			return;
 		}
 
 		await this.chooseAccount();
@@ -218,9 +230,12 @@ export class Setup {
 			const vault = vaultsList.find((vault) => vault.name === response);
 
 			this.vaultId = vault.id;
+			this.vaultName = vault.name;
 			await config.set(ConfigKey.VaultId, vault.id);
+			await this.core.context.globalState.update(
+				this.vaultNameState(),
+				vault.name,
+			);
 		}
-
-		return this.vaultId;
 	}
 }

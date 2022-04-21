@@ -18,6 +18,7 @@ export const COMMANDS = {
 
 export const STATE = {
 	DISABLE_CONFIG_REMINDER: "disableConfigReminder",
+	VAULT_NAME_PREFIX: "vaultName",
 };
 
 export const URLS = {

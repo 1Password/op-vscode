@@ -27,19 +27,21 @@ export const createInternalUrl = (
 		query: new URLSearchParams({ action, ...queryParams }).toString(),
 	});
 
-export function createOpenOPHandler(this: InstanceType<typeof Core>) {
-	return async ({ action = "", ...args }: { action: AppAction | "" }) => {
+export const createOpenOPHandler =
+	(core: InstanceType<typeof Core>) =>
+	// eslint-disable-next-line unicorn/no-object-as-default-parameter
+	async ({ action, ...args }: { action: AppAction | "" } = { action: "" }) => {
 		const url = new URL(`onepassword://${action}`);
 
 		switch (action) {
 			case AppAction.VaultItem:
-				const { vaultValue, itemValue } = args as {
-					vaultValue: string;
-					itemValue: string;
+				const { vault, item } = args as {
+					vault: string;
+					item: string;
 				};
-				url.searchParams.append("a", this.accountId);
-				url.searchParams.append("v", vaultValue);
-				url.searchParams.append("i", itemValue);
+				url.searchParams.append("a", core.accountId);
+				url.searchParams.append("v", vault);
+				url.searchParams.append("i", item);
 				break;
 		}
 
@@ -51,7 +53,6 @@ export function createOpenOPHandler(this: InstanceType<typeof Core>) {
 
 		await open(url.href);
 	};
-}
 
 export class OpvsUriHandler implements UriHandler {
 	public async handleUri(uri: Uri): Promise<void> {
@@ -81,7 +82,7 @@ export class Core {
 			window.registerUriHandler(new OpvsUriHandler()),
 			commands.registerCommand(
 				COMMANDS.OPEN_1PASSWORD,
-				createOpenOPHandler.bind(this),
+				createOpenOPHandler(this),
 			),
 			commands.registerCommand(COMMANDS.OPEN_LOGS, () => logger.show()),
 		);
@@ -108,5 +109,9 @@ export class Core {
 
 	public get vaultId(): string {
 		return this.setup.vaultId;
+	}
+
+	public get vaultName(): string {
+		return this.setup.vaultName;
 	}
 }
