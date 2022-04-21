@@ -1,9 +1,13 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import { createItem, createItemField, createItemFile } from "../test/factories";
 import { generateUUID } from "../test/utils";
 import { commands, configGet, env, window } from "../test/vscode-mock";
 import { COMMANDS, REGEXP } from "./constants";
-import { createSecretReference, Items, safeReferenceValue } from "./items";
+import {
+	createSecretReference,
+	generatePasswordArg,
+	Items,
+	safeReferenceValue,
+} from "./items";
 
 describe("safeReferenceValue", () => {
 	it("returns the label if it doesn't contain illegal characters", () => {
@@ -80,12 +84,6 @@ describe("Items", () => {
 
 	describe("getItem", () => {
 		const title = "My Item";
-
-		it.skip("aborts if the cli is not valid", async () => {
-			// items.core.cli.valid = false;
-			await items.getItem();
-			expect(window.showInputBox).not.toHaveBeenCalled();
-		});
 
 		it.skip("requires a vault to be chosen", async () => {
 			// items.core.vaultId = null;
@@ -248,19 +246,13 @@ describe("Items", () => {
 	describe("saveItem", () => {
 		const title = "My Item";
 
-		it.skip("aborts if the cli is not valid", async () => {
-			// items.core.cli.valid = false;
-			await items.saveItem();
-			expect(window.showInputBox).not.toHaveBeenCalled();
-		});
-
 		it("aborts if there is no input", async () => {
 			await items.saveItem();
 			expect(window.showInputBox).not.toHaveBeenCalled();
 		});
 
 		it("asks for an item name", async () => {
-			await items.saveItem("generate-pasword");
+			await items.saveItem(generatePasswordArg);
 			expect(window.showInputBox).toHaveBeenCalledWith({
 				ignoreFocusOut: true,
 				title: "What do you want to call this item?",
@@ -269,7 +261,7 @@ describe("Items", () => {
 
 		it("aborts if no item name supplied", async () => {
 			window.showInputBox.mockReturnValue(null);
-			await items.saveItem("generate-pasword");
+			await items.saveItem(generatePasswordArg);
 			expect(core.cli.execute).not.toHaveBeenCalled();
 		});
 
@@ -277,7 +269,7 @@ describe("Items", () => {
 			const recipe = "letters,digits,symbols,32";
 			window.showInputBox.mockReturnValue(title);
 			configGet.mockReturnValue(recipe);
-			await items.saveItem("generate-pasword");
+			await items.saveItem(generatePasswordArg);
 			expect(core.cli.execute).toHaveBeenCalled();
 		});
 

@@ -30,8 +30,6 @@ export const REGEXP = {
 	REFERENCE: /op:\/\/([\w -]+)\/([\w -]+)\/([\w -]+)/,
 	REFERENCE_PERMITTED: /^[\w ./-]+$/i,
 	UUID: /[\da-f]{4}(?:[\da-f]{4}-){4}[\da-f]{12}/i,
-	// Don't use this right now, it's a little too eager
-	JWT: /(?:[\w-]*\.){2}[\w-]*/,
 	CREDIT_CARD:
 		/4\d{12}(?:\d{3})?|[25][1-7]\d{14}|6(?:011|5\d\d)\d{12}|3[47]\d{13}|3(?:0[0-5]|[68]\d)\d{11}|(?:2131|1800|35\d{3})\d{11}/,
 	EMAIL:

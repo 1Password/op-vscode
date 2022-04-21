@@ -1,8 +1,8 @@
 import { account, setGlobalFlags, vault } from "@1password/1password-js";
 import { commands, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
-import { COMMANDS } from "./constants";
-import { Core } from "./core";
+import { COMMANDS, DEBUG, STATE } from "./constants";
+import type { Core } from "./core";
 
 export class Setup {
 	accountId?: string;
@@ -20,6 +20,89 @@ export class Setup {
 				async () => await this.chooseVault(true),
 			),
 		);
+	}
+
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+	public async configure(): Promise<void> {
+		if (!this.core.cli.valid) {
+			return;
+		}
+
+		this.accountId = config.get<string>(ConfigKey.AccountId);
+		this.accountUrl = config.get<string>(ConfigKey.AccountUrl);
+		this.vaultId = config.get<string>(ConfigKey.VaultId);
+		let promptForVault = true;
+
+		const dontRemindMe = "Don't remind me";
+		let reminderDisabled =
+			!DEBUG &&
+			this.core.context.globalState.get<boolean>(STATE.DISABLE_CONFIG_REMINDER);
+		const disableReminder = async () =>
+			await this.core.context.globalState.update(
+				STATE.DISABLE_CONFIG_REMINDER,
+				true,
+			);
+
+		if ((!this.accountId || !this.accountUrl) && !reminderDisabled) {
+			const chooseAccount = "Choose account";
+
+			const response = await window.showInformationMessage(
+				"Please choose an account to perform 1Password operations in VS Code.",
+				chooseAccount,
+			);
+
+			if (response === chooseAccount) {
+				const { id, url } = await this.chooseAccount();
+				this.accountId = id;
+				this.accountUrl = url;
+				promptForVault = false;
+			}
+		}
+
+		if (!this.accountId || !this.accountUrl) {
+			if (!reminderDisabled) {
+				const response = await window.showWarningMessage(
+					'You must choose an account to perform 1Password operations in VS Code. When you want to choose an account run the "1Password: Choose account" command.',
+					dontRemindMe,
+				);
+
+				if (response === dontRemindMe) {
+					await disableReminder();
+					reminderDisabled = true;
+				}
+			}
+
+			return;
+		}
+
+		if (!this.vaultId && !reminderDisabled) {
+			if (promptForVault) {
+				const chooseVault = "Choose vault";
+
+				const response = await window.showInformationMessage(
+					"Please choose a vault to perform 1Password operations in VS Code.",
+					chooseVault,
+				);
+
+				if (response === chooseVault) {
+					this.vaultId = await this.chooseVault();
+				}
+			} else {
+				this.vaultId = await this.chooseVault();
+			}
+		}
+
+		if (!this.vaultId && !reminderDisabled) {
+			const response = await window.showWarningMessage(
+				'You must choose a vault to perform 1Password operations in VS Code. When you want to choose an account run the "1Password: Choose vault" command.',
+				dontRemindMe,
+			);
+
+			if (response === dontRemindMe) {
+				await disableReminder();
+				reminderDisabled = true;
+			}
+		}
 	}
 
 	public async chooseAccount(

@@ -1,12 +1,10 @@
-import {
+import type {
 	ConfigurationChangeEvent,
 	ConfigurationScope,
-	ConfigurationTarget,
 	Event,
-	EventEmitter,
 	ExtensionContext,
-	workspace,
 } from "vscode";
+import { ConfigurationTarget, EventEmitter, workspace } from "vscode";
 import { EXTENSION_ID } from "./constants";
 
 export enum ConfigKey {

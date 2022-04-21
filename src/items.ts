@@ -1,14 +1,14 @@
-import {
+import type {
 	Field,
 	FieldAssignment,
 	FieldAssignmentType,
 	File,
 	Item,
-	item,
 	OutputCategory,
-	vault,
 } from "@1password/1password-js";
-import { commands, env, Range, Selection, window } from "vscode";
+import { item, vault } from "@1password/1password-js";
+import type { Range, Selection } from "vscode";
+import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
 import { COMMANDS, REGEXP } from "./constants";
 import type { Core } from "./core";
@@ -36,28 +36,23 @@ export interface GetItemResult {
 export const safeReferenceValue = (label: string, id: string): string =>
 	REGEXP.REFERENCE_PERMITTED.test(label) ? label : id;
 
-const isField = (input: any): input is Field => "label" in input;
-
-// This is whack.
 export const createSecretReference = (
 	vaultValue: string,
 	vaultItem: Item,
 	fieldOrFile: Field | File,
 ): string => {
-	const fieldValue = isField(fieldOrFile)
-		? safeReferenceValue(fieldOrFile.label, fieldOrFile.id)
-		: // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		  safeReferenceValue(fieldOrFile.name, fieldOrFile.id);
+	const fieldValue =
+		"label" in fieldOrFile
+			? safeReferenceValue(fieldOrFile.label, fieldOrFile.id)
+			: safeReferenceValue(fieldOrFile.name, fieldOrFile.id);
 
 	return `op://${vaultValue}/${safeReferenceValue(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		vaultItem.title,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		vaultItem.id,
 	)}/${fieldValue}`;
 };
 
-const generatePasswordArg = "generate-pasword";
+export const generatePasswordArg = "generate-pasword";
 
 export class Items {
 	public constructor(private core: Core) {

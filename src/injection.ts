@@ -1,14 +1,8 @@
 import { inject } from "@1password/1password-js";
-import {
-	commands,
-	ProgressLocation,
-	TextDocument,
-	Uri,
-	window,
-	workspace,
-} from "vscode";
+import type { TextDocument, Uri } from "vscode";
+import { commands, ProgressLocation, window, workspace } from "vscode";
 import { COMMANDS, EXTENSION_ID, REGEXP } from "./constants";
-import { Core } from "./core";
+import type { Core } from "./core";
 
 export class Injection {
 	activeDocument: TextDocument;

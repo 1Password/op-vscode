@@ -1,9 +1,28 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { validateCli } from "@1password/1password-js";
 import { default as open } from "open";
 import { window } from "vscode";
 import { URLS } from "./constants";
 import { logger } from "./logger";
+
+export const createErrorHandler =
+	(showError: boolean) => async (error: Error) => {
+		const errorMessage =
+			"Failed to execute 1Password CLI command. Check the logs for more details.";
+
+		logger.logError(errorMessage, error);
+
+		if (!showError) {
+			return;
+		}
+
+		if (showError) {
+			const openLogs = "Open Logs";
+			const response = await window.showErrorMessage(errorMessage, openLogs);
+			if (response === openLogs) {
+				logger.show();
+			}
+		}
+	};
 
 export class CLI {
 	valid = false;
@@ -23,7 +42,7 @@ export class CLI {
 		try {
 			output = command();
 		} catch (error) {
-			await this.createErrorHandler(showError)(error);
+			await createErrorHandler(showError)(error);
 			return;
 		}
 
@@ -35,7 +54,6 @@ export class CLI {
 		this.valid = true;
 
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			await validateCli();
 		} catch (error: any) {
 			if (error instanceof Error) {
@@ -75,26 +93,5 @@ export class CLI {
 				throw error;
 			}
 		}
-	}
-
-	private createErrorHandler(showError: boolean) {
-		return async (error: Error) => {
-			const errorMessage =
-				"Failed to execute 1Password CLI command. Check the logs for more details.";
-
-			logger.logError(errorMessage, error);
-
-			if (!showError) {
-				return;
-			}
-
-			if (showError) {
-				const openLogs = "Open Logs";
-				const response = await window.showErrorMessage(errorMessage, openLogs);
-				if (response === openLogs) {
-					logger.show();
-				}
-			}
-		};
 	}
 }
