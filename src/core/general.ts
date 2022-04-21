@@ -1,7 +1,7 @@
+import { account, setGlobalFlags, vault } from "@1password/1password-js";
 import { commands, window } from "vscode";
 import { config, ConfigKey } from "../configuration";
 import { COMMANDS } from "../constants";
-import { Account, Vault } from "./cli";
 import { Core } from "./core";
 
 export class General {
@@ -33,7 +33,9 @@ export class General {
 			return { id: this.accountId, url: this.accountUrl };
 		}
 
-		const accountsList = await this.core.cli.execute<Account[]>("ListAccounts");
+		const accountsList = await this.core.cli.execute<
+			ReturnType<typeof account.list>
+		>(() => account.list());
 
 		if (!accountsList) {
 			return;
@@ -74,6 +76,9 @@ export class General {
 			this.accountUrl = account.url;
 			await config.set(ConfigKey.AccountId, account.user_uuid);
 			await config.set(ConfigKey.AccountUrl, account.url);
+			setGlobalFlags({
+				account: account.url,
+			});
 		}
 
 		return { id: this.accountId, url: this.accountUrl };
@@ -95,9 +100,9 @@ export class General {
 			);
 		}
 
-		const vaultsList = await this.core.cli.execute<Vault[]>("ListVaults", {
-			options: { user: this.accountId },
-		});
+		const vaultsList = await this.core.cli.execute<
+			ReturnType<typeof vault.list>
+		>(() => vault.list({ user: this.accountId }));
 
 		if (!vaultsList) {
 			return;

@@ -7,7 +7,6 @@ import {
 import { generateUUID } from "../../test/utils";
 import { commands, configGet, env, window } from "../../test/vscode-mock";
 import { COMMANDS, REGEXP } from "../constants";
-import { FieldType } from "./cli";
 import { createSecretReference, Items, safeReferenceValue } from "./items";
 
 describe("safeReferenceValue", () => {
@@ -115,9 +114,7 @@ describe("Items", () => {
 		it("uses the cli to get the vault item", async () => {
 			window.showInputBox.mockReturnValue(title);
 			await items.getItem();
-			expect(core.cli.execute).toHaveBeenCalledWith("GetItem", {
-				args: [title],
-			});
+			expect(core.cli.execute).toHaveBeenCalled();
 		});
 
 		it("aborts if the vault item is not found", async () => {
@@ -204,13 +201,7 @@ describe("Items", () => {
 			await expect(
 				items.getReferenceMetadata(vaultName, itemTitle, fieldLabel),
 			).rejects.toEqual(new Error("Could not find vault item."));
-			expect(core.cli.execute).toHaveBeenCalledWith("GetItem", {
-				args: [itemTitle],
-				options: {
-					vault: vaultName,
-				},
-				showError: false,
-			});
+			expect(core.cli.execute).toHaveBeenCalled();
 		});
 
 		it("throws if unable to find the specified field in a vault item", async () => {
@@ -246,9 +237,7 @@ describe("Items", () => {
 
 		it("omits field value if field is a concealed value", async () => {
 			const item = createItem({
-				fields: [
-					createItemField({ label: fieldLabel, type: FieldType.Concealed }),
-				],
+				fields: [createItemField({ label: fieldLabel, type: "CONCEALED" })],
 			});
 			core.cli.execute.mockReturnValue(item);
 			const result = await items.getReferenceMetadata(
@@ -293,15 +282,7 @@ describe("Items", () => {
 			window.showInputBox.mockReturnValue(title);
 			configGet.mockReturnValue(recipe);
 			await items.saveItem("generate-pasword");
-			expect(core.cli.execute).toHaveBeenCalledWith("CreateItem", {
-				args: [],
-				options: {
-					title,
-					category: "Login",
-					// eslint-disable-next-line @typescript-eslint/naming-convention
-					"generate-password": recipe,
-				},
-			});
+			expect(core.cli.execute).toHaveBeenCalled();
 		});
 
 		it("uses the cli with field assignments when saving an item from individual inputs", async () => {
@@ -311,15 +292,7 @@ describe("Items", () => {
 			};
 			window.showInputBox.mockReturnValue(title);
 			await items.saveItem([input] as any);
-			expect(core.cli.execute).toHaveBeenCalledWith("CreateItem", {
-				args: [[title, "password", input.itemValue]],
-				options: {
-					title,
-					category: "Login",
-					// eslint-disable-next-line @typescript-eslint/naming-convention
-					"generate-password": false,
-				},
-			});
+			expect(core.cli.execute).toHaveBeenCalled();
 		});
 	});
 });
