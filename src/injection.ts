@@ -61,13 +61,11 @@ export class Injection {
 
 	private async injectSecrets(currentDocument: TextDocument) {
 		const input = currentDocument.getText().replace(/"/gm, '\\"');
-		const command = await this.core.cli.execute<ReturnType<typeof inject>>(() =>
-			inject(input),
-		);
+		const result = await this.core.cli.execute<string>(() => inject(input));
 
 		const injectedDocument = await workspace.openTextDocument({
 			language: currentDocument.languageId,
-			content: command as string,
+			content: result,
 		});
 
 		await window.showTextDocument(injectedDocument, { preview: true });

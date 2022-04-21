@@ -1,4 +1,10 @@
-import { account, setGlobalFlags, vault } from "@1password/1password-js";
+import {
+	AbbreviatedVault,
+	account,
+	ListAccount,
+	setGlobalFlags,
+	vault,
+} from "@1password/1password-js";
 import { commands, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
 import { COMMANDS, DEBUG, STATE } from "./constants";
@@ -132,9 +138,9 @@ export class Setup {
 			return;
 		}
 
-		const accountsList = await this.core.cli.execute<
-			ReturnType<typeof account.list>
-		>(() => account.list());
+		const accountsList = await this.core.cli.execute<ListAccount[]>(() =>
+			account.list(),
+		);
 
 		if (!accountsList) {
 			return;
@@ -195,9 +201,9 @@ export class Setup {
 			);
 		}
 
-		const vaultsList = await this.core.cli.execute<
-			ReturnType<typeof vault.list>
-		>(() => vault.list({ user: this.accountId }));
+		const vaultsList = await this.core.cli.execute<AbbreviatedVault[]>(() =>
+			vault.list({ user: this.accountId }),
+		);
 
 		if (!vaultsList) {
 			return;

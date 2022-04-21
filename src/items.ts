@@ -94,12 +94,11 @@ export class Items {
 			return this.getItemCallback();
 		}
 
-		const vaultItem = await this.core.cli.execute<ReturnType<typeof item.get>>(
-			() =>
-				item.get(itemValue, {
-					vault: this.core.vaultId,
-					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
-				}),
+		const vaultItem = await this.core.cli.execute<Item>(() =>
+			item.get(itemValue, {
+				vault: this.core.vaultId,
+				cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+			}),
 		);
 
 		if (!vaultItem) {
@@ -139,7 +138,7 @@ export class Items {
 			return;
 		}
 
-		const vaultItem = await this.core.cli.execute<ReturnType<typeof item.get>>(
+		const vaultItem = await this.core.cli.execute<Item>(
 			() =>
 				item.get(itemId, {
 					vault: vaultId,
@@ -206,9 +205,7 @@ export class Items {
 			}
 		}
 
-		const vaultItem = await this.core.cli.execute<
-			ReturnType<typeof item.create>
-		>(() =>
+		const vaultItem = await this.core.cli.execute<Item>(() =>
 			item.create(fields, {
 				title: itemTitle,
 				category: "Login",
