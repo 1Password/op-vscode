@@ -18,6 +18,8 @@ export class Injection {
 					await window.showWarningMessage(
 						"Couldn't find an active file to inject secrets into.",
 					);
+
+					return;
 				}
 
 				await window.withProgress(
