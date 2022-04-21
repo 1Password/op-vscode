@@ -19,12 +19,11 @@ export class CLI {
 			return;
 		}
 
-		const handleError = this.createErrorHandler(showError);
 		let output: TReturn;
 		try {
 			output = command();
 		} catch (error) {
-			await handleError(error);
+			await this.createErrorHandler(showError)(error);
 			return;
 		}
 

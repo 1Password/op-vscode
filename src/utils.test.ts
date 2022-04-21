@@ -1,4 +1,4 @@
-import { combineRegexp, endWithPunctuation, titleCase } from "./utils";
+import { combineRegexp, titleCase } from "./utils";
 
 describe("titleCase", () => {
 	it("converts a string to title case", () => {
@@ -11,18 +11,6 @@ describe("titleCase", () => {
 
 	it("ignores other characters", () => {
 		expect(titleCase(".1k3?*")).toBe(".1k3?*");
-	});
-});
-
-describe("endWithPunctuation", () => {
-	it("appends a period to a string that does not end with punctuation", () => {
-		expect(endWithPunctuation("Hello world")).toBe("Hello world.");
-	});
-
-	it("does nothing to a string that ends with punctuation", () => {
-		expect(endWithPunctuation("Cool story.")).toBe("Cool story.");
-		expect(endWithPunctuation("Hello world!")).toBe("Hello world!");
-		expect(endWithPunctuation("Anyone home?")).toBe("Anyone home?");
 	});
 });
 
