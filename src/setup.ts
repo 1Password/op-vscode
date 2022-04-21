@@ -4,7 +4,7 @@ import { config, ConfigKey } from "./configuration";
 import { COMMANDS } from "./constants";
 import { Core } from "./core";
 
-export class General {
+export class Setup {
 	accountId?: string;
 	accountUrl?: string;
 	vaultId?: string;

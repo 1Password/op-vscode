@@ -11,10 +11,10 @@ import { CLI } from "./cli";
 import { config, ConfigKey } from "./configuration";
 import { COMMANDS, DEBUG, QUALIFIED_EXTENSION_ID, STATE } from "./constants";
 import { Editor } from "./editor";
-import { General } from "./general";
 import { Injection } from "./injection";
 import { Items } from "./items";
 import { logger } from "./logger";
+import { Setup } from "./setup";
 
 export enum UriAction {
 	OpenItem = "open-item",
@@ -54,7 +54,7 @@ class OpvsUriHandler implements UriHandler {
 
 export class Core {
 	public cli: CLI;
-	private general: General;
+	private setup: Setup;
 	public items: Items;
 
 	public constructor(public context: ExtensionContext) {
@@ -93,7 +93,7 @@ export class Core {
 		// config.onDidChange(this.configure.bind(this));
 
 		this.cli = new CLI();
-		this.general = new General(this);
+		this.setup = new Setup(this);
 		this.items = new Items(this);
 
 		new Editor(this);
@@ -110,9 +110,9 @@ export class Core {
 			return;
 		}
 
-		this.general.accountId = config.get<string>(ConfigKey.AccountId);
-		this.general.accountUrl = config.get<string>(ConfigKey.AccountUrl);
-		this.general.vaultId = config.get<string>(ConfigKey.VaultId);
+		this.setup.accountId = config.get<string>(ConfigKey.AccountId);
+		this.setup.accountUrl = config.get<string>(ConfigKey.AccountUrl);
+		this.setup.vaultId = config.get<string>(ConfigKey.VaultId);
 		let promptForVault = true;
 
 		const dontRemindMe = "Don't remind me";
@@ -134,9 +134,9 @@ export class Core {
 			);
 
 			if (response === chooseAccount) {
-				const { id, url } = await this.general.chooseAccount();
-				this.general.accountId = id;
-				this.general.accountUrl = url;
+				const { id, url } = await this.setup.chooseAccount();
+				this.setup.accountId = id;
+				this.setup.accountUrl = url;
 				promptForVault = false;
 			}
 		}
@@ -167,10 +167,10 @@ export class Core {
 				);
 
 				if (response === chooseVault) {
-					this.general.vaultId = await this.general.chooseVault();
+					this.setup.vaultId = await this.setup.chooseVault();
 				}
 			} else {
-				this.general.vaultId = await this.general.chooseVault();
+				this.setup.vaultId = await this.setup.chooseVault();
 			}
 		}
 
@@ -188,14 +188,14 @@ export class Core {
 	}
 
 	public get accountId(): string {
-		return this.general.accountId;
+		return this.setup.accountId;
 	}
 
 	public get accountUrl(): string {
-		return this.general.accountUrl;
+		return this.setup.accountUrl;
 	}
 
 	public get vaultId(): string {
-		return this.general.vaultId;
+		return this.setup.vaultId;
 	}
 }
