@@ -7,14 +7,14 @@ import {
 	UriHandler,
 	window,
 } from "vscode";
-import { config, ConfigKey } from "../configuration";
-import { COMMANDS, DEBUG, QUALIFIED_EXTENSION_ID, STATE } from "../constants";
-import { logger } from "../logger";
 import { CLI } from "./cli";
+import { config, ConfigKey } from "./configuration";
+import { COMMANDS, DEBUG, QUALIFIED_EXTENSION_ID, STATE } from "./constants";
 import { Editor } from "./editor";
 import { General } from "./general";
 import { Injection } from "./injection";
 import { Items } from "./items";
+import { logger } from "./logger";
 
 export enum UriAction {
 	OpenItem = "open-item",

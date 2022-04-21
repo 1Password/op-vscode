@@ -7,7 +7,7 @@ import {
 	window,
 	workspace,
 } from "vscode";
-import { COMMANDS, EXTENSION_ID, REGEXP } from "../constants";
+import { COMMANDS, EXTENSION_ID, REGEXP } from "./constants";
 import { Core } from "./core";
 
 export class Injection {

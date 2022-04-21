@@ -1,7 +1,7 @@
 import { account, setGlobalFlags, vault } from "@1password/1password-js";
 import { commands, window } from "vscode";
-import { config, ConfigKey } from "../configuration";
-import { COMMANDS } from "../constants";
+import { config, ConfigKey } from "./configuration";
+import { COMMANDS } from "./constants";
 import { Core } from "./core";
 
 export class General {

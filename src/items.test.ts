@@ -1,12 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import {
-	createItem,
-	createItemField,
-	createItemFile,
-} from "../../test/factories";
-import { generateUUID } from "../../test/utils";
-import { commands, configGet, env, window } from "../../test/vscode-mock";
-import { COMMANDS, REGEXP } from "../constants";
+import { createItem, createItemField, createItemFile } from "../test/factories";
+import { generateUUID } from "../test/utils";
+import { commands, configGet, env, window } from "../test/vscode-mock";
+import { COMMANDS, REGEXP } from "./constants";
 import { createSecretReference, Items, safeReferenceValue } from "./items";
 
 describe("safeReferenceValue", () => {

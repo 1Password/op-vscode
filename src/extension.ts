@@ -2,7 +2,7 @@ import { ExtensionContext } from "vscode";
 import pckg from "../package.json";
 import { config, ConfigKey } from "./configuration";
 import { DEBUG } from "./constants";
-import { Core } from "./core/core";
+import { Core } from "./core";
 import { logger } from "./logger";
 
 export const activate = (context: ExtensionContext): void => {

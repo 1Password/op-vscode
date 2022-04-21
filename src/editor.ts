@@ -10,11 +10,11 @@ import {
 	Range,
 	TextDocument,
 } from "vscode";
-import { config, ConfigKey } from "../configuration";
-import { COMMANDS, REGEXP } from "../constants";
-import { combineRegexp, titleCase } from "../utils";
+import { config, ConfigKey } from "./configuration";
+import { COMMANDS, REGEXP } from "./constants";
 import { Core, createInternalUrl, UriAction } from "./core";
 import { ReferenceMetaData } from "./items";
+import { combineRegexp, titleCase } from "./utils";
 
 interface LensMatch {
 	range: Range;

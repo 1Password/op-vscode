@@ -9,8 +9,8 @@ import {
 	vault,
 } from "@1password/1password-js";
 import { commands, env, Range, Selection, window } from "vscode";
-import { config, ConfigKey } from "../configuration";
-import { COMMANDS, REGEXP } from "../constants";
+import { config, ConfigKey } from "./configuration";
+import { COMMANDS, REGEXP } from "./constants";
 import type { Core } from "./core";
 
 export interface ReferenceMetaData {

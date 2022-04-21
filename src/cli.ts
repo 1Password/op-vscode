@@ -2,8 +2,8 @@
 import { validateCli } from "@1password/1password-js";
 import { default as open } from "open";
 import { window } from "vscode";
-import { URLS } from "../constants";
-import { logger } from "../logger";
+import { URLS } from "./constants";
+import { logger } from "./logger";
 
 export class CLI {
 	valid = false;
