@@ -1,3 +1,4 @@
+import { setCommandLogger } from "@1password/1password-js";
 import { default as open } from "open";
 import type { ExtensionContext, UriHandler } from "vscode";
 import { commands, env, Uri, window } from "vscode";
@@ -86,6 +87,9 @@ export class Core {
 			),
 			commands.registerCommand(COMMANDS.OPEN_LOGS, () => logger.show()),
 		);
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		setCommandLogger((message) => logger.logDebug("Command used:", message));
 
 		this.cli = new CLI();
 		this.setup = new Setup(this);

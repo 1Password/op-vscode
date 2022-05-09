@@ -4,7 +4,7 @@
 
 "@1password/1password-js@https://github.com/1Password/1password-js":
   version "0.1.0"
-  resolved "https://github.com/1Password/1password-js#c24ab603fa8b0bc327e401fee8abb3fbecaceec7"
+  resolved "https://github.com/1Password/1password-js#521d9d637338c49396725eb1c6e426f55c4b7fd0"
   dependencies:
     lookpath "^1.2.2"
     semver "^7.3.6"
