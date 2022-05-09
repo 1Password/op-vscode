@@ -10,6 +10,7 @@ export const createItem = (overrides: Partial<Item> = {}): Item => {
 		title: `Vault Item ${id}`,
 		vault: {
 			id: `vault-123`,
+			name: "My Vault",
 		},
 		category: "LOGIN",
 		last_edited_by: "user-123",

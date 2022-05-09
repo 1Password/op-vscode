@@ -2,7 +2,6 @@ import type {
 	Field,
 	FieldAssignment,
 	FieldAssignmentType,
-	File,
 	Item,
 	OutputCategory,
 } from "@1password/1password-js";
@@ -28,30 +27,6 @@ export interface SaveItemInput {
 	location: Range | Selection;
 }
 
-export interface GetItemResult {
-	vaultItem: Item;
-	field: Field;
-}
-
-export const safeReferenceValue = (label: string, id: string): string =>
-	REGEXP.REFERENCE_PERMITTED.test(label) ? label : id;
-
-export const createSecretReference = (
-	vaultValue: string,
-	vaultItem: Item,
-	fieldOrFile: Field | File,
-): string => {
-	const fieldValue =
-		"label" in fieldOrFile
-			? safeReferenceValue(fieldOrFile.label, fieldOrFile.id)
-			: safeReferenceValue(fieldOrFile.name, fieldOrFile.id);
-
-	return `op://${vaultValue}/${safeReferenceValue(
-		vaultItem.title,
-		vaultItem.id,
-	)}/${fieldValue}`;
-};
-
 export const generatePasswordArg = "generate-pasword";
 
 export class Items {
@@ -72,7 +47,7 @@ export class Items {
 		);
 	}
 
-	public async getItem(): Promise<GetItemResult | void> {
+	public async getItem(): Promise<Field | void> {
 		if (!this.core.cli.valid) {
 			return this.getItemCallback();
 		}
@@ -126,7 +101,7 @@ export class Items {
 		}
 
 		const field = vaultItem.fields.find((f) => f.label === fieldValue);
-		return this.getItemCallback({ vaultItem, field });
+		return this.getItemCallback(field);
 	}
 
 	public async getReferenceMetadata(
@@ -205,7 +180,7 @@ export class Items {
 			}
 		}
 
-		const vaultItem = await this.core.cli.execute<Item>(() =>
+		let vaultItem = await this.core.cli.execute<Item>(() =>
 			item.create(fields, {
 				title: itemTitle,
 				category: "Login",
@@ -215,6 +190,10 @@ export class Items {
 					: false,
 			}),
 		);
+
+		// TODO: Should be able to remove this once the CLI
+		// returns references during create operations
+		vaultItem = await this.core.cli.execute<Item>(() => item.get(vaultItem.id));
 
 		if (!vaultItem) {
 			return;
@@ -227,12 +206,10 @@ export class Items {
 		);
 	}
 
-	private async getItemCallback(result?: GetItemResult): Promise<void> {
-		if (!result) {
+	private async getItemCallback(field?: Field): Promise<void> {
+		if (!field) {
 			return;
 		}
-
-		const { vaultItem, field } = result;
 
 		const editor = window.activeTextEditor;
 		const selections = editor?.selections;
@@ -245,11 +222,6 @@ export class Items {
 			return;
 		}
 
-		const vaultValue = safeReferenceValue(
-			this.core.vaultName,
-			this.core.vaultId,
-		);
-
 		if (editor && !editor.document.isClosed) {
 			const useReference = config.get<boolean>(
 				ConfigKey.ItemsUseSecretReferences,
@@ -259,9 +231,7 @@ export class Items {
 				for (const selection of selections) {
 					editBuilder.replace(
 						selection,
-						useReference
-							? createSecretReference(vaultValue, vaultItem, field)
-							: field.value,
+						useReference ? field.reference : field.value,
 					);
 				}
 			});
@@ -342,11 +312,6 @@ export class Items {
 			ConfigKey.ItemsUseSecretReferences,
 		);
 
-		const vaultValue = safeReferenceValue(
-			this.core.vaultName,
-			this.core.vaultId,
-		);
-
 		if (input === generatePasswordArg) {
 			const selections = editor?.selections;
 			if (selections.length === 1) {
@@ -356,9 +321,7 @@ export class Items {
 				await editor.edit((editBuilder) =>
 					editBuilder.insert(
 						selections[0].active,
-						useReference
-							? createSecretReference(vaultValue, vaultItem, field)
-							: field.value,
+						useReference ? field.reference : field.value,
 					),
 				);
 			}
@@ -375,10 +338,7 @@ export class Items {
 					(field) => field.value === itemValue,
 				);
 				await editor.edit((editBuilder) =>
-					editBuilder.replace(
-						location,
-						createSecretReference(vaultValue, vaultItem, field),
-					),
+					editBuilder.replace(location, field.reference),
 				);
 			}
 		}
