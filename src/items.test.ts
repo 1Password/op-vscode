@@ -1,47 +1,8 @@
-import { createItem, createItemField, createItemFile } from "../test/factories";
+import { createItem, createItemField } from "../test/factories";
 import { generateUUID } from "../test/utils";
 import { commands, configGet, env, window } from "../test/vscode-mock";
-import { COMMANDS, REGEXP } from "./constants";
-import {
-	createSecretReference,
-	generatePasswordArg,
-	Items,
-	safeReferenceValue,
-} from "./items";
-
-describe("safeReferenceValue", () => {
-	it("returns the label if it doesn't contain illegal characters", () => {
-		const label = "label";
-		const result = safeReferenceValue(label, generateUUID());
-		expect(result).toBe(label);
-	});
-
-	it("returns the id if the label contains illegal characters", () => {
-		const id = generateUUID();
-		const result = safeReferenceValue("$money-yall$", id);
-		expect(result).toBe(id);
-	});
-});
-
-describe("createSecretReference", () => {
-	it("returns a formatted op secret reference for a field", () => {
-		const value = "some value";
-		const item = createItem();
-		const field = createItemField();
-		const result = createSecretReference(value, item, field);
-		expect(result).toBe(`op://${value}/${item.title}/${field.label}`);
-		expect(REGEXP.REFERENCE.test(result)).toBe(true);
-	});
-
-	it("returns a formatted op secret reference for a file", () => {
-		const value = "some value";
-		const item = createItem();
-		const file = createItemFile();
-		const result = createSecretReference(value, item, file);
-		expect(result).toBe(`op://${value}/${item.title}/${file.name}`);
-		expect(REGEXP.REFERENCE.test(result)).toBe(true);
-	});
-});
+import { COMMANDS } from "./constants";
+import { generatePasswordArg, Items } from "./items";
 
 describe("Items", () => {
 	let items: Items;
