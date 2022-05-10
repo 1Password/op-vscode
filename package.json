@@ -93,11 +93,11 @@
 				"title": "1Password",
 				"id": "opvs",
 				"properties": {
-					"opvs.general.accountId": {
+					"opvs.general.userId": {
 						"order": 0,
 						"type": "string",
 						"default": null,
-						"description": "The ID of the account to perform operations with."
+						"description": "The ID of the user to perform operations with."
 					},
 					"opvs.general.accountUrl": {
 						"order": 1,

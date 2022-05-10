@@ -8,7 +8,7 @@ import { ConfigurationTarget, EventEmitter, workspace } from "vscode";
 import { EXTENSION_ID } from "./constants";
 
 export enum ConfigKey {
-	AccountId = "general.accountId",
+	UserId = "general.userId",
 	AccountUrl = "general.accountUrl",
 	VaultId = "general.vaultId",
 	ItemsCacheValues = "items.cacheValues",
@@ -19,7 +19,7 @@ export enum ConfigKey {
 }
 
 interface ConfigItems {
-	[ConfigKey.AccountId]: string;
+	[ConfigKey.UserId]: string;
 	[ConfigKey.VaultId]: string;
 	[ConfigKey.ItemsUseSecretReferences]: boolean;
 	[ConfigKey.EditorSuggestStorage]: boolean;
