@@ -6,6 +6,7 @@
 	"license": "MIT",
 	"publisher": "1password",
 	"preview": true,
+	"icon": "logo.png",
 	"main": "./dist/extension.js",
 	"repository": {
 		"type": "git",
