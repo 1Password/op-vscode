@@ -10,7 +10,7 @@ import {
 	TextDocument,
 } from "vscode";
 import { config, ConfigKey } from "./configuration";
-import { COMMANDS, REGEXP } from "./constants";
+import { COMMANDS, DETECTABLE_VALUE_REGEXP, REGEXP } from "./constants";
 import type { Core } from "./core";
 import { createInternalUrl, UriAction } from "./core";
 import type { ReferenceMetaData } from "./items";
@@ -18,6 +18,7 @@ import { combineRegexp, titleCase } from "./utils";
 
 interface LensMatch {
 	range: Range;
+	itemKey: string;
 	itemValue: string;
 }
 
@@ -27,27 +28,76 @@ interface LinkMatch {
 	itemValue: string;
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 	if (!config.get<boolean>(ConfigKey.EditorSuggestStorage)) {
 		return;
 	}
 
-	const regexp = combineRegexp(REGEXP.UUID, REGEXP.CREDIT_CARD, REGEXP.EMAIL);
+	const isDotEnv =
+		document.languageId === "dotenv" || document.fileName.endsWith(".env");
+	const combinedRegexp = combineRegexp(
+		...Object.values(DETECTABLE_VALUE_REGEXP),
+	);
 	const lensMatches: LensMatch[] = [];
 
 	for (let i = 0; i < document.lineCount; i++) {
 		const line = document.lineAt(i).text;
+		let itemKey: string;
+		let itemValue: string;
+		let valueIndex: number;
 
-		const matches = regexp.exec(line);
-		if (matches) {
-			const index = matches.index;
-			const itemValue = matches[0];
+		// If it's a line in a dotenv file, try to find any key/value pair
+		// where the key contains a secret hint (e.g. "token", "key") or the
+		// value matches our combined regexp.
+		// Hat tip: https://github.com/motdotla/dotenv
+		if (isDotEnv) {
+			const match = REGEXP.DOTENV_LINE.exec(line);
+			if (match) {
+				itemKey = match[1];
+				// Default nullish to empty string
+				itemValue = match[2] || "";
+				// Remove whitespace
+				itemValue = itemValue.trim();
+				// Remove surrounding quotes
+				itemValue = itemValue.replace(/^(["'`])([\S\s]*)\1$/gm, "$2");
+
+				if (
+					(REGEXP.SECRET_KEY_HINT.test(itemKey) ||
+						combinedRegexp.test(itemValue)) &&
+					// Don't match with existing secret references
+					!REGEXP.SECRET_REFERENCE.test(itemValue)
+				) {
+					valueIndex = line.indexOf(itemValue);
+				}
+			}
+		}
+
+		// If it's not a dotenv file, or we couldn't find a
+		// match for the dotenv line, fall back to regexp
+		if (!itemValue || valueIndex === undefined) {
+			const match = combinedRegexp.exec(line);
+			if (match) {
+				valueIndex = match.index;
+				itemValue = match[0];
+
+				for (const [key, value] of Object.entries(DETECTABLE_VALUE_REGEXP)) {
+					if (value.test(itemValue)) {
+						itemKey = key;
+						break;
+					}
+				}
+			}
+		}
+
+		if (itemValue && valueIndex !== undefined) {
 			const range = new Range(
-				new Position(i, index),
-				new Position(i, index + itemValue.length),
+				new Position(i, valueIndex),
+				new Position(i, valueIndex + itemValue.length),
 			);
 
 			lensMatches.push({
+				itemKey,
 				itemValue,
 				range,
 			});
@@ -55,11 +105,11 @@ export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 	}
 
 	return lensMatches.map(
-		({ range, itemValue }) =>
+		({ range, itemKey, itemValue }) =>
 			new CodeLens(range, {
 				title: "$(lock) Save value in 1Password",
 				command: COMMANDS.SAVE_VALUE_TO_ITEM,
-				arguments: [[{ itemValue, location: range }]],
+				arguments: [[{ itemKey, itemValue, location: range }]],
 			}),
 	);
 };
@@ -72,7 +122,7 @@ export const provideDocumentLinks = (
 	for (let i = 0; i < document.lineCount; i++) {
 		const line = document.lineAt(i).text;
 
-		const matches = REGEXP.REFERENCE.exec(line);
+		const matches = REGEXP.SECRET_REFERENCE.exec(line);
 		if (matches) {
 			const index = matches.index;
 			const itemValue = matches[0];
@@ -104,7 +154,7 @@ export async function provideHover(
 	position: Position,
 ): Promise<Hover> {
 	const line = document.lineAt(position.line).text;
-	const matches = REGEXP.REFERENCE.exec(line);
+	const matches = REGEXP.SECRET_REFERENCE.exec(line);
 
 	if (matches) {
 		const index = matches.index;

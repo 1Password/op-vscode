@@ -9,8 +9,9 @@ import { item } from "@1password/1password-js";
 import type { Range, Selection } from "vscode";
 import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
-import { COMMANDS, REGEXP } from "./constants";
+import { COMMANDS, DETECTABLE_VALUE_REGEXP, REGEXP } from "./constants";
 import type { Core } from "./core";
+import { valueSuggestion } from "./utils";
 
 export interface ReferenceMetaData {
 	item: {
@@ -23,6 +24,7 @@ export interface ReferenceMetaData {
 }
 
 export interface SaveItemInput {
+	itemKey?: string;
 	itemValue: string;
 	location: Range | Selection;
 }
@@ -160,16 +162,23 @@ export class Items {
 			return;
 		}
 
+		const generatePassword = input === generatePasswordArg;
+
+		let titleSuggestion = "";
+		if (input.length === 1 && !generatePassword && input[0].itemKey) {
+			titleSuggestion = valueSuggestion(input[0].itemKey);
+		}
+
 		const itemTitle = await window.showInputBox({
 			title: "What do you want to call this item?",
 			ignoreFocusOut: true,
+			value: titleSuggestion,
 		});
 
 		if (!itemTitle) {
 			return;
 		}
 
-		const generatePassword = input === generatePasswordArg;
 		let fields: FieldAssignment[] = [];
 
 		if (!generatePassword) {
@@ -262,22 +271,31 @@ export class Items {
 		const isOnlyOne = input.length === 1;
 
 		for (const set of input) {
-			const { itemValue } = set;
-
+			const { itemValue, itemKey } = set;
 			let fieldType: FieldAssignmentType;
 			let suggestedLabel: string;
+
+			if (itemKey) {
+				const extractedLabel = REGEXP.SECRET_KEY_HINT.exec(itemKey);
+				suggestedLabel = extractedLabel?.[0] || itemKey;
+			}
+
 			switch (true) {
-				case REGEXP.EMAIL.test(itemValue):
+				case DETECTABLE_VALUE_REGEXP.EMAIL.test(itemValue):
 					fieldType = "email";
 					suggestedLabel = "email";
 					break;
-				case REGEXP.CREDIT_CARD.test(itemValue):
+				case DETECTABLE_VALUE_REGEXP.CREDIT_CARD.test(itemValue):
 					fieldType = "text";
 					suggestedLabel = "credit card";
 					break;
+				case REGEXP.URL.test(itemValue):
+					fieldType = "text";
+					suggestedLabel = "url";
+					break;
 				default:
+					// TODO: change this to "concealed"
 					fieldType = "password";
-					suggestedLabel = "value";
 					break;
 			}
 
@@ -285,12 +303,12 @@ export class Items {
 				title: isOnlyOne
 					? "What do you want this field to be called?"
 					: `What do you want to call the field with the value "${itemValue}"?`,
-				value: suggestedLabel,
+				value: valueSuggestion(suggestedLabel),
 				ignoreFocusOut: true,
 			});
 
 			if (!fieldLabel) {
-				return;
+				continue;
 			}
 
 			fields.push([fieldLabel, fieldType, itemValue]);

@@ -53,7 +53,7 @@ export class Injection {
 			return;
 		}
 
-		const matcher = new RegExp(REGEXP.REFERENCE, "gm");
+		const matcher = new RegExp(REGEXP.SECRET_REFERENCE, "gm");
 		await commands.executeCommand(
 			"setContext",
 			`${EXTENSION_ID}.injectable`,

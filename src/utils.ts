@@ -1,3 +1,5 @@
+import { REGEXP } from "./constants";
+
 export const titleCase = (value: string): string =>
 	value.replace(
 		/\w\S*/g,
@@ -10,3 +12,9 @@ export const combineRegexp = (...values: RegExp[]) => {
 	flags = [...new Set(flags)].join("");
 	return new RegExp(values.map((regexp) => regexp.source).join("|"), flags);
 };
+
+export const valueSuggestion = (value: string): string =>
+	titleCase(value.replace(/_/g, " ")).replace(
+		REGEXP.CAPITALIZED_WORDS,
+		(value: string) => value.toUpperCase(),
+	);
