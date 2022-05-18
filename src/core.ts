@@ -1,3 +1,4 @@
+import { Item, item } from "@1password/1password-js";
 import { default as open } from "open";
 import type { ExtensionContext, UriHandler } from "vscode";
 import { commands, env, Uri, window } from "vscode";
@@ -14,7 +15,7 @@ export enum UriAction {
 }
 
 export enum AppAction {
-	VaultItem = "vault-item",
+	ViewItem = "view-item",
 }
 
 export const createInternalUrl = (
@@ -34,14 +35,19 @@ export const createOpenOPHandler =
 		const url = new URL(`onepassword://${action}`);
 
 		switch (action) {
-			case AppAction.VaultItem:
-				const { vault, item } = args as {
-					vault: string;
-					item: string;
+			case AppAction.ViewItem:
+				const { vaultValue, itemValue } = args as {
+					vaultValue: string;
+					itemValue: string;
 				};
+
+				const vaultItem = await core.cli.execute<Item>(() =>
+					item.get(itemValue, { vault: vaultValue }),
+				);
+
 				url.searchParams.append("a", core.accountUuid);
-				url.searchParams.append("v", vault);
-				url.searchParams.append("i", item);
+				url.searchParams.append("v", vaultItem.vault.id);
+				url.searchParams.append("i", vaultItem.id);
 				break;
 		}
 
@@ -63,9 +69,9 @@ export class OpvsUriHandler implements UriHandler {
 		switch (params.get("action")) {
 			case UriAction.OpenItem:
 				await commands.executeCommand(COMMANDS.OPEN_1PASSWORD, {
-					action: AppAction.VaultItem,
-					vault: params.get("vaultValue"),
-					item: params.get("itemValue"),
+					action: AppAction.ViewItem,
+					vaultValue: params.get("vaultValue"),
+					itemValue: params.get("itemValue"),
 				});
 				break;
 		}
