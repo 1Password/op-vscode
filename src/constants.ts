@@ -17,8 +17,11 @@ export const COMMANDS = {
 };
 
 export const STATE = {
+	ACCOUNT_UUID: "accountUuid",
+	ACCOUNT_URL: "accountUrl",
+	VAULT_ID: "vaultId",
+	VAULT_NAME: "vaultName",
 	DISABLE_CONFIG_REMINDER: "disableConfigReminder",
-	VAULT_NAME_PREFIX: "vaultName",
 };
 
 export const URLS = {

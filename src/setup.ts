@@ -6,12 +6,11 @@ import {
 	vault,
 } from "@1password/1password-js";
 import { commands, window } from "vscode";
-import { config, ConfigKey } from "./configuration";
 import { COMMANDS, DEBUG, STATE } from "./constants";
 import type { Core } from "./core";
 
 export class Setup {
-	userId?: string;
+	accountUuid?: string;
 	accountUrl?: string;
 	vaultId?: string;
 	vaultName?: string;
@@ -29,10 +28,6 @@ export class Setup {
 		);
 	}
 
-	private vaultNameState() {
-		return `${STATE.VAULT_NAME_PREFIX}-${this.vaultId}`;
-	}
-
 	private setAccountUrlFlag() {
 		setGlobalFlags({
 			account: this.accountUrl,
@@ -45,14 +40,15 @@ export class Setup {
 			return;
 		}
 
-		this.userId = config.get<string>(ConfigKey.UserId);
-		this.accountUrl = config.get<string>(ConfigKey.AccountUrl);
-		this.vaultId = config.get<string>(ConfigKey.VaultId);
-
-		// Store vault name in the extension state because the user
-		// already chooses its ID and the two are paired
+		this.accountUuid = this.core.context.globalState.get<string>(
+			STATE.ACCOUNT_UUID,
+		);
+		this.accountUrl = this.core.context.globalState.get<string>(
+			STATE.ACCOUNT_URL,
+		);
+		this.vaultId = this.core.context.globalState.get<string>(STATE.VAULT_ID);
 		this.vaultName = this.core.context.globalState.get<string>(
-			this.vaultNameState(),
+			STATE.VAULT_NAME,
 		);
 
 		let promptForVault = true;
@@ -67,7 +63,7 @@ export class Setup {
 				true,
 			);
 
-		if ((!this.userId || !this.accountUrl) && !reminderDisabled) {
+		if ((!this.accountUuid || !this.accountUrl) && !reminderDisabled) {
 			const chooseAccount = "Choose account";
 
 			const response = await window.showInformationMessage(
@@ -83,7 +79,7 @@ export class Setup {
 			this.setAccountUrlFlag();
 		}
 
-		if (!this.userId || !this.accountUrl) {
+		if (!this.accountUuid || !this.accountUrl) {
 			if (!reminderDisabled) {
 				const response = await window.showWarningMessage(
 					'You must choose an account to perform 1Password operations in VS Code. When you want to choose an account run the "1Password: Choose account" command.',
@@ -173,11 +169,17 @@ export class Setup {
 					account.url === response.description,
 			);
 
-			const isChanged = this.accountUrl !== account.url;
-			this.userId = account.user_uuid;
+			const isChanged = this.accountUuid !== account.account_uuid;
+			this.accountUuid = account.user_uuid;
 			this.accountUrl = account.url;
-			await config.set(ConfigKey.UserId, account.user_uuid);
-			await config.set(ConfigKey.AccountUrl, account.url);
+			await this.core.context.globalState.update(
+				STATE.ACCOUNT_UUID,
+				account.account_uuid,
+			);
+			await this.core.context.globalState.update(
+				STATE.ACCOUNT_URL,
+				account.url,
+			);
 			this.setAccountUrlFlag();
 
 			if (isChanged) {
@@ -191,7 +193,7 @@ export class Setup {
 			return;
 		}
 
-		if (!this.userId || !this.accountUrl) {
+		if (!this.accountUuid || !this.accountUrl) {
 			await window.showErrorMessage(
 				'You must choose a 1Password account before choosing a vault. When you want to choose an account run the "1Password: Choose account" command.',
 			);
@@ -233,11 +235,8 @@ export class Setup {
 
 			this.vaultId = vault.id;
 			this.vaultName = vault.name;
-			await config.set(ConfigKey.VaultId, vault.id);
-			await this.core.context.globalState.update(
-				this.vaultNameState(),
-				vault.name,
-			);
+			await this.core.context.globalState.update(STATE.VAULT_ID, vault.id);
+			await this.core.context.globalState.update(STATE.VAULT_NAME, vault.name);
 		}
 	}
 }

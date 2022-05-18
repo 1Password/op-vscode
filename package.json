@@ -94,50 +94,32 @@
 				"title": "1Password",
 				"id": "opvs",
 				"properties": {
-					"opvs.general.userId": {
-						"order": 0,
-						"type": "string",
-						"default": null,
-						"description": "The ID of the user to perform operations with."
-					},
-					"opvs.general.accountUrl": {
-						"order": 1,
-						"type": "string",
-						"default": null,
-						"description": "The URL of the account to perform operations with."
-					},
-					"opvs.general.vaultId": {
-						"order": 2,
-						"type": "string",
-						"default": null,
-						"description": "The ID of the vault to perform operations with."
-					},
 					"opvs.items.cacheValues": {
-						"order": 3,
+						"order": 1,
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "Use CLI cache when performing operations. Learn more about [caching](https://developer.1password.com/docs/cli/reference#cache-item-and-vault-information)."
 					},
 					"opvs.items.passwordRecipe": {
-						"order": 4,
+						"order": 2,
 						"type": "string",
 						"default": "letters,digits,symbols,32",
 						"markdownDescription": "The recipe to use when generating passwords. Learn more about [password recipes](https://developer.1password.com/docs/cli/reference/management-commands/item#generate-a-password)."
 					},
 					"opvs.items.useSecretReferences": {
-						"order": 5,
+						"order": 3,
 						"type": "boolean",
 						"default": true,
 						"markdownDescription": "Use secret reference syntax for storing and retrieving values. Learn more about [secret references](https://developer.1password.com/docs/cli/secrets-reference-syntax)."
 					},
 					"opvs.editor.suggestStorage": {
-						"order": 6,
+						"order": 4,
 						"type": "boolean",
 						"default": true,
 						"description": "Suggest storing a value when it looks like a secret."
 					},
 					"opvs.debug.enabled": {
-						"order": 7,
+						"order": 5,
 						"type": "boolean",
 						"default": false,
 						"description": "Log debugger data. Reload required."

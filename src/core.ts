@@ -39,7 +39,7 @@ export const createOpenOPHandler =
 					vault: string;
 					item: string;
 				};
-				url.searchParams.append("a", core.userId);
+				url.searchParams.append("a", core.accountUuid);
 				url.searchParams.append("v", vault);
 				url.searchParams.append("i", item);
 				break;
@@ -99,8 +99,8 @@ export class Core {
 		});
 	}
 
-	public get userId(): string {
-		return this.setup.userId;
+	public get accountUuid(): string {
+		return this.setup.accountUuid;
 	}
 
 	public get accountUrl(): string {
