@@ -290,12 +290,11 @@ export class Items {
 					suggestedLabel = "credit card";
 					break;
 				case REGEXP.URL.test(itemValue):
-					fieldType = "text";
+					fieldType = "url";
 					suggestedLabel = "url";
 					break;
 				default:
-					// TODO: change this to "concealed"
-					fieldType = "password";
+					fieldType = "concealed";
 					break;
 			}
 
