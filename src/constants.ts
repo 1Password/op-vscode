@@ -30,6 +30,7 @@ export const URLS = {
 };
 
 export const REGEXP = {
+	CLI_ERROR: /\[ERROR] \d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2} (.+)/,
 	SECRET_REFERENCE: /op:\/\/([\w -]+)\/([\w -]+)\/([\w -]+)/,
 	// Hat tip: https://github.com/motdotla/dotenv
 	DOTENV_LINE:

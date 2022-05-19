@@ -18,3 +18,6 @@ export const valueSuggestion = (value: string): string =>
 		REGEXP.CAPITALIZED_WORDS,
 		(value: string) => value.toUpperCase(),
 	);
+
+export const endWithPunctuation = (value: string): string =>
+	/[!,.:?]/.test(value.charAt(value.length - 1)) ? value : `${value}.`;

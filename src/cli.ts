@@ -1,15 +1,25 @@
 import { validateCli } from "@1password/1password-js";
 import { default as open } from "open";
 import { window } from "vscode";
-import { URLS } from "./constants";
+import { REGEXP, URLS } from "./constants";
 import { logger } from "./logger";
+import { endWithPunctuation } from "./utils";
 
 export const createErrorHandler =
 	(showError: boolean) => async (error: Error) => {
-		const errorMessage =
-			"Failed to execute 1Password CLI command. Check the logs for more details.";
+		const errorPrefix = "Error executing CLI command";
+		const errorSuffix = "Check the logs for more details.";
 
-		logger.logError(errorMessage, error);
+		let errorMessage = errorPrefix;
+		const responseMessage = error.message
+			.replace(/[\n\r]/g, "")
+			.replace(/(\s{2,}|\t)/g, " ")
+			.match(REGEXP.CLI_ERROR);
+		errorMessage += responseMessage
+			? `: ${endWithPunctuation(responseMessage[1])} ${errorSuffix}`
+			: `. ${errorSuffix}`;
+
+		logger.logError(errorPrefix, error.stack);
 
 		if (!showError) {
 			return;
