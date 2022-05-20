@@ -2,7 +2,7 @@
 	"name": "opvs",
 	"displayName": "1Password",
 	"description": "Connect VS Code to 1Password",
-	"version": "1.0.0-beta.2",
+	"version": "1.0.0-beta.3",
 	"license": "MIT",
 	"publisher": "1password",
 	"preview": true,
