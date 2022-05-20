@@ -274,7 +274,7 @@ export class Items {
 		for (const set of input) {
 			const { itemValue, itemKey } = set;
 			let fieldType: FieldAssignmentType;
-			let suggestedLabel: string;
+			let suggestedLabel = "value";
 			let purpose: FieldPurpose | undefined;
 
 			if (itemKey) {
