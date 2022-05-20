@@ -2,6 +2,7 @@ import type {
 	Field,
 	FieldAssignment,
 	FieldAssignmentType,
+	FieldPurpose,
 	Item,
 	OutputCategory,
 } from "@1password/1password-js";
@@ -274,6 +275,7 @@ export class Items {
 			const { itemValue, itemKey } = set;
 			let fieldType: FieldAssignmentType;
 			let suggestedLabel: string;
+			let purpose: FieldPurpose | undefined;
 
 			if (itemKey) {
 				const extractedLabel = REGEXP.SECRET_KEY_HINT.exec(itemKey);
@@ -310,7 +312,13 @@ export class Items {
 				continue;
 			}
 
-			fields.push([fieldLabel, fieldType, itemValue]);
+			switch (fieldLabel) {
+				case "password":
+					purpose = "PASSWORD";
+					break;
+			}
+
+			fields.push([fieldLabel, fieldType, itemValue, purpose]);
 		}
 
 		return fields;
