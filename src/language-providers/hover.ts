@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import type { Core } from "../core";
 import { ReferenceMetaData } from "../items";
-import { formattedTitle, isInRange, titleCase } from "../utils";
+import { formatTitle, isInRange, titleCase } from "../utils";
 
 export async function provideHover(
 	this: Core,
@@ -75,7 +75,7 @@ export async function provideHover(
 	markdownItem.isTrusted = true;
 	markdownItem.appendMarkdown(
 		`$(file) Item: **${metaData.item.title}**\n\n- Category: ${titleCase(
-			formattedTitle(metaData.item.category),
+			formatTitle(metaData.item.category),
 		)}\n- Created: ${formatTime(
 			metaData.item.createdAt,
 		)}\n- Updated: ${formatTime(metaData.item.updatedAt)}`,

@@ -3,7 +3,7 @@ import { Hover } from "vscode";
 import * as vscode from "../../test/vscode-mock";
 import { Core } from "../core";
 import { ReferenceMetaData } from "../items";
-import { formattedTitle } from "../utils";
+import { formatTitle } from "../utils";
 import { provideHover } from "./hover";
 
 const appendMarkdownSpy = jest.fn<{ value: string }, string[]>();
@@ -99,7 +99,7 @@ describe("provideHover", () => {
 
 		for (const text of [
 			mockMetaData.item.title,
-			formattedTitle(mockMetaData.item.category),
+			formatTitle(mockMetaData.item.category),
 			`Created: ${formatTime(mockMetaData.item.createdAt)}`,
 			`Updated: ${formatTime(mockMetaData.item.updatedAt)}`,
 		]) {

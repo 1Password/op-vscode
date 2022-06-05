@@ -1,7 +1,6 @@
 import type {
 	Field,
 	FieldAssignment,
-	FieldAssignmentType,
 	FieldPurpose,
 	Item,
 	OutputCategory,
@@ -10,14 +9,11 @@ import { item } from "@1password/op-js";
 import type { Range, Selection } from "vscode";
 import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
-import {
-	COMMANDS,
-	DETECTABLE_VALUE_REGEXP,
-	NONSENSITIVE_FIELD_TYPES,
-	REGEXP,
-} from "./constants";
+import { COMMANDS, NONSENSITIVE_FIELD_TYPES } from "./constants";
 import type { Core } from "./core";
-import { formattedTitle, maskString } from "./utils";
+import { FIELD_TYPE_PATTERNS } from "./secret-detection/patterns";
+import { Suggestion } from "./secret-detection/suggestion";
+import { forceArray, maskString } from "./utils";
 
 export interface ReferenceMetaData {
 	item: {
@@ -30,9 +26,9 @@ export interface ReferenceMetaData {
 }
 
 export interface SaveItemInput {
-	itemKey?: string;
-	itemValue: string;
 	location: Range | Selection;
+	fieldValue: string;
+	suggestion?: Suggestion;
 }
 
 export const generatePasswordArg = "generate-password";
@@ -173,15 +169,18 @@ export class Items {
 
 		const generatePassword = input === generatePasswordArg;
 
-		let titleSuggestion = "";
-		if (input.length === 1 && !generatePassword && input[0].itemKey) {
-			titleSuggestion = formattedTitle(input[0].itemKey);
+		let titleSuggestions: string[] = [];
+		if (input.length === 1 && !generatePassword && input[0].suggestion?.item) {
+			const itemNames = input[0].suggestion.item;
+			titleSuggestions = forceArray(itemNames);
 		}
 
 		const itemTitle = await window.showInputBox({
 			title: "What do you want to call this item?",
 			ignoreFocusOut: true,
-			value: titleSuggestion,
+			// TODO: We should show all suggestions,
+			// but this requires a custom input setup
+			value: titleSuggestions[0],
 		});
 
 		if (!itemTitle) {
@@ -254,7 +253,7 @@ export class Items {
 		const editor = window.activeTextEditor;
 		const selections = editor?.selections || [];
 
-		if (selections.length === 0) {
+		if (selections.length === 0 || selections.some((s) => s.isEmpty)) {
 			await window.showErrorMessage(
 				"Please make a selection to save its value.",
 			);
@@ -262,53 +261,45 @@ export class Items {
 		}
 
 		return selections.map((selection) => ({
-			itemValue: editor.document.getText(selection),
+			fieldValue: editor.document.getText(selection),
 			location: selection,
 		}));
 	}
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	private async createFieldAssignments(
 		input: SaveItemInput[],
 	): Promise<FieldAssignment[]> {
 		const fields: FieldAssignment[] = [];
 		const isOnlyOne = input.length === 1;
+		let passwordPurposeAssigned = false;
 
 		for (const set of input) {
-			const { itemValue, itemKey } = set;
-			let fieldType: FieldAssignmentType;
-			let suggestedLabel = "value";
+			const { fieldValue } = set;
+			let suggestion = set.suggestion;
+
+			if (!suggestion) {
+				for (const fieldTypeSuggestion of Object.values(FIELD_TYPE_PATTERNS)) {
+					if (new RegExp(fieldTypeSuggestion.pattern).test(fieldValue)) {
+						suggestion = fieldTypeSuggestion;
+						break;
+					}
+				}
+			}
+
+			const suggestedLabels = suggestion?.field || "value";
+			const fieldType = suggestion?.type || "concealed";
 			let purpose: FieldPurpose | undefined;
-
-			if (itemKey) {
-				const extractedLabel = REGEXP.SECRET_KEY_HINT.exec(itemKey);
-				suggestedLabel = extractedLabel?.[0] || itemKey;
-			}
-
-			switch (true) {
-				case REGEXP.EMAIL.test(itemValue):
-					fieldType = "email";
-					suggestedLabel = "email";
-					break;
-				case DETECTABLE_VALUE_REGEXP.CREDIT_CARD.test(itemValue):
-					fieldType = "text";
-					suggestedLabel = "credit card";
-					break;
-				case REGEXP.URL.test(itemValue):
-					fieldType = "url";
-					suggestedLabel = "url";
-					break;
-				default:
-					fieldType = "concealed";
-					break;
-			}
 
 			const fieldLabel = await window.showInputBox({
 				title: isOnlyOne
 					? "What do you want this field to be called?"
 					: `What do you want to call the field with the value "${maskString(
-							itemValue,
+							fieldValue,
 					  )}"?`,
-				value: formattedTitle(suggestedLabel),
+				// TODO: We should show all suggestions,
+				// but this requires a custom input setup
+				value: forceArray(suggestedLabels)[0],
 				ignoreFocusOut: true,
 			});
 
@@ -316,13 +307,16 @@ export class Items {
 				continue;
 			}
 
-			switch (fieldLabel) {
-				case "password":
-					purpose = "PASSWORD";
-					break;
+			if (!passwordPurposeAssigned) {
+				switch (fieldLabel) {
+					case "password":
+						purpose = "PASSWORD";
+						passwordPurposeAssigned = true;
+						break;
+				}
 			}
 
-			fields.push([fieldLabel, fieldType, itemValue, purpose]);
+			fields.push([fieldLabel, fieldType, fieldValue, purpose]);
 		}
 
 		return fields;
@@ -360,11 +354,11 @@ export class Items {
 
 		if (useReference) {
 			for (const set of input) {
-				const { itemValue, location } = set;
+				const { fieldValue, location } = set;
 				// TODO: this is finding by value, so if there are two items with the
 				// same value this will break. Find a better way to find the field
 				const field = vaultItem.fields.find(
-					(field) => field.value === itemValue,
+					(field) => field.value === fieldValue,
 				);
 				await editor.edit((editBuilder) =>
 					editBuilder.replace(location, field.reference),

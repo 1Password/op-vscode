@@ -13,12 +13,14 @@ export const combineRegexp = (...values: RegExp[]) => {
 	return new RegExp(values.map((regexp) => regexp.source).join("|"), flags);
 };
 
-// We want item titles to be title-case, no underscores, and to capitalize the correct words
-export const formattedTitle = (value: string): string =>
+export const formatTitle = (value: string): string =>
 	titleCase(value.replace(/_/g, " ")).replace(
 		REGEXP.CAPITALIZED_WORDS,
 		(value: string) => value.toUpperCase(),
 	);
+
+export const formatField = (value: string): string =>
+	value.replace(/_/g, " ").toLowerCase();
 
 export const endWithPunctuation = (value: string): string =>
 	/[!,.:?]/.test(value.charAt(value.length - 1)) ? value : `${value}.`;
@@ -55,3 +57,6 @@ export const maskString = (input: string) => {
 		);
 	}
 };
+
+export const forceArray = (value: string | string[]): string[] =>
+	Array.isArray(value) ? value : [value];
