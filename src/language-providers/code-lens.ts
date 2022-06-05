@@ -5,6 +5,7 @@ import { COMMANDS } from "../constants";
 import { Parser } from "../secret-detection/parsers";
 import DotEnvParser from "../secret-detection/parsers/dotenv";
 import GenericParser from "../secret-detection/parsers/generic";
+import JsonParser from "../secret-detection/parsers/json";
 import YamlParser from "../secret-detection/parsers/yaml";
 
 export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
@@ -18,6 +19,8 @@ export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 		parser = new DotEnvParser(document);
 	} else if (document.languageId === "yaml") {
 		parser = new YamlParser(document);
+	} else if (["json", "jsonc"].includes(document.languageId)) {
+		parser = new JsonParser(document);
 	} else {
 		parser = new GenericParser(document);
 	}
