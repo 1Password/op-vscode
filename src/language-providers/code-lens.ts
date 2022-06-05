@@ -2,18 +2,25 @@ import type { TextDocument } from "vscode";
 import { CodeLens } from "vscode";
 import { config, ConfigKey } from "../configuration";
 import { COMMANDS } from "../constants";
+import { Parser } from "../secret-detection/parsers";
 import DotEnvParser from "../secret-detection/parsers/dotenv";
 import GenericParser from "../secret-detection/parsers/generic";
+import YamlParser from "../secret-detection/parsers/yaml";
 
 export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 	if (!config.get<boolean>(ConfigKey.EditorSuggestStorage)) {
 		return;
 	}
 
-	const parser =
-		document.languageId === "dotenv"
-			? new DotEnvParser(document)
-			: new GenericParser(document);
+	let parser: Parser;
+
+	if (document.languageId === "dotenv") {
+		parser = new DotEnvParser(document);
+	} else if (document.languageId === "yaml") {
+		parser = new YamlParser(document);
+	} else {
+		parser = new GenericParser(document);
+	}
 
 	return parser.getMatches().map(
 		({ range, fieldValue, suggestion }) =>

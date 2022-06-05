@@ -161,7 +161,8 @@
 	"dependencies": {
 		"@1password/op-js": "^0.1.1",
 		"open": "^8.4.0",
-		"timeago.js": "^4.0.2"
+		"timeago.js": "^4.0.2",
+		"yaml-ast-parser": "^0.0.43"
 	},
 	"devDependencies": {
 		"@1password/front-end-style": "^6.0.0",
