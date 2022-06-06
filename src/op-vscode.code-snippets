@@ -1,0 +1,7 @@
+{
+	"Create a secret reference": {
+		"prefix": ["op://", "secret reference"],
+		"body": ["op://${1:vault}/${2:item}/${3:field}"],
+		"description": "Create a secret reference that can be read by the 1Password CLI"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"allowJs": true,
+		"esModuleInterop": true,
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"noEmit": true,
+		"noImplicitAny": false,
+		"types": ["node", "jest"],
+		"baseUrl": "."
+	},
+	"include": ["src/", "test/"]
+}

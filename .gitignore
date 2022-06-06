@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+*.vsix
+*.zip
+.husky/_/husky.sh
+licenses/
