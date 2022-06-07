@@ -2,6 +2,8 @@
 
 1Password for VS Code provides you with a set of tools to integrate your development workflow with 1Password, powered by the [1Password CLI](https://developer.1password.com/docs/cli).
 
+**This extension is currently in beta.** If you run into issues or have feedback, please [file an issue](https://github.com/1Password/op-vscode/issues/new).
+
 ## Quick start
 
 ⚡️ This quick start guide will get you up and running with the extension.
@@ -11,11 +13,11 @@
 3. **Install the extension** - From the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=1Password.op-vscode) or [GitHub](https://github.com/1Password/op-vscode/releases) install the latest version of the extension.
 4. **Follow the prompts** - You'll be prompted to choose a 1Password account and vault. Follow these prompts to finish setup of the extension.
 
-You're all set.
+You're all set. Learn more about what the extension is capable of by checking out the [developer portal documentation](https://developer.1password.com/docs/vscode/).
 
 ## Contributing and feedback
 
-1Password for VS Code is an open source project.
+1Password for VS Code is an [open source project](https://github.com/1Password/op-vscode).
 
 🐛 If you find an issue you'd like to report, or otherwise have feedback, please [file a new Issue](https://github.com/1Password/op-vscode/issues/new).
 
