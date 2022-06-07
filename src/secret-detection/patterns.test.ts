@@ -1,4 +1,14 @@
-import { FIELD_TYPE_PATTERNS } from "./patterns";
+import testData from "./pattern-test-data.json";
+import { FIELD_TYPE_PATTERNS, getPatternSuggestion } from "./patterns";
+
+describe("getPatternSuggestion", () => {
+	it("should return a pattern suggestion", () => {
+		const suggestion = getPatternSuggestion("ccard");
+		expect(suggestion).toStrictEqual(
+			FIELD_TYPE_PATTERNS.find((detection) => detection.id === "ccard"),
+		);
+	});
+});
 
 describe("FIELD_TYPE_PATTERNS", () => {
 	describe("email", () => {
@@ -18,7 +28,7 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			"firstname-lastname@example.com",
 		])("matches the email %s", (email) =>
 			expect(email).toMatchRegExp(
-				new RegExp(FIELD_TYPE_PATTERNS.email.pattern),
+				new RegExp(getPatternSuggestion("email").pattern),
 			),
 		);
 	});
@@ -34,7 +44,9 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			// eslint-disable-next-line no-restricted-syntax
 			"http://www.example.com/",
 		])("matches the URL %s", (url) =>
-			expect(url).toMatchRegExp(new RegExp(FIELD_TYPE_PATTERNS.url.pattern)),
+			expect(url).toMatchRegExp(
+				new RegExp(getPatternSuggestion("url").pattern),
+			),
 		);
 	});
 
@@ -44,7 +56,16 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			["MasterCard", "5555555555554444"],
 			["Amex", "371449635398431"],
 		])("matches the credit card %s", (name, num) =>
-			expect(num).toMatchRegExp(new RegExp(FIELD_TYPE_PATTERNS.ccard.pattern)),
+			expect(num).toMatchRegExp(
+				new RegExp(getPatternSuggestion("ccard").pattern),
+			),
 		);
+	});
+});
+
+describe("VALUE_PATTERNS", () => {
+	it.each(testData)("matches the value %s", (patternId, value) => {
+		const patternSuggestion = getPatternSuggestion(patternId);
+		expect(value).toMatchRegExp(new RegExp(patternSuggestion.pattern));
 	});
 });

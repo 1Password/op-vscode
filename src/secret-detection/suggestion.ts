@@ -4,10 +4,10 @@ export interface Suggestion {
 	item?: string | string[];
 	field: string | string[];
 	type: FieldAssignmentType;
-	pattern?: string;
 }
 
 export type PatternSuggestion = Suggestion & {
+	id: string;
 	pattern: string;
 };
 

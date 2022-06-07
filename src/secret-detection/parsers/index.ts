@@ -1,7 +1,7 @@
 import { FieldAssignmentType } from "@1password/op-js";
 import { Range, TextDocument } from "vscode";
 import { combineRegexp, formatField } from "../../utils";
-import { FIELD_TYPE_PATTERNS, VALUE_PATTERNS } from "../patterns";
+import { getPatternSuggestion, VALUE_PATTERNS } from "../patterns";
 import { BRANDS, SECRET_KEY_HINT, Suggestion } from "../suggestion";
 
 export interface ParserMatch {
@@ -33,7 +33,7 @@ export class Parser {
 
 export const patternSuggestions = [
 	...VALUE_PATTERNS,
-	FIELD_TYPE_PATTERNS.ccard,
+	getPatternSuggestion("ccard"),
 ];
 const patternsRegex = combineRegexp(
 	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),

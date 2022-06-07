@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/order
 import { findBrand, matchFromRegexp, suggestionFromKey } from ".";
 import { sample } from "../../../test/utils";
-import { VALUE_PATTERNS } from "../patterns";
+import { getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
 
 describe("findBrand", () => {
@@ -19,9 +19,7 @@ describe("matchFromRegexp", () => {
 
 	it("returns a match based on a known regexp pattern", () => {
 		const exampleStripeKey = "sk_test_Hrs6SAopgFPF0bZXSN3f6ELN";
-		const suggestion = VALUE_PATTERNS.find(
-			(p) => p.pattern === "sk_(test|live)_[0-9a-zA-Z]{24,99}",
-		);
+		const suggestion = getPatternSuggestion("stripe-sk");
 		const match = matchFromRegexp(exampleStripeKey);
 		expect(match).toEqual({
 			value: exampleStripeKey,
@@ -33,7 +31,7 @@ describe("matchFromRegexp", () => {
 	it("returns a match from a generic suggestion with an implied brand", () => {
 		const exampleUuid = "49ff1802-9bb4-4cc1-9093-f790e7663399";
 		const brand = "Heroku";
-		const suggestion = VALUE_PATTERNS.find((p) => p.field === "uuid");
+		const suggestion = getPatternSuggestion("uuid");
 		suggestion.item = brand;
 		const match = matchFromRegexp(`${brand} ${exampleUuid}`);
 		expect(match).toEqual({
