@@ -31,7 +31,10 @@ export class Parser {
 	}
 }
 
-const patternSuggestions = [...VALUE_PATTERNS, FIELD_TYPE_PATTERNS.ccard];
+export const patternSuggestions = [
+	...VALUE_PATTERNS,
+	FIELD_TYPE_PATTERNS.ccard,
+];
 const patternsRegex = combineRegexp(
 	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),
 );

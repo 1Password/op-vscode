@@ -1,19 +1,26 @@
-import { sample } from "../../test/utils";
-import { findBrand } from "../secret-detection/parsers";
-import { BRANDS } from "../secret-detection/suggestion";
+import { TextDocument } from "vscode";
+import { config } from "../configuration";
+import { provideCodeLenses } from "./code-lens";
 
-// describe("DOTENV_LINE", () => {
-// 	// This regex is from dotenv, which has thoroughly tested it:
-// 	// https://github.com/motdotla/dotenv/tree/master/tests
-// 	it("matches a line of a .env file", () => {
-// 		const line = "VAR=value";
-// 		expect(line).toHaveRegExpParts(DOTENV_LINE, "VAR", "value");
-// 	});
-// });
+const mockDocument = {
+	languageId: "",
+} as unknown as TextDocument;
 
-describe("findBrandKeyword", () => {
-	it("finds a known brand name in a string", () => {
-		const brand = sample(BRANDS);
-		expect(findBrand(`some ${brand} text`)).toEqual(brand);
+describe("provideCodeLenses", () => {
+	it("returns an empty array if the config is disabled", () => {
+		jest.spyOn(config, "get").mockReturnValue(false);
+		const codeLenses = provideCodeLenses(mockDocument);
+		expect(codeLenses).toBeUndefined();
 	});
+
+	// it("uses the generic parser for an unmatched file type", () => {
+	// 	const genericParserSpy = jest
+	// 		.spyOn(genericParser, "default")
+	// 		.mockReturnValue({
+	// 			getMatches: jest.fn(),
+	// 		} as unknown as GenericParser);
+	// 	jest.spyOn(config, "get").mockReturnValue(true);
+	// 	provideCodeLenses(mockDocument);
+	// 	expect(genericParserSpy).toHaveBeenCalled();
+	// });
 });

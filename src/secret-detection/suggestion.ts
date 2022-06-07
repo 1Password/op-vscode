@@ -19,7 +19,7 @@ export const fieldAssignmentTypes = [
 ] as const;
 
 export const SECRET_KEY_HINT =
-	/((private|secret) )?((bearer|api|access|auth) )?(secret|token|key|password|passwd|pwd|account)/i;
+	/((private|secret)[ _-])?((bearer|api|access|auth)[ _-])?(secret|token|key|password|passwd|pwd|account|username|credentials)/i;
 
 export const BRANDS = [
 	"1Password",

@@ -2,7 +2,9 @@ import { REGEXP } from "./constants";
 import {
 	combineRegexp,
 	endWithPunctuation,
-	formattedTitle,
+	forceArray,
+	formatField,
+	formatTitle,
 	isInRange,
 	maskString,
 	titleCase,
@@ -36,19 +38,21 @@ describe("combineRegexp", () => {
 	});
 });
 
-describe("formattedTitle", () => {
-	it("converts a string to title case", () => {
-		expect(formattedTitle("manchester orchestra")).toBe("Manchester Orchestra");
-	});
-
-	it("replaces underscores with spaces", () => {
-		expect(formattedTitle("hello_world")).toBe("Hello World");
+describe("formatTitle", () => {
+	it("converts a string to title case, replacing underscores with spaces", () => {
+		expect(formatTitle("manchester_orchestra")).toBe("Manchester Orchestra");
 	});
 
 	it.each(REGEXP.CAPITALIZED_WORDS.source.split("|"))(
 		"capitalizes string containing %s",
-		(input) => expect(formattedTitle(input)).toMatch(input.toUpperCase()),
+		(input) => expect(formatTitle(input)).toMatch(input.toUpperCase()),
 	);
+});
+
+describe("formatField", () => {
+	it("converts a string to lower case, replacing underscores with spaces", () => {
+		expect(formatField("BRIGHT_EYES")).toBe("bright eyes");
+	});
 });
 
 describe("endWithPunctuation", () => {
@@ -104,4 +108,14 @@ describe("maskString", () => {
 
 	it("maxes out at 8 asterisks", () =>
 		expect(maskString("abcdefghijklmnopqrstuvwxyz")).toBe("ab********yz"));
+});
+
+describe("forceArray", () => {
+	it("returns an array if the input is an array", () => {
+		expect(forceArray([1, 2, 3])).toEqual([1, 2, 3]);
+	});
+
+	it("returns an array if the input is a string", () => {
+		expect(forceArray("hello")).toEqual(["hello"]);
+	});
 });

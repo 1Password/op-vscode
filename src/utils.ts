@@ -58,5 +58,5 @@ export const maskString = (input: string) => {
 	}
 };
 
-export const forceArray = (value: string | string[]): string[] =>
+export const forceArray = <T>(value: T | T[]): T[] =>
 	Array.isArray(value) ? value : [value];
