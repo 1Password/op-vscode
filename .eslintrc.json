@@ -11,6 +11,7 @@
 				"no-shadow": "off",
 				"unicorn/filename-case": "off",
 				"jsdoc/require-jsdoc": "off",
+				"import/order": "off",
 				"@typescript-eslint/no-explicit-any": "off",
 				"@typescript-eslint/no-unsafe-argument": "off",
 				"@typescript-eslint/naming-convention": [

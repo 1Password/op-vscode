@@ -8,7 +8,6 @@ import parser, {
 } from "json-to-ast";
 import { Position, Range, TextDocument } from "vscode";
 import { matchFromRegexp, Parser, suggestionFromKey } from ".";
-// eslint-disable-next-line import/order
 import { REGEXP } from "../../constants";
 
 export const createRange = (node: LiteralNode): Range =>

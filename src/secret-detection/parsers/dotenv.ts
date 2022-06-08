@@ -1,6 +1,5 @@
 import { Position, Range, TextDocument } from "vscode";
 import { matchFromRegexp, Parser, suggestionFromKey } from ".";
-// eslint-disable-next-line import/order
 import { REGEXP } from "../../constants";
 
 // Hat tip: https://github.com/motdotla/dotenv

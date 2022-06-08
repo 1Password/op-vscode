@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/order
 import { findBrand, matchFromRegexp, suggestionFromKey } from ".";
 import { sample } from "../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
