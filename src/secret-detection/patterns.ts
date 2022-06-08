@@ -166,7 +166,7 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 		field: "private key",
 		type: "concealed",
 		pattern:
-			".*[-]{3,}BEGIN (RSA|DSA|EC|OPENSSH|PRIVATE)? ?(PRIVATE)? KEY[-]{3,}.*",
+			"[-]{3,}BEGIN (RSA|DSA|EC|OPENSSH|PRIVATE)? ?(PRIVATE)? KEY[-]{3,}[\\D\\d\\s]*[-]{3,}END (RSA|DSA|EC|OPENSSH|PRIVATE)? ?(PRIVATE)? KEY[-]{3,}(\\n)?",
 	},
 	{
 		id: "uuid",

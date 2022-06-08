@@ -46,7 +46,7 @@
 	],
 	[
 		"slack-webhook",
-		"https://hooks.slack.com/services/919D73NG8/2JF81HD95N/1KJHFOI3LKJD+"
+		"https://hooks.slack.com/services/919D73NG8/2JF81HD95N/1KJHFOI3LKJD"
 	],
 	[
 		"stripe-pk",
