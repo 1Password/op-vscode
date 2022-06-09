@@ -13,14 +13,16 @@ export const combineRegexp = (...values: RegExp[]) => {
 	return new RegExp(values.map((regexp) => regexp.source).join("|"), flags);
 };
 
+// Format an item name to be title case with spaces
 export const formatTitle = (value: string): string =>
-	titleCase(value.replace(/_/g, " ")).replace(
+	titleCase(value.replace(/[_-]/g, " ")).replace(
 		REGEXP.CAPITALIZED_WORDS,
 		(value: string) => value.toUpperCase(),
 	);
 
+// Format a field label to be lower case with spaces
 export const formatField = (value: string): string =>
-	value.replace(/_/g, " ").toLowerCase();
+	value.replace(/[_-]/g, " ").toLowerCase();
 
 export const endWithPunctuation = (value: string): string =>
 	/[!,.:?]/.test(value.charAt(value.length - 1)) ? value : `${value}.`;
@@ -57,6 +59,3 @@ export const maskString = (input: string) => {
 		);
 	}
 };
-
-export const forceArray = <T>(value: T | T[]): T[] =>
-	Array.isArray(value) ? value : [value];

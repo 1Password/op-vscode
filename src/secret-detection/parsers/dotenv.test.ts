@@ -1,8 +1,8 @@
-import { createDocument, firstValue, sample } from "../../../test/utils";
+import { createDocument, sample } from "../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
-import testData from "./../pattern-test-data.json";
 import DotEnvParser, { DOTENV_LINE } from "./dotenv";
+import { createParserData, expectParserMatches } from "./test-utils";
 
 describe("DOTENV_LINE", () => {
 	// This regex is from dotenv, which has thoroughly tested it:
@@ -15,45 +15,30 @@ describe("DOTENV_LINE", () => {
 
 describe("DotEnvParser", () => {
 	it("gets suggestions from known value patterns", () => {
-		const data = Array.from({ length: 5 }).map(() => {
-			const [id, value] = sample(testData);
-			const suggestion = getPatternSuggestion(id);
-			const line = `${firstValue(suggestion.item)}=${value}`;
-			return { line, value, suggestion };
-		});
-
-		const parser = new DotEnvParser(
-			createDocument(data.map(({ line }) => line)),
+		const data = createParserData(
+			4,
+			(suggestion, value) => `${suggestion.item}=${value}`,
 		);
 
-		for (const match of parser.getMatches()) {
-			const { suggestion, value } = data.find(
-				(d) => d.value === match.fieldValue,
-			);
+		const document = createDocument(data.map(({ content }) => content));
+		const parser = new DotEnvParser(document);
 
-			expect(match).toEqual({
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				range: expect.any(Object),
-				fieldValue: value,
-				suggestion,
-			});
-		}
+		expectParserMatches(parser, data);
 	});
 
 	it("gets suggestions from known field pattern, implied brand name", () => {
 		const suggestion = getPatternSuggestion("ccard");
 		const brand = sample(BRANDS);
 		const value = "4012888888881881";
-
 		suggestion.item = brand;
 
-		const parser = new DotEnvParser(createDocument([`${brand}=${value}`]));
+		const document = createDocument([`${brand}=${value}`]);
+		const parser = new DotEnvParser(document);
 
-		expect(parser.getMatches()).toEqual([
+		expectParserMatches(parser, [
 			{
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				range: expect.any(Object),
-				fieldValue: value,
+				content: value,
+				value,
 				suggestion,
 			},
 		]);

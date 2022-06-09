@@ -1,6 +1,6 @@
 import { FieldAssignmentType } from "@1password/op-js";
 import { Range, TextDocument } from "vscode";
-import { combineRegexp, formatField } from "../../utils";
+import { combineRegexp } from "../../utils";
 import { getPatternSuggestion, VALUE_PATTERNS } from "../patterns";
 import { BRANDS, SECRET_KEY_HINT, Suggestion } from "../suggestion";
 
@@ -81,7 +81,7 @@ export const suggestionFromKey = (input: string): Suggestion => {
 
 	return {
 		item: extractedBrand,
-		field: extractedKey ? formatField(extractedKey) : null,
+		field: extractedKey,
 		type: "concealed" as FieldAssignmentType,
 	};
 };

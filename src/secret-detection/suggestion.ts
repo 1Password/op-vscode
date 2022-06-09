@@ -1,8 +1,8 @@
 import { FieldAssignmentType } from "@1password/op-js";
 
 export interface Suggestion {
-	item?: string | string[];
-	field: string | string[];
+	item?: string;
+	field: string;
 	type: FieldAssignmentType;
 }
 

@@ -13,7 +13,7 @@ import { COMMANDS, NONSENSITIVE_FIELD_TYPES } from "./constants";
 import type { Core } from "./core";
 import { FIELD_TYPE_PATTERNS } from "./secret-detection/patterns";
 import { Suggestion } from "./secret-detection/suggestion";
-import { forceArray, maskString } from "./utils";
+import { formatField, formatTitle, maskString } from "./utils";
 
 export interface ReferenceMetaData {
 	item: {
@@ -169,18 +169,15 @@ export class Items {
 
 		const generatePassword = input === generatePasswordArg;
 
-		let titleSuggestions: string[] = [];
+		let titleSuggestion: string;
 		if (input.length === 1 && !generatePassword && input[0].suggestion?.item) {
-			const itemNames = input[0].suggestion.item;
-			titleSuggestions = forceArray(itemNames);
+			titleSuggestion = formatTitle(input[0].suggestion.item);
 		}
 
 		const itemTitle = await window.showInputBox({
 			title: "What do you want to call this item?",
 			ignoreFocusOut: true,
-			// TODO: We should show all suggestions,
-			// but this requires a custom input setup
-			value: titleSuggestions[0],
+			value: titleSuggestion,
 		});
 
 		if (!itemTitle) {
@@ -287,7 +284,7 @@ export class Items {
 				}
 			}
 
-			const suggestedLabels = suggestion?.field || "value";
+			const suggestedLabel = suggestion?.field || "value";
 			const fieldType = suggestion?.type || "concealed";
 			let purpose: FieldPurpose | undefined;
 
@@ -297,9 +294,7 @@ export class Items {
 					: `What do you want to call the field with the value "${maskString(
 							fieldValue,
 					  )}"?`,
-				// TODO: We should show all suggestions,
-				// but this requires a custom input setup
-				value: forceArray(suggestedLabels)[0],
+				value: formatField(suggestedLabel),
 				ignoreFocusOut: true,
 			});
 

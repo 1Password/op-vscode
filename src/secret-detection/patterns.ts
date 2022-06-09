@@ -56,7 +56,7 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 	},
 	{
 		id: "gcp-client-id",
-		item: ["GCP", "Google Drive", "Gmail", "YouTube"],
+		item: "GCP",
 		field: "client id",
 		type: "concealed",
 		pattern: "[0-9]+-[0-9A-Za-z_]{32}.apps.googleusercontent.com",

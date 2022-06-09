@@ -2,7 +2,6 @@ import { REGEXP } from "./constants";
 import {
 	combineRegexp,
 	endWithPunctuation,
-	forceArray,
 	formatField,
 	formatTitle,
 	isInRange,
@@ -108,14 +107,4 @@ describe("maskString", () => {
 
 	it("maxes out at 8 asterisks", () =>
 		expect(maskString("abcdefghijklmnopqrstuvwxyz")).toBe("ab********yz"));
-});
-
-describe("forceArray", () => {
-	it("returns an array if the input is an array", () => {
-		expect(forceArray([1, 2, 3])).toEqual([1, 2, 3]);
-	});
-
-	it("returns an array if the input is a string", () => {
-		expect(forceArray("hello")).toEqual(["hello"]);
-	});
 });
