@@ -119,6 +119,27 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 			"https:\\/\\/hooks.slack.com\\/services\\/[A-Z0-9]{9}\\/[A-Z0-9]{9,11}\\/[a-zA-Z0-9]+",
 	},
 	{
+		id: "digitalocean-access-token",
+		item: "DigitalOcean",
+		field: "access token",
+		type: "concealed",
+		pattern: "dop_v1_[a-z0-9]{64}",
+	},
+	{
+		id: "supbase-api-key",
+		item: "Supabase",
+		field: "api-key",
+		type: "concealed",
+		pattern: "sbp_[a-zA-Z0-9]{40}",
+	},
+	{
+		id: "typeform-pat",
+		item: "Typeform",
+		field: "personal access token",
+		type: "concealed",
+		pattern: "tfp_[a-zA-Z0-9]{44}_[a-zA-Z0-9]{14}",
+	},
+	{
 		id: "stripe-pk",
 		item: "Stripe",
 		field: "publishable key",

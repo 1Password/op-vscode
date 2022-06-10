@@ -49,6 +49,15 @@
 		"https://hooks.slack.com/services/919D73NG8/2JF81HD95N/1KJHFOI3LKJD"
 	],
 	[
+		"digitalocean-access-token",
+		"dop_v1_babcb637b8299691242641053897b7819d847de6386f6d0d9c2b168dd42c34a8"
+	],
+	[
+		"typeform-pat",
+		"tfp_fvxPunXT3Et8M9NcWMCrSdFCpMv1LWmhhdF8YFtDVnnD_ECzD3FSmMpPawY"
+	],
+	["supbase-api-key", "sbp_8a8f2667a27a42dc2e010e2512d9266f1c646646"],
+	[
 		"stripe-pk",
 		"pk_live_yqQeqN4nrMmqmxJcYn7IszP9mxweb11kzW5TS7gG14E1WDvzXx3Fkky5HRZ1XKDoK0CIHeDnMO1KbTy8BeLL9qd6wnA90wGRt7f"
 	],
