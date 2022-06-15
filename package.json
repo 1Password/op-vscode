@@ -5,7 +5,6 @@
 	"version": "0.1.1",
 	"license": "MIT",
 	"publisher": "1Password",
-	"preview": true,
 	"icon": "logo.png",
 	"main": "./dist/extension.js",
 	"repository": {
