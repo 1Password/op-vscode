@@ -13,6 +13,7 @@
 		"url": "https://github.com/1Password/op-vscode"
 	},
 	"homepage": "https://github.com/1Password/op-vscode",
+	"qna": "https://developer.1password.com/docs/vscode",
 	"engines": {
 		"vscode": "^1.66.0",
 		"node": "^16.12.0"
