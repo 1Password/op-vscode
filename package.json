@@ -166,7 +166,7 @@
 		"copy": "^0.3.2",
 		"esbuild": "^0.14.37",
 		"esbuild-register": "^3.3.2",
-		"eslint-plugin-jsdoc": "^39.2.7",
+		"eslint-plugin-jsdoc": "^39.3.2",
 		"eslint-plugin-no-unsanitized": "^4.0.1",
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-sonarjs": "^0.13.0",
