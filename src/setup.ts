@@ -128,10 +128,6 @@ export class Setup {
 			account.list(),
 		);
 
-		if (!accountsList) {
-			return;
-		}
-
 		if (accountsList.length === 0) {
 			const open1Password = "Open 1Password";
 
@@ -203,10 +199,6 @@ export class Setup {
 		const vaultsList = await this.core.cli.execute<AbbreviatedVault[]>(() =>
 			vault.list(),
 		);
-
-		if (!vaultsList) {
-			return;
-		}
 
 		const response = await window.showQuickPick(
 			vaultsList.map((vault) => vault.name).sort(),
