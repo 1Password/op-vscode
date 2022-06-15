@@ -139,6 +139,8 @@ export class Setup {
 			if (response === open1Password) {
 				await commands.executeCommand(COMMANDS.OPEN_1PASSWORD);
 			}
+
+			return;
 		}
 
 		const response = await window.showQuickPick(
