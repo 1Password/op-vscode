@@ -165,7 +165,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.20.0",
 		"copy": "^0.3.2",
 		"esbuild": "^0.14.37",
-		"esbuild-register": "^3.3.2",
+		"esbuild-register": "^3.3.3",
 		"eslint-plugin-jsdoc": "^39.3.2",
 		"eslint-plugin-no-unsanitized": "^4.0.1",
 		"eslint-plugin-prettier": "^4.0.0",
