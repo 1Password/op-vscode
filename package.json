@@ -1,7 +1,7 @@
 {
 	"name": "op-vscode",
 	"displayName": "1Password",
-	"description": "Connect VS Code to 1Password",
+	"description": "Say goodbye to plaintext secrets in your code",
 	"version": "0.1.1",
 	"license": "MIT",
 	"publisher": "1Password",
