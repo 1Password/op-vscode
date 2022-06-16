@@ -1,7 +1,7 @@
 {
 	"name": "op-vscode",
 	"displayName": "1Password",
-	"description": "Connect VS Code to 1Password",
+	"description": "Say goodbye to plaintext secrets in your code",
 	"version": "0.1.1",
 	"license": "MIT",
 	"publisher": "1Password",
@@ -13,6 +13,10 @@
 		"url": "https://github.com/1Password/op-vscode"
 	},
 	"homepage": "https://github.com/1Password/op-vscode",
+	"qna": "https://developer.1password.com/docs/vscode",
+	"extensionKind": [
+		"ui"
+	],
 	"engines": {
 		"vscode": "^1.66.0",
 		"node": "^16.12.0"
@@ -31,7 +35,10 @@
 	"keywords": [
 		"1password",
 		"secrets",
-		"extension-api"
+		"security",
+		"json",
+		"yaml",
+		"dotenv"
 	],
 	"galleryBanner": {
 		"color": "#0a2d4d",
