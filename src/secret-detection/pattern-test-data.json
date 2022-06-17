@@ -1,0 +1,90 @@
+[
+	["aws-access-key-id", "AKIA5ZPCCEWGWAT25DGT"],
+	["aws-access-key-id", "AAGA5ZPCCEWGWAT25DGT"],
+	["aws-access-key-id", "ANPA5ZPCCEWGWAT25DGT"],
+	[
+		"facebook-access-token",
+		"EAASq3AADtGazZz5G7FlqL9aDC3R23VzpzPZJxcoBBUH9yyRU6SaJTJHkZ3kJJBcS9ufcFBZVJ8mNYDiBxU33xgrEE9RtlPDU2AlZIStA5MFgKkTxFZ30ZDdFgS0eAQmEA6S6sLE6G1RdtFCAkJjZRo6s9nvxUFG0sX1hllYGe04FxnZDZD"
+	],
+	["google-api-key", "AIzauMbvjSx0azW_I8lQybEUDjJTHSJA1uNE5mD"],
+	[
+		"gcp-client-id",
+		"453068717988-q8gbr5s4e50dnkrtavt9qb2e9ilrc34f.apps.googleusercontent.com"
+	],
+	["mailchimp-api-key", "55a3f2417a0655074a6158c5f843b24a-us12"],
+	["braintree-client-id", "client_id$sandbox$nfzdpm9d7whcdw44"],
+	["braintree-client-id", "client_id$production$nfzdpm9d7whcdw44"],
+	[
+		"braintree-client-secret",
+		"client_secret$sandbox$24fde8789cdeb3e1ef4716dfaa8d71bb"
+	],
+	[
+		"braintree-client-secret",
+		"client_secret$production$24fde8789cdeb3e1ef4716dfaa8d71bb"
+	],
+	["braintree-l10n-key", "sandbox_jttzbdtk_rddss44q3v2ckb57"],
+	["braintree-l10n-key", "production_jttzbdtk_rddss44q3v2ckb57"],
+	[
+		"sendgrid-api-key",
+		"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"
+	],
+	[
+		"slack-api-token",
+		"xoxb-665046537845-9163800639088-9d3ii7Y0P0mEqgOTT9dCuepr"
+	],
+	[
+		"slack-api-token",
+		"xoxp-665046537845-9163800639088-9d3ii7Y0P0mEqgOTT9dCuepr"
+	],
+	[
+		"slack-api-token",
+		"xoxo-665046537845-9163800639088-9d3ii7Y0P0mEqgOTT9dCuepr"
+	],
+	[
+		"slack-api-token",
+		"xoxa-665046537845-9163800639088-9d3ii7Y0P0mEqgOTT9dCuepr"
+	],
+	[
+		"slack-webhook",
+		"https://hooks.slack.com/services/919D73NG8/2JF81HD95N/1KJHFOI3LKJD"
+	],
+	[
+		"digitalocean-access-token",
+		"dop_v1_babcb637b8299691242641053897b7819d847de6386f6d0d9c2b168dd42c34a8"
+	],
+	[
+		"typeform-pat",
+		"tfp_fvxPunXT3Et8M9NcWMCrSdFCpMv1LWmhhdF8YFtDVnnD_ECzD3FSmMpPawY"
+	],
+	["supbase-api-key", "sbp_8a8f2667a27a42dc2e010e2512d9266f1c646646"],
+	[
+		"stripe-pk",
+		"pk_live_yqQeqN4nrMmqmxJcYn7IszP9mxweb11kzW5TS7gG14E1WDvzXx3Fkky5HRZ1XKDoK0CIHeDnMO1KbTy8BeLL9qd6wnA90wGRt7f"
+	],
+	[
+		"stripe-pk",
+		"pk_test_yqQeqN4nrMmqmxJcYn7IszP9mxweb11kzW5TS7gG14E1WDvzXx3Fkky5HRZ1XKDoK0CIHeDnMO1KbTy8BeLL9qd6wnA90wGRt7f"
+	],
+	[
+		"stripe-sk",
+		"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"
+	],
+	[
+		"stripe-sk",
+		"sk_test_jYwJC7gmL1s9MjveZyxqO2HIUx1Mz0HwbDR1WxPxBWLyziqxK5zlUJvVQHbqtkRGwuMTT8iM6jG66Ko1QT9DGRTBetaHnAJqdl0"
+	],
+	["twilio-api-key", "SKd8cd979a4d58fc4f35976a7f8cd8bcb8"],
+	["github-token", "ghp_OZ5hn1d4z53pG2K23dYA4m9WyLeFqwpYixKD"],
+	["github-token", "ghp_OZ5hn1d4z53pG2K23dYA4m9WyLeFqwpYixKD"],
+	["github-token", "gho_OZ5hn1d4z53pG2K23dYA4m9WyLeFqwpYixKD"],
+	["github-token", "ghu_OZ5hn1d4z53pG2K23dYA4m9WyLeFqwpYixKD"],
+	["github-token", "ghs_OZ5hn1d4z53pG2K23dYA4m9WyLeFqwpYixKD"],
+	["hubspot-pat", "pat-na1-184f3de5-b8fb-494f-a4c3-612e9b7547ff"],
+	["hubspot-pat", "pat-eu1-416429d8-9489-4a65-b39a-3bf8d4f051d4"],
+	["hubspot-webhook", "https://api.hubapi.com/webhooks/v1/1kjhdk4kjsh38/"],
+	[
+		"ssh-key",
+		"-----BEGIN PRIVATE KEY-----\nBME1oE5wvAEABqIKAvNQhdgiAgIiQCAwSggAIFvB03kIg9AyASCmkAkFFCDwgBGB\nn1884DrD+tx5tDtYGBSKXxMo1BFgxD20+vP8pdwfZCvl4rOKIcw2Lbotjndln1Fl\nDufJgLHrc+oycm0u9PmJNGm3i2Ek2cpVseKqBbT+iy0fViLGQRDjSw/PBzOSOign\nXsUVDz2lTOduQZXeuD0altgOjWHu9fuOce8fIA1ATK1LqOiLReSMRvmSin5LSXYS\nl7oOwDO7dnqpVkqwsqdciqme0Le6A1k+b4yJ8JJLxfJO6zZzW0yqjgQRNDolFjXH\n14TQnOEg/YZFGqsWxyJUpEWEUMOfjqBWGdeCJsO4XHyxW0nsqwJWJQWKGyy/XYQN\nxoA/EE4D7gwF+DC7BvMFVDJE7F1uLAxkgAv9JR7BlCq5kNjeakFvh+8l1ATEIBgO\n6UZ0tcc1HtsvJvrmo3fhtQtylrx6qASQmt39btMhVQ03KDXk/9H7f5nvTHCb2VEZ\n6aQNkc8vCc4LDIwjHHyZcgBCdS12gc8iSrdQWavvPVvjDLg+LDxtq+ND8OgOe9eH\nS3etjdex8DkTkjxNSUaewD42Hs1BzJTPlmTPlftmWFIfU3KT0lIiVam1d6qhFFrW\nl/wOgn9zfLvot1xAn7/5pFt4Fn+p62qQo/4E6TocXjrFMrYD9qhP/NpEhIAupzpz\nN8gVKzW2A49/SOg9NyB4h+ZzrGlQBi3G8HYA3/xQxrsH3DaP8YQLceI8r3MNGqN1\nnnvAfvQM19QaU9Koa0T8wHDk6tN6nfYvg/g6SoRUvktSzmOKcrLi/lvuL/EhtsWf\nlSTQMkSH4XHAXrb3JCETYmWcryrPRTtXMhrkQpMajrSBw5T+2q6edGW6eGUfT11B\n5VX91/y84KRQE8d+w/rJBw2g+GfycC6s/eOHlmbrcr5erQ5ouyi2kciXKZB1VgBe\nnaiVzcNC7HrSWcRziuPuJRFOxF/Qo1mpICXp5OKrISZfjv66InmaC3QKwLQhgqbb\nDbxKU2YlgeD4lSNVPgMXf+6+13wy6YmGymvyzo2lV1MWi6K0b+iYtAVoc54/Me1B\ngWQxSH5+BzHY1spEYKXtRbKILLUgAbzGXjJ6BD8jqhJsnGiJ/QMfaXd/4b+Ws6Kg\n3yFWZgoMwS6xnu8JEGYEJP3j5E/ISQNjDR9luCJ3keXPzZr+wUBe2FVWLqAVb4Sd\n+rrYlYgAHnLtVX0jmftFUYLgZnQ1akfVSn/NUKS3n2QwSaUotBavd4Al7g+3in+K\nlfey3XM8OuAvoznB9JTCef9vPRuOTr45AjYG+YqvIfNReHUKu2uYea3T/Rpae2L2\nvv3z8PwiFn4YvSJOWLQZzDJe7RC/OO0aOOelyqb3cMiRxEGPnsHnpXZvO41IGTHc\ndSwOFhZCoehJjrGsVeNuA2MQgfbDAGK3eWYBEFarnO9qBeK7c1B5q5VmspK3AUIv\nfUTLBUnJqkyW619cJ5NT2lolu2c43WeI42Z+UvPw60i19rg/+q8maOjjVpw4tny0\n7f+e+62fpupLcTbHLkUD49bFjwMYC0Noc1VYoCgRe4IxKP2Fwx3iqaukmRpBn9Mm\nfsBKoSD85I6tt/AwnvheLu6H\n-----END PRIVATE KEY-----\n"
+	],
+	["uuid", "81770614-0377-4c62-a080-51898e01ed29"]
+]

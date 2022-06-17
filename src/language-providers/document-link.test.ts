@@ -1,4 +1,5 @@
-import { DocumentLink, TextDocument } from "vscode";
+import { DocumentLink } from "vscode";
+import { createDocument } from "../../test/utils";
 import * as vscode from "../../test/vscode-mock";
 import * as urlUtils from "../url-utils";
 import { UriAction } from "../url-utils";
@@ -10,10 +11,7 @@ const documentLinkSpy = jest.spyOn(vscode, "DocumentLink");
 const reference = "op://vault/item/field";
 
 const createDocumentLinks = (textAtLine: string): DocumentLink[] =>
-	provideDocumentLinks({
-		lineCount: 1,
-		lineAt: () => ({ text: textAtLine }),
-	} as unknown as TextDocument);
+	provideDocumentLinks(createDocument([textAtLine]));
 
 describe("provideDocumentLinks", () => {
 	beforeEach(() => {

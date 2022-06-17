@@ -244,7 +244,6 @@ describe("Items", () => {
 			expect(window.showInputBox).toHaveBeenCalledWith({
 				ignoreFocusOut: true,
 				title: "What do you want to call this item?",
-				value: "",
 			});
 		});
 
