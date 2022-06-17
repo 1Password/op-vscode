@@ -159,7 +159,7 @@
 		]
 	},
 	"dependencies": {
-		"@1password/op-js": "^0.1.1",
+		"@1password/op-js": "^0.1.2",
 		"json-to-ast": "^2.1.0",
 		"open": "^8.4.0",
 		"timeago.js": "^4.0.2",

@@ -58,6 +58,11 @@ export async function provideHover(
 		return new Hover(markdownUnauthed, range);
 	}
 
+	// HACK / FIXME: In Windows the CLI cannot perform succesive commands too quickly,
+	// so we need to give it a second after the whoami call before looking up item details.
+	// This is an issue in the CLI, not the extension.
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+
 	let metaData: ReferenceMetaData;
 	try {
 		metaData = await this.items.getReferenceMetadata(vault, item, field);
