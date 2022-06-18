@@ -4,7 +4,7 @@
 
 This is an extension for Visual Studio Code, please refer to the [Extension API](https://code.visualstudio.com/api) documentation.
 
-Requires [Node](https://nodejs.org/en/), [VS Code](https://code.visualstudio.com/), and [vsce](https://github.com/microsoft/vscode-vsce) installed globally.
+Requires [Node](https://nodejs.org/en/) and [VS Code](https://code.visualstudio.com/).
 
 ### Dependencies
 
@@ -70,27 +70,35 @@ yarn test -t="returns the custom fields"
 
 ## Distribution
 
-### Building & Packaging
+### Publishing the extension
 
-When you want to build and package up the extension for creating a release, run the following:
+We have a Workflow set up to automatically create a new release of the extension on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=1Password.op-vscode) and [GitHub](https://github.com/1Password/op-vscode/releases) whenever a new version tag is pushed.
+
+You should only need to do the following on the `main` branch:
+
+```shell
+# Replace VERSION with the version you are bumping to
+yarn version --new-version VERSION && git push
+```
+
+This will:
+
+1. Update the `version` property in `package.json`
+2. Commit this version change
+3. Create a new version tag
+4. Push the commit and tag to the remote
+
+Afterward the Workflow will take over, publishing the extension's new version to the VS Code Marketplace and creating a new GitHub Release.
+
+### Manual builds
+
+If you need to build and package up the extension for manual distribution outside of regular publishing, first install [vsce](https://github.com/microsoft/vscode-vsce) globally, and then run the following:
 
 ```shell
 vsce package
 ```
 
 This will run `yarn build` to create a minified version of the extension, and then package it up into a file called `op-vscode-[version].vsix`. This is just a ZIP file with a fancy extension, but with it anyone can install the extension manually by going to the Extension panel, opening the context menu, and clicking "Install from VSIX...".
-
-### Publishing
-
-To publish a new version of the extension, first make sure you are logged into the publisher account used for publishing new releases via `vsce login 1Password`.
-
-Bump up the version in `package.json`, then run:
-
-```shell
-vsce publish
-```
-
-This will create a new version of the extension on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=1Password.op-vscode).
 
 ## Acknowledgments
 
