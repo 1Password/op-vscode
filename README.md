@@ -2,8 +2,6 @@
 
 1Password for VS Code provides you with a set of tools to integrate your development workflow with 1Password, powered by the [1Password CLI](https://developer.1password.com/docs/cli).
 
-**This extension is currently in beta.** If you run into issues or have feedback, please [file an issue](https://github.com/1Password/op-vscode/issues/new).
-
 ## Quick start
 
 ⚡️ This quick start guide will get you up and running with the extension.
