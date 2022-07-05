@@ -44,7 +44,7 @@ export default class DotEnvParser extends Parser {
 
 			// Start by trying to find an exact pattern match
 			// If one is found, use it and continue to next line
-			const regexpMatch = matchFromRegexp(lineValue);
+			const regexpMatch = matchFromRegexp(fieldValue);
 			const suggestion = regexpMatch?.suggestion || suggestionFromKey(keyValue);
 
 			if (suggestion) {
