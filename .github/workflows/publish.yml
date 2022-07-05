@@ -16,6 +16,10 @@ jobs:
         with:
           node-version: 16
       - run: yarn install --frozen-lockfile
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
       - name: Publish to Visual Studio Marketplace
         id: publishToVsm
         uses: HaaLeo/publish-vscode-extension@v1
