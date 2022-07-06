@@ -28,10 +28,27 @@ describe("matchFromRegexp", () => {
 		expect(match).toBeUndefined();
 	});
 
+	const exampleStripeKey = "sk_test_Hrs6SAopgFPF0bZXSN3f6ELN";
+	const mixedStripeKey = `${exampleStripeKey} some other value`;
+
 	it("returns a match based on a known regexp pattern", () => {
-		const exampleStripeKey = "sk_test_Hrs6SAopgFPF0bZXSN3f6ELN";
 		const suggestion = getPatternSuggestion("stripe-sk");
 		const match = matchFromRegexp(exampleStripeKey);
+		expect(match).toEqual({
+			value: exampleStripeKey,
+			index: 0,
+			suggestion,
+		});
+	});
+
+	it("requires the match to be the entire value by default", () => {
+		const match = matchFromRegexp(mixedStripeKey);
+		expect(match).toBeUndefined();
+	});
+
+	it("can match a value that also contains other non-matching characters", () => {
+		const suggestion = getPatternSuggestion("stripe-sk");
+		const match = matchFromRegexp(mixedStripeKey, true);
 		expect(match).toEqual({
 			value: exampleStripeKey,
 			index: 0,
@@ -44,7 +61,7 @@ describe("matchFromRegexp", () => {
 		const brand = "Heroku";
 		const suggestion = getPatternSuggestion("uuid");
 		suggestion.item = brand;
-		const match = matchFromRegexp(`${brand} ${exampleUuid}`);
+		const match = matchFromRegexp(`${brand} ${exampleUuid}`, true);
 		expect(match).toEqual({
 			value: exampleUuid,
 			index: brand.length + 1,

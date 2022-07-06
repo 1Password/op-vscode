@@ -54,7 +54,10 @@ export const findBrand = (input: string): string | undefined =>
 		validValueIsolation(input.toLowerCase(), brand.toLowerCase()),
 	);
 
-export const matchFromRegexp = (input: string): MatchDetail | undefined => {
+export const matchFromRegexp = (
+	input: string,
+	partial = false,
+): MatchDetail | undefined => {
 	const patternMatch = patternsRegex.exec(input);
 	if (!patternMatch) {
 		return;
@@ -63,6 +66,13 @@ export const matchFromRegexp = (input: string): MatchDetail | undefined => {
 	let suggestion: Suggestion;
 	const value = patternMatch[0];
 	const index = patternMatch.index;
+
+	if (
+		(!partial && input !== value) ||
+		(partial && !validValueIsolation(input, value))
+	) {
+		return;
+	}
 
 	// We know that the value matches one of the patterns,
 	// now let's find out which one

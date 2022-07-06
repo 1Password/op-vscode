@@ -13,7 +13,7 @@ export default class GenericParser extends Parser {
 			lineNumber++
 		) {
 			const lineValue = this.document.lineAt(lineNumber).text;
-			const regexpMatch = matchFromRegexp(lineValue);
+			const regexpMatch = matchFromRegexp(lineValue, true);
 
 			if (!regexpMatch) {
 				continue;
