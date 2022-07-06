@@ -39,6 +39,16 @@ const patternsRegex = combineRegexp(
 	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),
 );
 
+export const validValueIsolation = (input: string, match: string) =>
+	input === match ||
+	[" ", "\\-", "_"].some((spacer) =>
+		combineRegexp(
+			new RegExp(`${spacer}${match}$`),
+			new RegExp(`^${match}${spacer}`),
+			new RegExp(`${spacer}${match}${spacer}`),
+		).test(input),
+	);
+
 export const findBrand = (input: string): string | undefined =>
 	BRANDS.find((brand) => input.toLowerCase().includes(brand.toLowerCase()));
 

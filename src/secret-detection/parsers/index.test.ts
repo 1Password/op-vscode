@@ -1,4 +1,9 @@
-import { findBrand, matchFromRegexp, suggestionFromKey } from ".";
+import {
+	findBrand,
+	matchFromRegexp,
+	suggestionFromKey,
+	validValueIsolation,
+} from ".";
 import { sample } from "../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
@@ -63,5 +68,48 @@ describe("suggestionFromKey", () => {
 			field: "secret key",
 			type: "concealed",
 		});
+	});
+});
+
+describe("validValueIsolation", () => {
+	const spaceInput = "value test string";
+	const noSpaceInput = "valueteststring";
+	const dashInput = "value-test-string";
+	const underscoreInput = "value_test_string";
+
+	it("returns true if the match is the same as the input", () =>
+		expect(validValueIsolation(spaceInput, spaceInput)).toBe(true));
+
+	it("returns true if the match is a substring of the input, with a following space", () =>
+		expect(validValueIsolation(spaceInput, "value")).toBe(true));
+
+	it("returns true if the match is a substring of the input, with a preceding space", () =>
+		expect(validValueIsolation(spaceInput, "string")).toBe(true));
+
+	it("returns true if the match is a substring of the input, with surrounding space", () =>
+		expect(validValueIsolation(spaceInput, "test")).toBe(true));
+
+	it("returns true if the match is a substring of the input and is separated by dashes", () => {
+		expect(validValueIsolation(dashInput, "value")).toBe(true);
+		expect(validValueIsolation(dashInput, "string")).toBe(true);
+		expect(validValueIsolation(dashInput, "test")).toBe(true);
+	});
+
+	it("returns true if the match is a substring of the input and is separated by underscores", () => {
+		expect(validValueIsolation(underscoreInput, "value")).toBe(true);
+		expect(validValueIsolation(underscoreInput, "string")).toBe(true);
+		expect(validValueIsolation(underscoreInput, "test")).toBe(true);
+	});
+
+	it("returns false if the match is a substring of the input, but has no spacing", () => {
+		expect(validValueIsolation(noSpaceInput, "value")).toBe(false);
+		expect(validValueIsolation(noSpaceInput, "string")).toBe(false);
+		expect(validValueIsolation(noSpaceInput, "test")).toBe(false);
+	});
+
+	it("returns false with mixed separator characters", () => {
+		expect(validValueIsolation("value test-string", "test")).toBe(false);
+		expect(validValueIsolation("value_test-string", "test")).toBe(false);
+		expect(validValueIsolation("value_test string", "test")).toBe(false);
 	});
 });
