@@ -12,6 +12,13 @@ describe("findBrand", () => {
 	it("finds a known brand name in a string", () => {
 		const brand = sample(BRANDS);
 		expect(findBrand(`some ${brand} text`)).toEqual(brand);
+		expect(findBrand(`some-${brand}-text`)).toEqual(brand);
+		expect(findBrand(`some_${brand}_text`)).toEqual(brand);
+	});
+
+	it("bails if brand doesn't have adequate spacer", () => {
+		const brand = sample(BRANDS);
+		expect(findBrand(`some${brand}text`)).toBeUndefined();
 	});
 });
 
@@ -68,6 +75,12 @@ describe("suggestionFromKey", () => {
 			field: "secret key",
 			type: "concealed",
 		});
+	});
+
+	it("bails if hinted key doesn't have adequate spacer", () => {
+		expect(suggestionFromKey("stripe secretkey")).toBeUndefined();
+		// this was a real false positive, "password"
+		expect(suggestionFromKey("@1password/front-end-style")).toBeUndefined();
 	});
 });
 

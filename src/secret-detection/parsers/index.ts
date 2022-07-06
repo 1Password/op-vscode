@@ -50,7 +50,9 @@ export const validValueIsolation = (input: string, match: string) =>
 	);
 
 export const findBrand = (input: string): string | undefined =>
-	BRANDS.find((brand) => input.toLowerCase().includes(brand.toLowerCase()));
+	BRANDS.find((brand) =>
+		validValueIsolation(input.toLowerCase(), brand.toLowerCase()),
+	);
 
 export const matchFromRegexp = (input: string): MatchDetail | undefined => {
 	const patternMatch = patternsRegex.exec(input);
@@ -85,7 +87,7 @@ export const suggestionFromKey = (input: string): Suggestion => {
 	const extractedBrand = findBrand(input);
 	const extractedKey = SECRET_KEY_HINT.exec(input)?.[0];
 
-	if (!extractedKey) {
+	if (!extractedKey || !validValueIsolation(input, extractedKey)) {
 		return;
 	}
 
