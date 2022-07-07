@@ -39,10 +39,25 @@ const patternsRegex = combineRegexp(
 	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),
 );
 
-export const findBrand = (input: string): string | undefined =>
-	BRANDS.find((brand) => input.toLowerCase().includes(brand.toLowerCase()));
+export const validValueIsolation = (input: string, match: string) =>
+	input === match ||
+	[" ", "\\-", "_"].some((spacer) =>
+		combineRegexp(
+			new RegExp(`${spacer}${match}$`),
+			new RegExp(`^${match}${spacer}`),
+			new RegExp(`${spacer}${match}${spacer}`),
+		).test(input),
+	);
 
-export const matchFromRegexp = (input: string): MatchDetail | undefined => {
+export const findBrand = (input: string): string | undefined =>
+	BRANDS.find((brand) =>
+		validValueIsolation(input.toLowerCase(), brand.toLowerCase()),
+	);
+
+export const matchFromRegexp = (
+	input: string,
+	partial = false,
+): MatchDetail | undefined => {
 	const patternMatch = patternsRegex.exec(input);
 	if (!patternMatch) {
 		return;
@@ -51,6 +66,13 @@ export const matchFromRegexp = (input: string): MatchDetail | undefined => {
 	let suggestion: Suggestion;
 	const value = patternMatch[0];
 	const index = patternMatch.index;
+
+	if (
+		(!partial && input !== value) ||
+		(partial && !validValueIsolation(input, value))
+	) {
+		return;
+	}
 
 	// We know that the value matches one of the patterns,
 	// now let's find out which one
@@ -75,7 +97,7 @@ export const suggestionFromKey = (input: string): Suggestion => {
 	const extractedBrand = findBrand(input);
 	const extractedKey = SECRET_KEY_HINT.exec(input)?.[0];
 
-	if (!extractedKey) {
+	if (!extractedKey || !validValueIsolation(input, extractedKey)) {
 		return;
 	}
 
