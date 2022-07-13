@@ -1,9 +1,10 @@
-import { validateCli } from "@1password/op-js";
+import { setClientInfo, validateCli } from "@1password/op-js";
 import { default as open } from "open";
 import { window } from "vscode";
+import { version } from "../package.json";
 import { REGEXP, URLS } from "./constants";
 import { logger } from "./logger";
-import { endWithPunctuation } from "./utils";
+import { endWithPunctuation, semverToInt } from "./utils";
 
 export const createErrorHandler =
 	(showError: boolean) => async (error: Error) => {
@@ -31,6 +32,14 @@ export const createErrorHandler =
 
 export class CLI {
 	valid = false;
+
+	public constructor() {
+		setClientInfo({
+			name: "1Password for VS Code",
+			id: "VSC",
+			build: semverToInt(version),
+		});
+	}
 
 	public async execute<TReturn>(
 		command: () => TReturn,

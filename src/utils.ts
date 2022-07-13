@@ -1,5 +1,11 @@
 import { REGEXP } from "./constants";
 
+export const semverToInt = (input: string) =>
+	input
+		.split(".")
+		.map((n) => n.padStart(2, "0"))
+		.join("");
+
 export const titleCase = (value: string): string =>
 	value.replace(
 		/\w\S*/g,

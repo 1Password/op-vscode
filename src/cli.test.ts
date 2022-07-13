@@ -1,7 +1,9 @@
 import * as opjs from "@1password/op-js";
+import { version } from "../package.json";
 import { window } from "../test/vscode-mock";
 import { CLI, createErrorHandler } from "./cli";
 import { logger } from "./logger";
+import { semverToInt } from "./utils";
 
 const cli = new CLI();
 const goodCommand = jest.fn().mockReturnValue("good");
@@ -13,6 +15,7 @@ const badCommand = jest.fn().mockImplementation(() => {
 jest.mock("@1password/op-js", () => ({
 	// @ts-expect-error ok bud
 	...jest.requireActual("@1password/op-js"),
+	setClientInfo: jest.fn(),
 	validateCli: jest.fn(),
 }));
 
@@ -47,6 +50,18 @@ describe("CLI", () => {
 	beforeAll(() => {
 		cli.valid = true;
 	});
+
+	describe("constructor", () => {
+		it("sets op-js user agent info", () => {
+			new CLI();
+			expect(opjs.setClientInfo).toHaveBeenCalledWith({
+				build: semverToInt(version),
+				id: "VSC",
+				name: "1Password for VS Code",
+			});
+		});
+	});
+
 	describe("execute", () => {
 		it("guards against execution when cli is invalid", async () => {
 			cli.valid = false;
