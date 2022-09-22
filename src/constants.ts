@@ -36,7 +36,6 @@ export const URLS = {
 };
 
 export const REGEXP = {
-	CLI_ERROR: /\[ERROR] \d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2} (.+)/,
 	SECRET_REFERENCE:
 		/op:\/\/([\w -]+)\/([\w -]+)\/([\w -]+)(?:\/([\w -]+))?(?<! )/,
 	CAPITALIZED_WORDS: /(api|aws|id|uuid|url)/gi,
