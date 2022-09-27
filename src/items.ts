@@ -205,6 +205,11 @@ export class Items {
 			}),
 		);
 
+		// If the vault is locked this will be undefined
+		if (!vaultItem) {
+			return;
+		}
+
 		vaultItem = await this.core.cli.execute<Item>(() => item.get(vaultItem.id));
 
 		if (!vaultItem) {

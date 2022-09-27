@@ -2,7 +2,7 @@ import { setClientInfo, validateCli } from "@1password/op-js";
 import { default as open } from "open";
 import { window } from "vscode";
 import { version } from "../package.json";
-import { REGEXP, URLS } from "./constants";
+import { URLS } from "./constants";
 import { logger } from "./logger";
 import { endWithPunctuation, semverToInt } from "./utils";
 
@@ -11,13 +11,8 @@ export const createErrorHandler =
 		const errorPrefix = "Error executing CLI command";
 
 		let errorMessage = errorPrefix;
-		const responseMessage = error.message
-			.replace(/[\n\r]/g, "")
-			.replace(/(\s{2,}|\t)/g, " ")
-			.match(REGEXP.CLI_ERROR);
-
-		if (responseMessage) {
-			errorMessage += `: ${endWithPunctuation(responseMessage[1])}`;
+		if (error.message) {
+			errorMessage += `: ${endWithPunctuation(error.message)}`;
 		}
 
 		// TODO: update to log error code when JS wrapper starts providing it
@@ -78,7 +73,7 @@ export class CLI {
 				throw error;
 			}
 
-			if (error.message.includes("locate op CLI")) {
+			if (error.message.includes("executable")) {
 				this.valid = false;
 				const openInstallDocs = "Open installation documentation";
 
@@ -92,7 +87,7 @@ export class CLI {
 				}
 
 				return;
-			} else if (error.message.includes("does not satisfy version")) {
+			} else {
 				this.valid = false;
 
 				const openUpgradeDocs = "Open upgrade documentation";

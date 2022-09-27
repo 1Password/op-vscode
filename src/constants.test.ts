@@ -10,14 +10,6 @@ describe("COMMANDS", () => {
 });
 
 describe("REGEXP", () => {
-	describe("CLI_ERROR", () => {
-		it("matches an error produced by the CLI", () => {
-			const message = "[ERROR] 2022/06/01 13:08:57 unknown command";
-			expect(message).toMatchRegExp(REGEXP.CLI_ERROR);
-			expect(message).toHaveRegExpParts(REGEXP.CLI_ERROR, "unknown command");
-		});
-	});
-
 	describe("SECRET_REFERENCE", () => {
 		it("matches 3 and 4-part secret references", () => {
 			const threePartRef = "op://vault/item/field";

@@ -202,6 +202,12 @@ export class Setup {
 			vault.list(),
 		);
 
+		// You cannot have 0 vaults, but if you don't authorize the
+		// vault lookup this value will be undefined.
+		if (!vaultsList) {
+			return;
+		}
+
 		const response = await window.showQuickPick(
 			vaultsList.map((vault) => vault.name).sort(),
 			{
