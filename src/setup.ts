@@ -203,7 +203,7 @@ export class Setup {
 		);
 
 		// You cannot have 0 vaults, but if you don't authorize the
-		// vault lookup this value will be undfined.
+		// vault lookup this value will be undefined.
 		if (!vaultsList) {
 			return;
 		}
