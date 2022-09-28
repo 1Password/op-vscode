@@ -106,6 +106,8 @@ describe("validValueIsolation", () => {
 	const noSpaceInput = "valueteststring";
 	const dashInput = "value-test-string";
 	const underscoreInput = "value_test_string";
+	const singleQuoteInput = `'${spaceInput}'`;
+	const doubleQuoteInput = `"${spaceInput}"`;
 
 	it("returns true if the match is the same as the input", () =>
 		expect(validValueIsolation(spaceInput, spaceInput)).toBe(true));
@@ -141,5 +143,10 @@ describe("validValueIsolation", () => {
 		expect(validValueIsolation("value test-string", "test")).toBe(false);
 		expect(validValueIsolation("value_test-string", "test")).toBe(false);
 		expect(validValueIsolation("value_test string", "test")).toBe(false);
+	});
+
+	it("returns true if the match is a substring and is surrounded by quotes", () => {
+		expect(validValueIsolation(singleQuoteInput, spaceInput)).toBe(true);
+		expect(validValueIsolation(doubleQuoteInput, spaceInput)).toBe(true);
 	});
 });

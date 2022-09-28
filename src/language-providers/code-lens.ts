@@ -8,18 +8,24 @@ import GenericParser from "../secret-detection/parsers/generic";
 import JsonParser from "../secret-detection/parsers/json";
 import YamlParser from "../secret-detection/parsers/yaml";
 
+export const documentMatcher =
+	(document: TextDocument) => (ids: string[], exts: string[]) =>
+		ids.includes(document.languageId) ||
+		exts.some((ext) => document.fileName.endsWith(`.${ext}`));
+
 export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 	if (!config.get<boolean>(ConfigKey.EditorSuggestStorage)) {
 		return;
 	}
 
+	const matchDocument = documentMatcher(document);
 	let parser: Parser;
 
-	if (document.languageId === "dotenv") {
+	if (matchDocument(["dotenv", "properties"], ["env"])) {
 		parser = new DotEnvParser(document);
-	} else if (document.languageId === "yaml") {
+	} else if (matchDocument(["yaml"], ["yaml", "yml"])) {
 		parser = new YamlParser(document);
-	} else if (["json", "jsonc"].includes(document.languageId)) {
+	} else if (matchDocument(["json", "jsonc"], ["json"])) {
 		parser = new JsonParser(document);
 	} else {
 		parser = new GenericParser(document);

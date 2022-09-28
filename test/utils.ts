@@ -12,6 +12,7 @@ export const sample = <T>(items: T[]): T =>
 export const createDocument = (
 	lines: string | string[] = [],
 	languageId = "plaintext",
+	fileName = "test.txt",
 ) => {
 	const content = Array.isArray(lines) ? lines : [lines];
 	return {
@@ -20,5 +21,6 @@ export const createDocument = (
 		getText: jest.fn(() => content.join("\n")),
 		positionAt: jest.fn(),
 		languageId,
+		fileName,
 	} as unknown as TextDocument;
 };
