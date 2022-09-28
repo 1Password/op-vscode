@@ -40,7 +40,15 @@ const patternsRegex = combineRegexp(
 );
 
 export const validValueIsolation = (input: string, match: string) =>
+	// the match is identical to the input we're testing against
 	input === match ||
+	// the match is surrounded by quotes
+	["'", '"'].some((quote) =>
+		new RegExp(`${quote}${match}${quote}`).test(input),
+	) ||
+	// the match is surrounded by, preceded by at the end of
+	// a line, or followed by at the beginning of a line, a
+	// space, dash, or underscore
 	[" ", "\\-", "_"].some((spacer) =>
 		combineRegexp(
 			new RegExp(`${spacer}${match}$`),
