@@ -1,4 +1,4 @@
-import { setClientInfo, validateCli } from "@1password/op-js";
+import { setClientInfo, validateCli, ValidationError } from "@1password/op-js";
 import { default as open } from "open";
 import { window } from "vscode";
 import { version } from "../package.json";
@@ -69,12 +69,13 @@ export class CLI {
 		try {
 			await validateCli();
 		} catch (error: any) {
-			if (!(error instanceof Error)) {
+			this.valid = false;
+
+			if (!(error instanceof ValidationError)) {
 				throw error;
 			}
 
-			if (error.message.includes("executable")) {
-				this.valid = false;
+			if (error.type === "not-found") {
 				const openInstallDocs = "Open installation documentation";
 
 				const response = await window.showErrorMessage(
@@ -87,9 +88,7 @@ export class CLI {
 				}
 
 				return;
-			} else {
-				this.valid = false;
-
+			} else if (error.type === "version") {
 				const openUpgradeDocs = "Open upgrade documentation";
 
 				const response = await window.showErrorMessage(
