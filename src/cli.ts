@@ -75,35 +75,36 @@ export class CLI {
 				throw error;
 			}
 
-			if (error.type === "not-found") {
-				const openInstallDocs = "Open installation documentation";
+			switch (error.type) {
+				case "not-found":
+					const openInstallDocs = "Open installation documentation";
 
-				const response = await window.showErrorMessage(
-					"CLI is not installed. Please install it to use 1Password for VS Code.",
-					openInstallDocs,
-				);
+					if (
+						(await window.showErrorMessage(
+							"CLI is not installed. Please install it to use 1Password for VS Code.",
+							openInstallDocs,
+						)) === openInstallDocs
+					) {
+						await open(URLS.CLI_INSTALL_DOCS);
+					}
 
-				if (response === openInstallDocs) {
-					await open(URLS.CLI_INSTALL_DOCS);
-				}
+					break;
+				case "version":
+					const openUpgradeDocs = "Open upgrade documentation";
 
-				return;
-			} else if (error.type === "version") {
-				const openUpgradeDocs = "Open upgrade documentation";
+					if (
+						(await window.showErrorMessage(
+							`${error.message}. Please upgrade to the latest version to use 1Password for VS Code.`,
+							openUpgradeDocs,
+						)) === openUpgradeDocs
+					) {
+						await open(URLS.CLI_UPGRADE_DOCS);
+					}
 
-				const response = await window.showErrorMessage(
-					`${error.message}. Please upgrade to the latest version to use 1Password for VS Code.`,
-					openUpgradeDocs,
-				);
-
-				if (response === openUpgradeDocs) {
-					await open(URLS.CLI_UPGRADE_DOCS);
-				}
-
-				return;
+					break;
+				default:
+					throw error;
 			}
-
-			throw error;
 		}
 	}
 }
