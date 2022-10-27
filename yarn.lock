@@ -26,10 +26,10 @@
     stylelint "^14.0.0"
     stylelint-scss "^4.0.0"
 
-"@1password/op-js@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@1password/op-js/-/op-js-0.1.7.tgz#b0a343b685fb20b09df9db925207309e8b87e77b"
-  integrity sha512-csTAdBuNUKknHt6tdIfTmm7oPzo1jA40ag7n7G82HRplJj3av3Hz9GZFnBzIpgbFITWSIwcGCmBBIlA/B7CN3Q==
+"@1password/op-js@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@1password/op-js/-/op-js-0.1.8.tgz#621af1e608490ffa2b90acee748efc9666316c49"
+  integrity sha512-36Y4TXI0tBwDe6672CHhHvZErf1mgH0/AVt0woCZByOBM5PPUq/CSxAHKilKZrK8vpsTBA68MxV8q2RUExzfsg==
   dependencies:
     lookpath "^1.2.2"
     semver "^7.3.6"

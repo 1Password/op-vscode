@@ -109,18 +109,43 @@ describe("CLI", () => {
 		});
 
 		it("sets valid to false and warns when cli could not be located", async () => {
+			const error = new opjs.ValidationError("not-found");
 			jest.spyOn(opjs, "validateCli").mockImplementation(() => {
-				throw new Error("locate op CLI");
+				throw error;
 			});
 			await cli.validate();
 			expect(cli.valid).toBe(false);
 		});
 
 		it("sets valid to false and warns when cli is incorrect version", async () => {
+			const error = new opjs.ValidationError("version");
 			jest.spyOn(opjs, "validateCli").mockImplementation(() => {
-				throw new Error("does not satisfy version");
+				throw error;
 			});
 			await cli.validate();
+			expect(cli.valid).toBe(false);
+		});
+
+		it("re-throws a caught error that is not a ValidationError", async () => {
+			const error = new Error("foo");
+			jest.spyOn(opjs, "validateCli").mockImplementation(() => {
+				throw error;
+			});
+			await expect(async () => await cli.validate()).rejects.toThrow(
+				error.message,
+			);
+			expect(cli.valid).toBe(false);
+		});
+
+		it("re-throws a caught ValidationError with an unknown type", async () => {
+			// @ts-expect-error testing invalid type
+			const error = new opjs.ValidationError("foo");
+			jest.spyOn(opjs, "validateCli").mockImplementation(() => {
+				throw error;
+			});
+			await expect(async () => await cli.validate()).rejects.toThrow(
+				error.message,
+			);
 			expect(cli.valid).toBe(false);
 		});
 	});
