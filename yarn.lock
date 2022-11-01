@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@1password/front-end-style@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@1password/front-end-style/-/front-end-style-6.0.0.tgz#8f02dde850d28e028d3e64d48b3d884444c246c5"
-  integrity sha512-QLduinASkpJF5C/HXT7A22j49aZHaX+GC3N3EYRgWSXAs5AsdJATwUFaosZ6qIIvUyqWulfmXdaTC+Mtf6ZuhA==
+"@1password/front-end-style@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@1password/front-end-style/-/front-end-style-6.0.1.tgz#c017795044f5bacac0a7a95c4ed25e242a44b726"
+  integrity sha512-hlGxpocWJn+Sz8EoyVHlI3DYY72SfVgd7mBL2KI7yomr2NEBnS9eml7/8xucKpTPZWFjsZpODjAPg0oGYd33Og==
   dependencies:
     "@types/vfile-message" "1.0.1"
     "@typescript-eslint/eslint-plugin" "^4.22.0"
