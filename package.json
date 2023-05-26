@@ -184,7 +184,7 @@
 		"jest": "^27.5.1",
 		"license-checker-rseidelsohn": "^3.1.0",
 		"lint-staged": "^13.1.2",
-		"prettier-plugin-organize-imports": "^3.1.1",
+		"prettier-plugin-organize-imports": "^3.2.2",
 		"ts-jest": "^27.1.4",
 		"typescript": "^4.8.4",
 		"uuid": "^9.0.0",
