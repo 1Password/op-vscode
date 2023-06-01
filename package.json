@@ -168,7 +168,7 @@
 		"@1password/front-end-style": "^6.0.1",
 		"@types/jest": "^27.4.1",
 		"@types/json-to-ast": "^2.1.2",
-		"@types/node": "18.14.2",
+		"@types/node": "20.2.5",
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
