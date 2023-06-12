@@ -174,7 +174,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
 		"esbuild": "^0.17.18",
 		"esbuild-register": "^3.4.2",
-		"eslint-plugin-jsdoc": "^40.0.1",
+		"eslint-plugin-jsdoc": "^46.2.6",
 		"eslint-plugin-no-unsanitized": "^4.0.1",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-sonarjs": "^0.19.0",
