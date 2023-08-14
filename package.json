@@ -148,7 +148,7 @@
 			}
 		]
 	},
-	"prettier": "@1password/front-end-style/prettierrc.json",
+	"prettier": "@1password/prettier-config",
 	"lint-staged": {
 		"src/**/*": [
 			"prettier --write"
@@ -165,7 +165,8 @@
 		"yaml-ast-parser": "^0.0.43"
 	},
 	"devDependencies": {
-		"@1password/front-end-style": "^6.0.1",
+		"@1password/eslint-config": "^1.0.0",
+		"@1password/prettier-config": "^1.0.2",
 		"@types/jest": "^27.4.1",
 		"@types/json-to-ast": "^2.1.2",
 		"@types/node": "20.4.5",
@@ -184,6 +185,7 @@
 		"jest": "^27.5.1",
 		"license-checker-rseidelsohn": "^3.3.0",
 		"lint-staged": "^13.1.2",
+		"prettier": "^3.0.1",
 		"prettier-plugin-organize-imports": "^3.2.2",
 		"ts-jest": "^27.1.4",
 		"typescript": "^4.8.4",
