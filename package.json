@@ -172,7 +172,7 @@
 		"@types/node": "20.4.5",
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
-		"@typescript-eslint/eslint-plugin": "^5.54.0",
+		"@typescript-eslint/eslint-plugin": "^6.4.0",
 		"esbuild": "^0.18.17",
 		"esbuild-register": "^3.4.2",
 		"eslint-plugin-jsdoc": "^46.2.6",
