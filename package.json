@@ -173,7 +173,7 @@
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
-		"esbuild": "^0.18.17",
+		"esbuild": "^0.19.2",
 		"esbuild-register": "^3.4.2",
 		"eslint-plugin-jsdoc": "^46.2.6",
 		"eslint-plugin-no-unsanitized": "^4.0.1",
