@@ -165,7 +165,7 @@
 		"yaml-ast-parser": "^0.0.43"
 	},
 	"devDependencies": {
-		"@1password/eslint-config": "^1.0.0",
+		"@1password/eslint-config": "^1.2.0",
 		"@1password/prettier-config": "^1.0.2",
 		"@types/jest": "^27.4.1",
 		"@types/json-to-ast": "^2.1.2",
