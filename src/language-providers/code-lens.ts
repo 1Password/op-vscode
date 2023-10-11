@@ -31,12 +31,19 @@ export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 		parser = new GenericParser(document);
 	}
 
-	return parser.getMatches().map(
-		({ range, fieldValue, suggestion }) =>
-			new CodeLens(range, {
-				title: "$(lock) Save in 1Password",
-				command: COMMANDS.SAVE_VALUE_TO_ITEM,
-				arguments: [[{ location: range, fieldValue, suggestion }]],
-			}),
-	);
+	return parser
+		.getMatches()
+		.filter(
+			// Ignore values within secret template variables
+			({ range, fieldValue, suggestion }) =>
+				!new RegExp(/\${{(.*?)}}/).test(fieldValue),
+		)
+		.map(
+			({ range, fieldValue, suggestion }) =>
+				new CodeLens(range, {
+					title: "$(lock) Save in 1Password",
+					command: COMMANDS.SAVE_VALUE_TO_ITEM,
+					arguments: [[{ location: range, fieldValue, suggestion }]],
+				}),
+		);
 };
