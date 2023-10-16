@@ -30,10 +30,10 @@
     lookpath "^1.2.2"
     semver "^7.3.6"
 
-"@1password/prettier-config@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@1password/prettier-config/-/prettier-config-1.0.2.tgz#a73f652c8832b6dafed048d87e0dd05392e0ba79"
-  integrity sha512-xf0HVlXpEmMCM3zlRkCb/oZZNBA7Kde19TcVUmmw66bmNfqmd41KB7+lyljbNwqvODzVdiBABf4CKVe9mG41cA==
+"@1password/prettier-config@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@1password/prettier-config/-/prettier-config-1.1.2.tgz#69e4bd172ac11c1c93a0d7fcd3d74b1e9526e7ab"
+  integrity sha512-JY7dVH7NXKZsrFGp9tmre5sTangCbr16YJxd+hNOwZ/Z3GxS5faZAipK7VxR+5LZHElbeVF9lSaO4uCA8ZZZIw==
 
 "@ampproject/remapping@^2.1.0":
   version "2.1.2"
