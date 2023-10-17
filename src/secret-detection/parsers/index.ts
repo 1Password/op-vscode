@@ -1,8 +1,13 @@
 import { FieldAssignmentType } from "@1password/op-js";
 import { Range, TextDocument } from "vscode";
 import { combineRegexp } from "../../utils";
-import { getPatternSuggestion, VALUE_PATTERNS } from "../patterns";
-import { BRANDS, SECRET_KEY_HINT, Suggestion } from "../suggestion";
+import { patterns, getPatternSuggestion, VALUE_PATTERNS } from "../patterns";
+import {
+	BRANDS,
+	PatternSuggestion,
+	SECRET_KEY_HINT,
+	Suggestion,
+} from "../suggestion";
 
 export interface ParserMatch {
 	range: Range;
@@ -35,6 +40,7 @@ export const patternSuggestions = [
 	...VALUE_PATTERNS,
 	getPatternSuggestion("ccard"),
 ];
+
 const patternsRegex = combineRegexp(
 	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),
 );
@@ -66,7 +72,12 @@ export const matchFromRegexp = (
 	input: string,
 	partial = false,
 ): MatchDetail | undefined => {
-	const patternMatch = patternsRegex.exec(input);
+	const customPatterns: PatternSuggestion[] = patterns.getCustomPatterns();
+	const allPatternsRegex = combineRegexp(
+		patternsRegex,
+		...customPatterns.map((suggestion) => new RegExp(suggestion.pattern)),
+	);
+	const patternMatch = allPatternsRegex.exec(input);
 	if (!patternMatch) {
 		return;
 	}
@@ -84,7 +95,8 @@ export const matchFromRegexp = (
 
 	// We know that the value matches one of the patterns,
 	// now let's find out which one
-	for (const patternSuggestion of patternSuggestions) {
+	const allPatternSuggestions = [...patternSuggestions, ...customPatterns];
+	for (const patternSuggestion of allPatternSuggestions) {
 		if (new RegExp(patternSuggestion.pattern).test(value)) {
 			suggestion = patternSuggestion;
 
