@@ -5,7 +5,7 @@ import {
 	validValueIsolation,
 } from ".";
 import { sample } from "../../../test/utils";
-import { getPatternSuggestion } from "../patterns";
+import { patterns, getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
 
 describe("findBrand", () => {
@@ -67,6 +67,14 @@ describe("matchFromRegexp", () => {
 			index: brand.length + 1,
 			suggestion,
 		});
+	});
+
+	it("retrieves custom patterns", () => {
+		const customPatternsSpy = jest
+			.spyOn(patterns, "getCustomPatterns")
+			.mockReturnValue([]);
+		matchFromRegexp("test");
+		expect(customPatternsSpy).toHaveBeenCalled();
 	});
 });
 

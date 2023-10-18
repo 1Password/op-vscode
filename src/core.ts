@@ -9,6 +9,7 @@ import { Items } from "./items";
 import { logger } from "./logger";
 import { Setup } from "./setup";
 import { createOpenOPHandler, OpvsUriHandler } from "./url-utils";
+import { patterns } from "./secret-detection/patterns";
 
 export class Core {
 	public cli: CLI;
@@ -25,6 +26,14 @@ export class Core {
 			commands.registerCommand(COMMANDS.OPEN_LOGS, () => logger.show()),
 			commands.registerCommand(INTERNAL_COMMANDS.AUTHENTICATE, async () =>
 				this.authenticate(),
+			),
+			commands.registerCommand(
+				COMMANDS.IGNORE_PATTERN,
+				async (id) => await patterns.disablePattern(id),
+			),
+			commands.registerCommand(
+				COMMANDS.CREATE_CUSTOM_PATTERN,
+				async () => await patterns.addCustomPattern(),
 			),
 		);
 
