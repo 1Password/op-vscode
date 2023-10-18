@@ -78,13 +78,11 @@ describe("VALUE_PATTERNS", () => {
 describe("patterns", () => {
 	describe("getDisabledPatterns", () => {
 		it("should return an empty array if no disabled patterns are set", () => {
-			jest.spyOn(config, "get").mockReturnValue([]);
 			expect(patterns.getDisabledPatterns()).toEqual([]);
 		});
 	});
 	describe("getCustomPatterns", () => {
 		it("should return an empty array if no custom patterns are set", () => {
-			jest.spyOn(config, "get").mockReturnValue([]);
 			expect(patterns.getCustomPatterns()).toEqual([]);
 		});
 	});
