@@ -27,9 +27,9 @@ export class Setup {
 		);
 	}
 
-	private setAccountUrlFlag() {
+	private setAccountIdFlag() {
 		setGlobalFlags({
-			account: this.accountUrl,
+			account: this.accountUuid,
 		});
 	}
 
@@ -70,7 +70,7 @@ export class Setup {
 				promptForVault = false;
 			}
 		} else {
-			this.setAccountUrlFlag();
+			this.setAccountIdFlag();
 		}
 
 		if (!this.accountUuid || !this.accountUrl) {
@@ -179,7 +179,7 @@ export class Setup {
 				account.account_uuid,
 			);
 			await this.core.context.secrets.store(STATE.ACCOUNT_URL, account.url);
-			this.setAccountUrlFlag();
+			this.setAccountIdFlag();
 
 			if (isChanged) {
 				await this.chooseVault();
