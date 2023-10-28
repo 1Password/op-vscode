@@ -5,7 +5,15 @@ import {
 	setGlobalFlags,
 	vault,
 } from "@1password/op-js";
-import { commands, window } from "vscode";
+import {
+	CancellationToken,
+	commands,
+	InlineCompletionContext,
+	InlineCompletionItem,
+	Position,
+	TextDocument,
+	window,
+ InlineCompletionItemProvider, InlineCompletionList , languages, Range } from "vscode";
 import { COMMANDS, DEBUG, STATE } from "./constants";
 import type { Core } from "./core";
 
@@ -42,6 +50,55 @@ export class Setup {
 		this.accountUuid = await this.core.context.secrets.get(STATE.ACCOUNT_UUID);
 		this.accountUrl = await this.core.context.secrets.get(STATE.ACCOUNT_URL);
 		this.vaultId = await this.core.context.secrets.get(STATE.VAULT_ID);
+
+		const itemFields: string[] = await this.core.items.getMatchingItemFields();
+		const providerFunc = (
+			document: TextDocument,
+			position: Position,
+			context: InlineCompletionContext,
+			token: CancellationToken,
+		) => {
+			// Old pattern used, in case the latter one doesn't work
+			//const regexp = /op:\/\/[^:\s\"\']*/gm;
+
+			// Pattern according to https://developer.1password.com/docs/cli/secrets-reference-syntax/
+			// detects starting from `op://` up to a finished reference
+			const regexp =
+				/op:\/\/([\w.-]+(?: ?[\w.-]+)*\/){0,3}([\w.-]+(?: [\w.-]+)*)?/gm;
+			if (position.line <= 0) {
+				return;
+			}
+
+			const line: string = document.lineAt(position.line).text;
+			const matches = line.match(regexp);
+			if (!matches) {
+				return;
+			}
+
+			const match = matches[0];
+			const startInt = line.indexOf(match);
+			const endInt = line.indexOf(match) + match.length;
+
+			const matchingFields = itemFields.filter((field) =>
+				field.startsWith(match),
+			);
+			const result: InlineCompletionList = {
+				items: matchingFields.map(
+					(field) =>
+						new InlineCompletionItem(
+							field,
+							new Range(position.line, startInt, position.line, endInt),
+						),
+				),
+			};
+
+			return result;
+		};
+		const provider: InlineCompletionItemProvider = {
+			provideInlineCompletionItems: providerFunc,
+		};
+
+		languages.registerInlineCompletionItemProvider({ pattern: "**" }, provider);
 
 		let promptForVault = true;
 

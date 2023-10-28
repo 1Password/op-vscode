@@ -271,4 +271,14 @@ describe("Items", () => {
 			expect(core.cli.execute).toHaveBeenCalled();
 		});
 	});
+
+	describe("getMatchingItemFields", () => {
+		it("returns an empty array if no items are found", async () => {
+			const vaultItems = jest.spyOn(Items.prototype as any, "getVaultItems");
+			vaultItems.mockResolvedValue([]);
+			const vaultItemsInfo = jest.spyOn(Items.prototype as any, "getItemById");
+			vaultItemsInfo.mockResolvedValue(null);
+			expect(await items.getMatchingItemFields()).toEqual([]);
+		});
+	});
 });
