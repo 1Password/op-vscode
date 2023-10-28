@@ -108,6 +108,41 @@ export class Items {
 		return this.getItemCallback(field);
 	}
 
+	public async getMatchingItemFields(): Promise<string[]> {
+		let results: string[] = [];
+		if (await this.core.cli.isInvalid()) {
+			return results;
+		}
+
+		if (!this.core.vaultId) {
+			await window.showErrorMessage(
+				'You must choose a vault before using 1Password autocomplete. When you want to choose a vault run the "1Password: Choose vault" command.',
+			);
+
+			return results;
+		}
+
+		// Retrieve list of items
+		let vaultItems: Item[] = await this.getVaultItems();
+
+		// Retrieve item info from item IDs
+		const calls = vaultItems.map(
+			async (vaultItem) => await this.getItemById(vaultItem.id),
+		);
+		vaultItems = await Promise.all(calls);
+		vaultItems = vaultItems.filter((item) => item.fields !== undefined);
+
+		// Retrieve field references from items
+		const vaultItemFieldRefs = vaultItems
+			.flatMap((item) => item.fields)
+			.filter((field) => field.reference !== undefined)
+			.map((field) => field.reference);
+
+		results = [...results, ...vaultItemFieldRefs];
+
+		return results;
+	}
+
 	public async getReferenceMetadata(
 		vaultId: string,
 		itemId: string,
@@ -249,6 +284,21 @@ export class Items {
 				}
 			});
 		}
+	}
+
+	private async getVaultItems(): Promise<Item[]> {
+		return this.core.cli.execute<Item[]>(() =>
+			item.list({ vault: this.core.vaultId }),
+		);
+	}
+
+	private async getItemById(itemID: string) {
+		return this.core.cli.execute<Item>(() =>
+			item.get(itemID, {
+				vault: this.core.vaultId,
+				cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+			}),
+		);
 	}
 
 	private async getSelections(): Promise<SaveItemInput[]> {

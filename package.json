@@ -171,7 +171,7 @@
 		"@types/json-to-ast": "^2.1.2",
 		"@types/node": "20.8.6",
 		"@types/uuid": "^9.0.1",
-		"@types/vscode": "^1.66.0",
+		"@types/vscode": "^1.83.1",
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
 		"esbuild": "^0.19.4",
 		"esbuild-register": "^3.4.2",
