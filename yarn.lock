@@ -901,10 +901,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/json-to-ast@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@types/json-to-ast/-/json-to-ast-2.1.2.tgz#1f6670cfcd44eb745472744a3630b4da563f27dc"
-  integrity sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ==
+"@types/json-to-ast@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@types/json-to-ast/-/json-to-ast-2.1.3.tgz#c9e2d7901fc630097c3d5171406eee7ca21352ab"
+  integrity sha512-DdkQyOH5041T7M+aRwVjtuMvBslTTzWFhjMbF74FBdRqM2RV6RZwXTpg2kiUXZovfuEOw6YAnWtgCe5Pd0Jhzw==
 
 "@types/json5@^0.0.29":
   version "0.0.29"
