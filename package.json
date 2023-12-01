@@ -168,7 +168,7 @@
 		"@1password/eslint-config": "^1.0.0",
 		"@1password/prettier-config": "^1.1.2",
 		"@types/jest": "^27.4.1",
-		"@types/json-to-ast": "^2.1.2",
+		"@types/json-to-ast": "^2.1.4",
 		"@types/node": "20.8.6",
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
