@@ -21,9 +21,9 @@
 		"node": "^18.18.0"
 	},
 	"scripts": {
-		"build": "license-checker-rseidelsohn --direct --files licenses && NODE_ENV=production yarn compile",
+		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production yarn compile",
 		"compile": "node -r esbuild-register compile.ts",
-		"eslint": "eslint -c .eslintrc.json 'src/**/*.ts'",
+		"eslint": "cross-env eslint -c .eslintrc.json \"src/**/*.ts\"",
 		"prepare": "husky install",
 		"prettier": "prettier --check src/",
 		"test": "jest",
@@ -173,6 +173,7 @@
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
 		"@typescript-eslint/eslint-plugin": "^5.54.0",
+		"cross-env": "^7.0.3",
 		"esbuild": "^0.19.4",
 		"esbuild-register": "^3.4.2",
 		"eslint-plugin-jsdoc": "^46.2.6",
