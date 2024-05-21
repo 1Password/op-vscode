@@ -26,7 +26,7 @@ export const createErrorHandler =
 	};
 
 export class CLI {
-	valid = false;
+	public valid = false;
 
 	public constructor() {
 		setClientInfo({

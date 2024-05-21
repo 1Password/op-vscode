@@ -28,6 +28,7 @@ class Config {
 		);
 	}
 
+	/* eslint-disable-next-line @typescript-eslint/naming-convention */
 	private _onDidChange = new EventEmitter<ConfigurationChangeEvent>();
 	public get onDidChange(): Event<ConfigurationChangeEvent> {
 		return this._onDidChange.event;

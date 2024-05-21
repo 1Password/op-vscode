@@ -298,7 +298,7 @@ export class Items {
 					? "What do you want this field to be called?"
 					: `What do you want to call the field with the value "${maskString(
 							fieldValue,
-					  )}"?`,
+						)}"?`,
 				value: formatField(suggestedLabel),
 				ignoreFocusOut: true,
 			});
