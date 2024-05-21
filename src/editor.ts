@@ -6,7 +6,7 @@ import { provideDocumentLinks } from "./language-providers/document-link";
 import { provideHover } from "./language-providers/hover";
 
 export class Editor {
-	subscriptions: Disposable[] = [];
+	private subscriptions: Disposable[] = [];
 
 	public constructor(private core: Core) {
 		this.configure();

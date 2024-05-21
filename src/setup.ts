@@ -10,9 +10,9 @@ import { COMMANDS, DEBUG, STATE } from "./constants";
 import type { Core } from "./core";
 
 export class Setup {
-	accountUuid?: string;
-	accountUrl?: string;
-	vaultId?: string;
+	public accountUuid?: string;
+	public accountUrl?: string;
+	public vaultId?: string;
 
 	public constructor(private core: Core) {
 		this.core.context.subscriptions.push(

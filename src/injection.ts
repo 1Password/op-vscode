@@ -5,7 +5,7 @@ import { COMMANDS, EXTENSION_ID, REGEXP } from "./constants";
 import type { Core } from "./core";
 
 export class Injection {
-	activeDocument: TextDocument;
+	private activeDocument: TextDocument;
 
 	public constructor(private core: Core) {
 		this.core.context.subscriptions.push(
