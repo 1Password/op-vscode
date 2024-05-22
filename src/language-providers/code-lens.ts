@@ -35,6 +35,11 @@ export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 
 	const matches = parser
 		.getMatches()
+		.filter(
+			// Ignore values within secret template variables
+			({ range, fieldValue, suggestion }) =>
+				!new RegExp(/\${{(.*?)}}/).test(fieldValue),
+		)
 		.filter((match) => patterns.patternsFilter(match.suggestion));
 
 	const customPatternsResult: PatternSuggestion[] =

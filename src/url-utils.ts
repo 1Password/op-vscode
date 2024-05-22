@@ -25,7 +25,6 @@ export const createInternalUrl = (
 
 export const createOpenOPHandler =
 	(core: InstanceType<typeof Core>) =>
-	// eslint-disable-next-line unicorn/no-object-as-default-parameter
 	async ({ action, ...args }: { action: AppAction | "" } = { action: "" }) => {
 		const url = new URL(`onepassword://${action}`);
 
