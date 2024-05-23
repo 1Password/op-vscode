@@ -35,8 +35,8 @@ export const createOpenOPHandler =
 					itemValue: string;
 				};
 
-				const vaultItem = await core.cli.execute<Item>(() =>
-					item.get(itemValue, { vault: vaultValue }),
+				const vaultItem = await core.cli.execute<Item>(
+					() => item.get(itemValue, { vault: vaultValue }) as Item,
 				);
 
 				url.searchParams.append("a", core.accountUuid);

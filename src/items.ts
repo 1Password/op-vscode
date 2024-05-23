@@ -73,11 +73,12 @@ export class Items {
 			return;
 		}
 
-		const vaultItem = await this.core.cli.execute<Item>(() =>
-			item.get(itemValue, {
-				vault: this.core.vaultId,
-				cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
-			}),
+		const vaultItem = await this.core.cli.execute<Item>(
+			() =>
+				item.get(itemValue, {
+					vault: this.core.vaultId,
+					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+				}) as Item,
 		);
 
 		if (!vaultItem) {
@@ -122,7 +123,7 @@ export class Items {
 				item.get(itemId, {
 					vault: vaultId,
 					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
-				}),
+				}) as Item,
 			false,
 		);
 
@@ -210,7 +211,9 @@ export class Items {
 			return;
 		}
 
-		vaultItem = await this.core.cli.execute<Item>(() => item.get(vaultItem.id));
+		vaultItem = await this.core.cli.execute<Item>(
+			() => item.get(vaultItem.id) as Item,
+		);
 
 		if (!vaultItem) {
 			return;
