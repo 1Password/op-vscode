@@ -19,10 +19,10 @@
     eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-sonarjs "^0.21.0"
 
-"@1password/op-js@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@1password/op-js/-/op-js-0.1.12.tgz#986ac6a6aaac3f4b43da36e170e5a5678f093916"
-  integrity sha512-vL4mrpZ67GaaOH4cClI8X6rVpnAlsTuH6X0wMPKA1ND9LAjzAlVKvl+Z01kvAwm5MLW6MFQn+KoZkQThphUhDg==
+"@1password/op-js@^0.1.13":
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@1password/op-js/-/op-js-0.1.13.tgz#7eb7fed700a4e7b7d4efb727397fc2fd53ba52dd"
+  integrity sha512-ZZBLxVqywFdvIbLv2xWw2N1ImSi183rRKf90vV19KRMReNyLwuD0dv6IrKrIdrJU33IuV3Gz85Z4K2a1PJTBDg==
   dependencies:
     lookpath "^1.2.2"
     semver "^7.6.2"
