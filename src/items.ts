@@ -9,7 +9,7 @@ import { item } from "@1password/op-js";
 import type { Range, Selection } from "vscode";
 import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
-import { COMMANDS, NONSENSITIVE_FIELD_TYPES } from "./constants";
+import { COMMANDS, NONSENSITIVE_FIELD_TYPES, REGEXP } from "./constants";
 import type { Core } from "./core";
 import { FIELD_TYPE_PATTERNS } from "./secret-detection/patterns";
 import { Suggestion } from "./secret-detection/suggestion";
@@ -47,6 +47,10 @@ export class Items {
 			commands.registerCommand(
 				COMMANDS.CREATE_PASSWORD,
 				async () => await this.saveItem(generatePasswordArg),
+			),
+			commands.registerCommand(
+				COMMANDS.GET_VALUE_FROM_REFERENCE,
+				async (reference: string) => await this.getReferenceValue(reference),
 			),
 		);
 	}
@@ -224,6 +228,50 @@ export class Items {
 		await window.showInformationMessage(
 			`Item titled "${itemTitle}" saved successfully to your vault.`,
 		);
+	}
+
+	public async getReferenceValue(ref?: string): Promise<string> {
+		if (await this.core.cli.isInvalid()) {
+			return;
+		}
+		let reference = ref;
+		if (!reference) {
+			reference = await window.showInputBox({
+				title: "Enter a 1Password reference",
+				ignoreFocusOut: true,
+			});
+		}
+		const m = reference.match(RegExp(`^${REGEXP.SECRET_REFERENCE.source}$`));
+		if (!m) {
+			throw new Error("Invalid reference provided.");
+		}
+		const [, vaultId, itemId, ...fieldCoordinates] = m;
+
+		const vaultItem = await this.core.cli.execute<Item>(
+			() =>
+				item.get(itemId, {
+					vault: vaultId,
+					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
+				}) as Item,
+			false,
+		);
+		if (!vaultItem) {
+			throw new Error("Could not find vault item.");
+		}
+		const [fieldIdOrLabel, sectionId] = fieldCoordinates
+			.filter((e) => e)
+			.reverse();
+
+		const field = vaultItem.fields.find((f) => {
+			const sectionMatch = f.section?.id === sectionId;
+			return (
+				sectionMatch && (f.id === fieldIdOrLabel || f.label === fieldIdOrLabel)
+			);
+		});
+		if (!field) {
+			throw new Error("Could not find vault item field.");
+		}
+		return field.value;
 	}
 
 	private async getItemCallback(field: Field): Promise<void> {
