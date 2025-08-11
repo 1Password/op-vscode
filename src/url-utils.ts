@@ -1,6 +1,6 @@
 import { Item, item } from "@1password/op-js";
 import { default as open } from "open";
-import { commands, env, Uri, UriHandler } from "vscode";
+import { commands, env, Uri, UriHandler, workspace, window } from "vscode";
 import { COMMANDS, QUALIFIED_EXTENSION_ID } from "./constants";
 import { Core } from "./core";
 import { logger } from "./logger";
@@ -11,6 +11,7 @@ export enum UriAction {
 
 export enum AppAction {
 	ViewItem = "view-item",
+	ImportProject = "import-environment-project",
 }
 
 export const createInternalUrl = (
@@ -43,9 +44,13 @@ export const createOpenOPHandler =
 				url.searchParams.append("v", vaultItem.vault.id);
 				url.searchParams.append("i", vaultItem.id);
 				break;
+			case AppAction.ImportProject:
+				const path = await getWorkspaceFolder();
+				url.searchParams.append("path", path);
+				break;
 		}
 
-		logger.logDebug(`Opening 1Password with path: ${action}`);
+		logger.logDebug(`Opening 1Password URL: ${url.href}`);
 
 		await open(url.href);
 	};
@@ -65,3 +70,28 @@ export class OpvsUriHandler implements UriHandler {
 		}
 	}
 }
+
+const getWorkspaceFolder = async (): Promise<string | undefined> => {
+	const workspaceFolders = workspace.workspaceFolders;
+	if (!workspaceFolders || workspaceFolders.length === 0) {
+		return undefined; // No workspace open
+	}
+
+	if (workspaceFolders.length === 1) {
+		return workspaceFolders[0].uri.fsPath; // Single workspace
+	}
+
+	const selected = await window.showQuickPick(
+		workspaceFolders.map((folder) => ({
+			label: folder.name,
+			description: folder.uri.fsPath,
+			folder,
+		})),
+		{
+			placeHolder: "Select a workspace folder",
+			matchOnDescription: true,
+		},
+	);
+
+	return selected?.folder.uri.fsPath;
+};

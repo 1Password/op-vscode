@@ -15,6 +15,7 @@ export const COMMANDS = {
 	INJECT_SECRETS: makeCommand("injectSecrets"),
 	CREATE_PASSWORD: makeCommand("createPassword"),
 	OPEN_LOGS: makeCommand("openLogs"),
+	IMPORT_PROJECT: makeCommand("importProject"),
 };
 
 // This is only internal in that it is not exposed to the

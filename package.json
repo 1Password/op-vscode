@@ -92,6 +92,11 @@
 				"command": "op-vscode.openLogs",
 				"title": "Open logs",
 				"category": "1Password"
+			},
+			{
+				"command": "op-vscode.importProject",
+				"title": "Import project",
+				"category": "1Password"
 			}
 		],
 		"configuration": [

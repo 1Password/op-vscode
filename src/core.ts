@@ -9,6 +9,7 @@ import { Items } from "./items";
 import { logger } from "./logger";
 import { Setup } from "./setup";
 import { createOpenOPHandler, OpvsUriHandler } from "./url-utils";
+import { Environments } from "./environments";
 
 export class Core {
 	public cli: CLI;
@@ -34,6 +35,7 @@ export class Core {
 
 		new Editor(this);
 		new Injection(this);
+		new Environments(this);
 
 		void this.setup.configure();
 	}
