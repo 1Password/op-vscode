@@ -22,6 +22,7 @@
 	},
 	"scripts": {
 		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production pnpm compile",
+		"commitlint": "commitlint --edit",
 		"compile": "node -r esbuild-register compile.ts",
 		"eslint": "cross-env eslint -c .eslintrc.json \"src/**/*.ts\"",
 		"prettier": "prettier --check src/",
@@ -158,6 +159,9 @@
 	"devDependencies": {
 		"@1password/eslint-config": "^4.3.0",
 		"@1password/prettier-config": "^1.1.3",
+		"@commitlint/cli": "^20.0.0",
+		"@commitlint/config-conventional": "^20.0.0",
+		"@commitlint/types": "^20.0.0",
 		"@types/jest": "^27.4.1",
 		"@types/json-to-ast": "^2.1.2",
 		"@types/node": "^22.10.0",

@@ -1,0 +1,6 @@
+type: Added
+issues: []
+description: Set up commitlint and workflow to enforce commit messages that align with our changelog patterns
+public: true
+tags:
+  - None

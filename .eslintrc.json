@@ -5,6 +5,9 @@
 			"files": [
 				"*.ts"
 			],
+			"excludedFiles": [
+				"commitlint.config.ts"
+			],
 			"parserOptions": {
 				"project": [
 					"./tsconfig.json"

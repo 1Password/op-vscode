@@ -7,8 +7,15 @@
 		"resolveJsonModule": true,
 		"noEmit": true,
 		"noImplicitAny": false,
-		"types": ["node", "jest"],
+		"types": [
+			"node",
+			"jest"
+		],
 		"baseUrl": "."
 	},
-	"include": ["src/", "test/"]
+	"include": [
+		"src/",
+		"test/",
+		"*.ts"
+	]
 }
