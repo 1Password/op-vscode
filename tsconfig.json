@@ -1,21 +1,27 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"allowJs": true,
-		"esModuleInterop": true,
-		"moduleResolution": "Node",
-		"resolveJsonModule": true,
-		"noEmit": true,
-		"noImplicitAny": false,
+		"target": "ES2022",
+		"module": "ES2022",
+		"lib": [
+			"ES2022",
+			"DOM"
+		],
+		"moduleResolution": "Bundler",
+		"strict": true,
 		"types": [
 			"node",
-			"jest"
+			"vscode"
 		],
+		"skipLibCheck": true,
+		"outDir": "out",
 		"baseUrl": "."
 	},
 	"include": [
-		"src/",
-		"test/",
-		"*.ts"
+		"src/**/*.ts",
+		"scripts/**/*.ts",
+		"*.config.ts"
+	],
+	"exclude": [
+		"**/*.test.ts"
 	]
 }
