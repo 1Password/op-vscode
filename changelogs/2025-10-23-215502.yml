@@ -1,0 +1,6 @@
+type: Changed
+issues: []
+description: Migrated changelog scripts tp TypeScript
+public: true
+tags:
+  - None

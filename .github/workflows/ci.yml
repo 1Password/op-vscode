@@ -73,6 +73,7 @@ jobs:
     name: Validate Changelog
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,9 +99,17 @@ jobs:
             echo "EOF" >> $GITHUB_OUTPUT
           fi
 
+      - name: Setup Node.js and pnpm
+        if: steps.check-changelog.outputs.changelog_changed == 'true'
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
       - name: Validate changelog format
         if: steps.check-changelog.outputs.changelog_changed == 'true'
-        run: ./scripts/validate-changelog.sh
+        run: make validate-changelog
 
       - name: Fail if no changelog changes
         if: steps.check-changelog.outputs.changelog_changed == 'false'
