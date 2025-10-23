@@ -1,0 +1,7 @@
+app_name: op-vscode
+public: public
+tags:
+    replace_existing: true
+    additional:
+        - Web
+        - Desktop
