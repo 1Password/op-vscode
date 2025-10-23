@@ -12,8 +12,8 @@ const badCommand = jest.fn().mockImplementation(() => {
 	throw error;
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 jest.mock("@1password/op-js", () => ({
-	// @ts-expect-error ok bud
 	...jest.requireActual("@1password/op-js"),
 	setClientInfo: jest.fn(),
 	validateCli: jest.fn(),

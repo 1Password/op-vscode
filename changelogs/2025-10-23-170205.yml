@@ -1,0 +1,6 @@
+type: Changed
+issues: []
+description: Updated Node to vv22.18.0, TypeScript to v5.9.3
+public: true
+tags:
+  - None
