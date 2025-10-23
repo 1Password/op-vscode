@@ -1,0 +1,6 @@
+type: Added
+issues: []
+description: Added a new worklow to require signed Git commits
+public: true
+tags:
+  - None
