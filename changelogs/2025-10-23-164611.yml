@@ -1,0 +1,6 @@
+type: Added
+issues: []
+description: Added new workflow to verify changelogs in pull requests
+public: true
+tags:
+  - None
