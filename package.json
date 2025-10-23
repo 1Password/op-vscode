@@ -21,15 +21,15 @@
 		"node": "^18.18.0"
 	},
 	"scripts": {
-		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production yarn compile",
+		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production pnpm compile",
 		"compile": "node -r esbuild-register compile.ts",
 		"eslint": "cross-env eslint -c .eslintrc.json \"src/**/*.ts\"",
 		"prepare": "husky install",
 		"prettier": "prettier --check src/",
 		"test": "jest",
 		"typecheck": "tsc --noEmit",
-		"vscode:prepublish": "yarn build",
-		"watch": "yarn compile --watch"
+		"vscode:prepublish": "pnpm build",
+		"watch": "pnpm compile --watch"
 	},
 	"keywords": [
 		"1password",

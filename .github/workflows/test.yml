@@ -9,8 +9,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 18
-      - run: yarn
-      - run: yarn typecheck
-      - run: yarn eslint
-      - run: yarn prettier
-      - run: yarn test
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+      - run: pnpm install
+      - run: pnpm typecheck
+      - run: pnpm eslint
+      - run: pnpm prettier
+      - run: pnpm test

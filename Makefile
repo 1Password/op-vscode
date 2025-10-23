@@ -6,22 +6,22 @@ help: ## List available commands and their actions
 
 .PHONY: build
 build: ## Build source code for production
-	yarn build
+	pnpm run build
 
 .PHONY: watch
 watch: ## Build the extension whenever files change
-	yarn watch
+	pnpm run watch
 
 .PHONY: install i
 install i: ## Install project dependencies
-	yarn
+	pnpm install
 
 .PHONY: analysis
 analysis: ## Run static analysis checks against all files
-	yarn eslint
-	yarn prettier
-	yarn typecheck
+	pnpm run eslint
+	pnpm run prettier
+	pnpm run typecheck
 
 .PHONY: test
 test: ## Run test suite
-	yarn test
+	pnpm run test

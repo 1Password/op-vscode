@@ -1,0 +1,7 @@
+# PNPM configuration for op-vscode
+# Use strict peer dependencies to avoid issues
+strict-peer-dependencies=false
+# Use the same registry as before
+registry=https://registry.npmjs.org/
+# Store dependencies in node_modules for compatibility
+node-linker=hoisted

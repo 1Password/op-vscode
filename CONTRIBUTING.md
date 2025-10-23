@@ -11,7 +11,7 @@ Requires [Node](https://nodejs.org/en/) and [VS Code](https://code.visualstudio.
 To install dependencies:
 
 ```shell
-yarn # or yarn install
+pnpm install
 ```
 
 ### Running locally
@@ -19,7 +19,7 @@ yarn # or yarn install
 While you're working on the extension you should watch for changes:
 
 ```shell
-yarn watch
+pnpm watch
 ```
 
 This will recompile the extension into the `/dist` folder whenever a file changes.
@@ -32,13 +32,13 @@ Code should be linted and formatted where appropriate. We have commands for all 
 
 ```shell
 # Run Prettier on all TS files
-yarn prettier
+pnpm prettier
 
 # Run ESLint on all TS files
-yarn eslint
+pnpm eslint
 
 # Typecheck all TS files
-yarn typecheck
+pnpm typecheck
 ```
 
 The above commands will only return linting reports. You can optionally attach the appropriate `--fix` / `--write` flag when running the commands, which will modify the files to fix issues that can be done so automatically. Some issues will need to be manually addressed.
@@ -59,13 +59,13 @@ This project uses [Jest](https://jestjs.io/). Commands are pretty straightforwar
 
 ```shell
 # Run the entire test suite
-yarn test
+pnpm test
 
 # Run the test suite, re-running on changes
-yarn test --watch
+pnpm test --watch
 
 # Run only tests that have a specific description
-yarn test -t="returns the custom fields"
+pnpm test -t="returns the custom fields"
 ```
 
 ## Distribution
@@ -78,7 +78,7 @@ You should only need to do the following on the `main` branch:
 
 ```shell
 # Replace VERSION with the version you are bumping to
-yarn version --new-version VERSION && git push
+pnpm version VERSION && git push
 ```
 
 This will:
@@ -98,7 +98,7 @@ If you need to build and package up the extension for manual distribution outsid
 vsce package
 ```
 
-This will run `yarn build` to create a minified version of the extension, and then package it up into a file called `op-vscode-[version].vsix`. This is just a ZIP file with a fancy extension, but with it anyone can install the extension manually by going to the Extension panel, opening the context menu, and clicking "Install from VSIX...".
+This will run `pnpm build` to create a minified version of the extension, and then package it up into a file called `op-vscode-[version].vsix`. This is just a ZIP file with a fancy extension, but with it anyone can install the extension manually by going to the Extension panel, opening the context menu, and clicking "Install from VSIX...".
 
 ## Acknowledgments
 

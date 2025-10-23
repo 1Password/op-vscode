@@ -15,7 +15,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: yarn install --frozen-lockfile
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+      - run: pnpm install --frozen-lockfile
       # - name: Publish to Open VSX Registry
       #   uses: HaaLeo/publish-vscode-extension@v1
       #   with:
@@ -26,7 +29,7 @@ jobs:
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
-          yarn: true
+          yarn: false
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
