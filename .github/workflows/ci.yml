@@ -1,0 +1,138 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: 22
+  PNPM_VERSION: 10
+
+jobs:
+  setup:
+    name: Setup Dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-deps.outputs.cache-key }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        id: setup
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+
+      - name: Set cache key output
+        id: cache-deps
+        run: echo "cache-key=${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}" >> $GITHUB_OUTPUT
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Run static analysis
+        run: make analysis
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Run tests
+        run: make test
+
+  # Below are for PRs only
+
+  validate-changelog:
+    name: Validate Changelog
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changelog changes
+        id: check-changelog
+        run: |
+          # Get the list of changed files in the PR
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          CHANGELOG_CHANGES=$(echo "$CHANGED_FILES" | grep "^changelogs/" || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changelog files were changed"
+            echo "changelog_changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found changelog changes:"
+            echo "$CHANGELOG_CHANGES"
+            echo "changelog_changed=true" >> $GITHUB_OUTPUT
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG_CHANGES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate changelog format
+        if: steps.check-changelog.outputs.changelog_changed == 'true'
+        run: ./scripts/validate-changelog.sh
+
+      - name: Fail if no changelog changes
+        if: steps.check-changelog.outputs.changelog_changed == 'false'
+        run: |
+          echo "This PR does not include any changelog changes"
+          echo "Please add at least one changelog file in the /changelogs directory"
+          echo "Each changelog file must have 'public: true' set"
+          exit 1
+
+  verify-commits:
+    name: Verify Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: setup
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check signed commits in PR
+        uses: 1Password/check-signed-commits-action@v1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-key: ${{ needs.setup.outputs.cache-key }}
+
+      - name: Run commitlint
+        run: make commitlint

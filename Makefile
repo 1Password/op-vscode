@@ -25,3 +25,11 @@ analysis: ## Run static analysis checks against all files
 .PHONY: test
 test: ## Run test suite
 	pnpm run test
+
+.PHONY: commitlint
+commitlint: ## Validate commit messages using commitlint
+	pnpm exec commitlint --from HEAD~1 --to HEAD --verbose
+
+.PHONY: validate-changelog
+validate-changelog: ## Validate changelog file structure
+	./scripts/validate-changelog.sh

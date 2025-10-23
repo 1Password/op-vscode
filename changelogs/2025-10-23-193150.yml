@@ -1,0 +1,6 @@
+type: Changed
+issues: []
+description: Refactored and consolidated GitHub workflows to cover pushes, PRs, and releases
+public: true
+tags:
+  - None
