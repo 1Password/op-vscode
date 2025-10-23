@@ -1,4 +1,4 @@
-import { createDocument } from "../../test/utils";
+import { createDocument } from "../../../test/utils";
 import { config } from "../configuration";
 import DotEnvParser, * as dotEnvParser from "../secret-detection/parsers/dotenv";
 import GenericParser, * as genericParser from "../secret-detection/parsers/generic";

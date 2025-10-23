@@ -1,5 +1,5 @@
-import pckg from "../package.json";
-import { configGet, configUpdate, workspace } from "../test/vscode-mock";
+import pckg from "../../package.json";
+import { configGet, configUpdate, workspace } from "../../test/vscode-mock";
 import { config, ConfigKey } from "./configuration";
 import { CONFIG_NAMESPACE } from "./constants";
 

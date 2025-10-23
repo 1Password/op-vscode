@@ -1,6 +1,6 @@
-import { createItem, createItemField } from "../test/factories";
-import { generateUUID } from "../test/utils";
-import { commands, configGet, env, window } from "../test/vscode-mock";
+import { createItem, createItemField } from "../../test/factories";
+import { generateUUID } from "../../test/utils";
+import { commands, configGet, env, window } from "../../test/vscode-mock";
 import {
 	COMMANDS,
 	NONSENSITIVE_FIELD_TYPES,

@@ -1,6 +1,6 @@
 import { DocumentLink } from "vscode";
-import { createDocument } from "../../test/utils";
-import * as vscode from "../../test/vscode-mock";
+import { createDocument } from "../../../test/utils";
+import * as vscode from "../../../test/vscode-mock";
 import * as urlUtils from "../url-utils";
 import { UriAction } from "../url-utils";
 import { provideDocumentLinks } from "./document-link";

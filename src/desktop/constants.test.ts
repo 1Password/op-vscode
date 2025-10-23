@@ -1,4 +1,4 @@
-import pckg from "../package.json";
+import pckg from "../../package.json";
 import { COMMANDS, REGEXP } from "./constants";
 
 describe("COMMANDS", () => {

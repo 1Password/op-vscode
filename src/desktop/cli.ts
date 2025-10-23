@@ -1,7 +1,7 @@
 import { setClientInfo, validateCli, ValidationError } from "@1password/op-js";
 import { default as open } from "open";
 import { window } from "vscode";
-import { version } from "../package.json";
+import { version } from "../../package.json";
 import { URLS } from "./constants";
 import { logger } from "./logger";
 import { endWithPunctuation, semverToInt } from "./utils";

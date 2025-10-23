@@ -1,0 +1,7 @@
+type: Changed
+issues: []
+description: Refactored build and publish system, now supports web and desktop
+public: true
+tags:
+  - Web
+  - Desktop

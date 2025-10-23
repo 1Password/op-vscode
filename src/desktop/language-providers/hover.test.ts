@@ -1,6 +1,6 @@
 import { format as formatTime } from "timeago.js";
 import { Hover, Position, TextDocument } from "vscode";
-import * as vscode from "../../test/vscode-mock";
+import * as vscode from "../../../test/vscode-mock";
 import { Core } from "../core";
 import { ReferenceMetaData } from "../items";
 import { formatTitle } from "../utils";

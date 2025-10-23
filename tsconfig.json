@@ -11,14 +11,17 @@
 		"skipLibCheck": true,
 		"outDir": "out",
 		"baseUrl": ".",
-		"typeRoots": ["./node_modules/@types", "./test"]
+		"typeRoots": ["./node_modules/@types", "./test"],
+		"paths": {
+			"~/shared": ["src/shared/index.ts"],
+			"~/shared/*": ["src/shared/*"]
+		}
 	},
 	"include": [
 		"src/**/*.ts",
 		"scripts/**/*.ts",
 		"test/**/*.ts",
 		"test/**/*.d.ts",
-		"compile.ts",
 		"*.config.ts"
 	]
 }

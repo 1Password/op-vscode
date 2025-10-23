@@ -1,4 +1,4 @@
-import { window } from "../test/vscode-mock";
+import { window } from "../../test/vscode-mock";
 import { logger } from "./logger";
 
 describe("Logger", () => {

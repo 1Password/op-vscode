@@ -1,5 +1,5 @@
 import { stringify as yamlStringify } from "yaml";
-import { createDocument } from "../../../test/utils";
+import { createDocument } from "../../../../test/utils";
 import { createParserData, expectParserMatches } from "./test-utils";
 import YamlParser from "./yaml";
 

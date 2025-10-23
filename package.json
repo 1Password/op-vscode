@@ -6,7 +6,8 @@
 	"license": "MIT",
 	"publisher": "1Password",
 	"icon": "logo.png",
-	"main": "./dist/extension.js",
+	"main": "./dist/desktop/extension.js",
+	"browser": "./dist/web/extension.js",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/1Password/op-vscode"
@@ -14,26 +15,32 @@
 	"homepage": "https://github.com/1Password/op-vscode",
 	"qna": "https://developer.1password.com/docs/vscode",
 	"extensionKind": [
-		"ui"
+		"ui",
+		"workspace"
 	],
 	"engines": {
 		"vscode": "^1.66.0",
 		"node": "^22.18.0"
 	},
 	"scripts": {
-		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production pnpm compile",
+		"build:desktop": "tsx scripts/build-desktop.ts",
+		"build:web": "tsx scripts/build-web.ts",
+		"clean": "rm -rf dist/",
 		"commitlint": "commitlint --edit",
-		"compile": "node -r esbuild-register compile.ts",
-		"lint:fix": "eslint . --fix",
-		"lint": "eslint .",
 		"format:fix": "prettier --write .",
 		"format": "prettier --check .",
+		"lint:fix": "eslint . --fix",
+		"lint": "eslint .",
+		"package:prepare": "pnpm run clean && npm-run-all -p build:*",
+		"package": "npx @vscode/vsce package -o ./dist",
 		"test": "jest",
 		"typecheck": "tsc --noEmit",
-		"vscode:prepublish": "pnpm build",
-		"watch": "pnpm compile --watch",
+		"update-changelog": "tsx scripts/update-changelog.ts",
 		"validate-changelog": "tsx scripts/validate-changelog.ts",
-		"update-changelog": "tsx scripts/update-changelog.ts"
+		"vscode:prepublish": "pnpm run package:prepare",
+		"watch:desktop": "pnpm run build:desktop --watch",
+		"watch:types": "tsc -p tsconfig.json --noEmit --watch",
+		"watch:web": "pnpm run build:web --watch"
 	},
 	"keywords": [
 		"1password",
@@ -148,7 +155,7 @@
 		},
 		"snippets": [
 			{
-				"path": "./src/op-vscode.code-snippets"
+				"path": "./op-vscode.code-snippets"
 			}
 		]
 	},
@@ -173,15 +180,17 @@
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
 		"cross-env": "^7.0.3",
-		"esbuild": "^0.21.3",
-		"esbuild-register": "^3.5.0",
+		"esbuild": "^0.25.10",
 		"eslint": "^9.37.0",
 		"eslint-config-prettier": "9.1.0",
+		"eslint-import-resolver-typescript": "^4.4.4",
+		"eslint-plugin-import-x": "^4.16.1",
 		"eslint-plugin-jest": "^29.0.1",
 		"eslint-plugin-prettier": "5.2.1",
 		"fishery": "^2.2.2",
 		"jest": "^27.5.1",
 		"license-checker-rseidelsohn": "^4.3.0",
+		"npm-run-all": "^4.1.5",
 		"prettier": "3.6.2",
 		"prettier-plugin-organize-imports": "^3.2.4",
 		"ts-jest": "^29.1.3",

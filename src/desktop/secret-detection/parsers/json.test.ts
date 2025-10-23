@@ -1,4 +1,4 @@
-import { createDocument } from "../../../test/utils";
+import { createDocument } from "../../../../test/utils";
 import JsonParser from "./json";
 import { createParserData, expectParserMatches } from "./test-utils";
 

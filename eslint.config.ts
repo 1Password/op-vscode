@@ -3,6 +3,7 @@ import tseslint from "typescript-eslint";
 import type { Linter } from "eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 import jestPlugin from "eslint-plugin-jest";
+import { importX } from "eslint-plugin-import-x";
 
 const config: Linter.Config[] = [
 	eslintConfigPrettier as Linter.Config,
@@ -15,8 +16,109 @@ const config: Linter.Config[] = [
 				projectService: true,
 			},
 		},
+	},
+	importX.flatConfigs.recommended,
+	importX.flatConfigs.typescript,
+	{
 		rules: {
 			"no-case-declarations": "off",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{
+					argsIgnorePattern: "^_",
+					varsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_",
+				},
+			],
+		},
+	},
+	{
+		files: ["src/shared/**/*.ts", "src/web/**/*.ts"],
+		rules: {
+			"no-restricted-imports": [
+				"error",
+				{
+					patterns: [
+						{
+							group: [
+								"fs",
+								"fs/*",
+								"path",
+								"os",
+								"child_process",
+								"crypto",
+								"stream",
+								"util",
+								"events",
+								"buffer",
+								"process",
+								"node:*",
+								"worker_threads",
+								"module",
+								"cluster",
+								"dgram",
+								"dns",
+								"http",
+								"https",
+								"net",
+								"readline",
+								"repl",
+								"tls",
+								"tty",
+								"url",
+								"v8",
+								"vm",
+								"zlib",
+							],
+							message:
+								"Node.js built-in modules must not be used in code that can run in web environments.",
+						},
+					],
+				},
+			],
+			"no-restricted-globals": [
+				"error",
+				{
+					name: "process",
+					message:
+						"'process' is a Node.js global and must not be used in code that can run in web environments.",
+				},
+				{
+					name: "Buffer",
+					message:
+						"'Buffer' is a Node.js global and must not be used in code that can run in web environments.",
+				},
+				{
+					name: "__dirname",
+					message:
+						"'__dirname' is a Node.js global and must not be used in code that can run in web environments.",
+				},
+				{
+					name: "__filename",
+					message:
+						"'__filename' is a Node.js global and must not be used in code that can run in web environments.",
+				},
+				{
+					name: "global",
+					message:
+						"'global' is a Node.js global and must not be used in code that can run in web environments. Use 'globalThis' instead for cross-platform compatibility.",
+				},
+				{
+					name: "require",
+					message:
+						"'require' is a Node.js CommonJS function and must not be used in code that can run in web environments. Use ES6 imports instead.",
+				},
+				{
+					name: "module",
+					message:
+						"'module' is a Node.js CommonJS object and must not be used in code that can run in web environments.",
+				},
+				{
+					name: "exports",
+					message:
+						"'exports' is a Node.js CommonJS object and must not be used in code that can run in web environments. Use ES6 exports instead.",
+				},
+			],
 		},
 	},
 	{

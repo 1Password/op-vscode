@@ -1,5 +1,5 @@
 import { ExtensionContext } from "vscode";
-import pckg from "../package.json";
+import pckg from "../../package.json";
 import { config } from "./configuration";
 import * as core from "./core";
 import { activate } from "./extension";

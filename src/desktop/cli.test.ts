@@ -1,6 +1,6 @@
 import * as opjs from "@1password/op-js";
-import { version } from "../package.json";
-import { window } from "../test/vscode-mock";
+import { version } from "../../package.json";
+import { window } from "../../test/vscode-mock";
 import { CLI, createErrorHandler } from "./cli";
 import { logger } from "./logger";
 import { semverToInt } from "./utils";

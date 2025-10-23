@@ -1,4 +1,4 @@
-import { createDocument, sample } from "../../../test/utils";
+import { createDocument, sample } from "../../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
 import GenericParser from "./generic";

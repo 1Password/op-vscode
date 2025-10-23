@@ -1,8 +1,8 @@
 import { Parser } from ".";
-import { sample } from "../../../test/utils";
+import { sample } from "../../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
 import { PatternSuggestion } from "../suggestion";
-import testData from "./../pattern-test-data.json";
+import testData from "../pattern-test-data.json";
 
 interface ParserDataSet<TContent> {
 	content: TContent;

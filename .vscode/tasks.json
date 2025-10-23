@@ -2,16 +2,120 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "watch",
-      "problemMatcher": "$tsc-watch",
-      "isBackground": true,
+      "label": "watch:types",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "watch:types"
+      ],
+      "group": "build",
       "presentation": {
-        "reveal": "never"
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
       },
-      "group": {
-        "kind": "build",
-        "isDefault": true
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "source": "ts",
+        "applyTo": "closedDocuments",
+        "fileLocation": "relative",
+        "pattern": {
+          "regexp": "^(.*)\\((\\d+),(\\d+)\\):\\s+(error|warning|info)\\s+TS(\\d+)\\s*:\\s*(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[\\d+:\\d+:\\d+\\s+[AP]M\\]\\s+Starting compilation in watch mode\\.\\.\\.$",
+          "endsPattern": "^\\[\\d+:\\d+:\\d+\\s+[AP]M\\]\\s+Found \\d+ errors?\\. Watching for file changes\\.$"
+        }
+      }
+    },
+    {
+      "label": "watch:desktop",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "watch:desktop"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "dependsOn": "watch:types",
+      "problemMatcher": {
+        "owner": "esbuild",
+        "source": "esbuild",
+        "applyTo": "closedDocuments",
+        "fileLocation": "relative",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(error|warning|info):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^> op-vscode@.* watch:desktop.*$",
+          "endsPattern": "^Watching for file changes\\.\\.\\.$"
+        }
+      }
+    },
+    {
+      "label": "watch:web",
+      "type": "shell",
+      "command": "pnpm",
+      "args": [
+        "run",
+        "watch:web"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "dependsOn": "watch:types",
+      "problemMatcher": {
+        "owner": "esbuild",
+        "source": "esbuild",
+        "applyTo": "closedDocuments",
+        "fileLocation": "relative",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(error|warning|info):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^> op-vscode@.* watch:web.*$",
+          "endsPattern": "^Watching for file changes\\.\\.\\.$"
+        }
       }
     }
   ]

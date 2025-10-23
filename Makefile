@@ -5,11 +5,21 @@ help: ## List available commands and their actions
 	@eval $$(sed -E -n 's/^([a-zA-Z0-9_-]+):.*## (.*)$$/printf "%-20s%s\\n" " \1" " \2" ;/p; s/^([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+):.*## (.*)$$/printf "%-20s%s\\n" " \1 OR \2" " \3" ;/p' $(MAKEFILE_LIST) | sort | uniq)
 
 .PHONY: build
-build: ## Build source code for production
-	pnpm run build
+build: clean ## Build the extension
+	pnpm run build:desktop
+	pnpm run build:web
 
-.PHONY: watch
-watch: ## Build the extension whenever files change
+.PHONY: build/prod
+build/prod: clean ## Build the extension (production)
+	NODE_ENV=production pnpm run build:desktop
+	NODE_ENV=production pnpm run build:web
+
+.PHONY: package
+package: ## Package the extension (production)
+	pnpm run package
+
+.PHONY: dev watch
+watch dev: ## Start development mode
 	pnpm run watch
 
 .PHONY: install i
@@ -60,3 +70,7 @@ update-changelog: ## Update CHANGELOG.md from changelog files
 
 update-changelog/clean: ## Update CHANGELOG.md from changelog files and clean up changelog files
 	pnpm run update-changelog --clean
+
+.PHONY: clean
+clean: ## Clean build artifacts
+	pnpm run clean

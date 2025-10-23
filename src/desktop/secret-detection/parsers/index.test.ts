@@ -4,7 +4,7 @@ import {
 	suggestionFromKey,
 	validValueIsolation,
 } from ".";
-import { sample } from "../../../test/utils";
+import { sample } from "../../../../test/utils";
 import { getPatternSuggestion } from "../patterns";
 import { BRANDS } from "../suggestion";
 
