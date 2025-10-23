@@ -1,0 +1,6 @@
+type: Removed
+issues: []
+description: Removed husky, lint-staged to make development easier
+public: true
+tags:
+  - None

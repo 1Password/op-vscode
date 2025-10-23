@@ -24,7 +24,6 @@
 		"build": "license-checker-rseidelsohn --direct --files licenses && cross-env NODE_ENV=production pnpm compile",
 		"compile": "node -r esbuild-register compile.ts",
 		"eslint": "cross-env eslint -c .eslintrc.json \"src/**/*.ts\"",
-		"prepare": "husky install",
 		"prettier": "prettier --check src/",
 		"test": "jest",
 		"typecheck": "tsc --noEmit",
@@ -149,14 +148,6 @@
 		]
 	},
 	"prettier": "@1password/prettier-config",
-	"lint-staged": {
-		"src/**/*": [
-			"prettier --write"
-		],
-		"src/**/*.ts": [
-			"eslint -c .eslintrc.json --fix"
-		]
-	},
 	"dependencies": {
 		"@1password/op-js": "^0.1.13",
 		"json-to-ast": "^2.1.0",
@@ -178,10 +169,8 @@
 		"esbuild-register": "^3.5.0",
 		"eslint": "^8.57.0",
 		"fishery": "^2.2.2",
-		"husky": "^9.0.11",
 		"jest": "^27.5.1",
 		"license-checker-rseidelsohn": "^4.3.0",
-		"lint-staged": "^15.2.4",
 		"prettier": "^3.2.5",
 		"prettier-plugin-organize-imports": "^3.2.4",
 		"ts-jest": "^29.1.3",

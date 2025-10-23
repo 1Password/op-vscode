@@ -1,7 +1,6 @@
 .eslintrc
 .gitignore
 .github/
-.husky/
 .nvmrc
 .prettierignore
 .prettierrc

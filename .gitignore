@@ -3,5 +3,4 @@ dist/
 coverage/
 *.vsix
 *.zip
-.husky/_/husky.sh
 licenses/

@@ -43,14 +43,6 @@ pnpm typecheck
 
 The above commands will only return linting reports. You can optionally attach the appropriate `--fix` / `--write` flag when running the commands, which will modify the files to fix issues that can be done so automatically. Some issues will need to be manually addressed.
 
-#### Pre-commit checks
-
-This project is set up to use [Husky](https://typicode.github.io/husky/), which allows us to hook into Git operations, and [lint-staged](https://www.npmjs.com/package/lint-staged), a way to run commands against globs of files staged in Git.
-
-When you run `git commit` Husky invokes its pre-commit hook, which runs lint-staged, resulting in all the above linter commands getting called with flags set to automatically fix issues. If the linters have issues that can't be automatically addressed the commit will be aborted, giving you a chance to manually fix things. The purpose of this is to enforce code consistency across the project.
-
-There may come a time when you need to skip these checks; to prevent the pre-commit hook from running add `--no-verify` to your commit command.
-
 ### Testing
 
 Code should be reasonably tested. We do not currently have any required coverage threshold, but if you are adding new or changing existing functionality you should consider writing/updating tests.
