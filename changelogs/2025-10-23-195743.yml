@@ -1,0 +1,6 @@
+type: Added
+issues: []
+description: Set up CHANGELOG file generation from ./changelogs directory
+public: true
+tags:
+  - None

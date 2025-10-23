@@ -33,3 +33,10 @@ commitlint: ## Validate commit messages using commitlint
 .PHONY: validate-changelog
 validate-changelog: ## Validate changelog file structure
 	./scripts/validate-changelog.sh
+
+.PHONY: update-changelog
+update-changelog: ## Update CHANGELOG.md from changelog files
+	./scripts/update-changelog.sh
+
+update-changelog/clean: ## Update CHANGELOG.md from changelog files and clean up changelog files
+	./scripts/update-changelog.sh --clean
