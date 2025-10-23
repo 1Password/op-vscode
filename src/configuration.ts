@@ -28,7 +28,6 @@ class Config {
 		);
 	}
 
-	/* eslint-disable-next-line @typescript-eslint/naming-convention */
 	private _onDidChange = new EventEmitter<ConfigurationChangeEvent>();
 	public get onDidChange(): Event<ConfigurationChangeEvent> {
 		return this._onDidChange.event;
@@ -41,10 +40,10 @@ class Config {
 	}
 
 	public get<T extends ConfigItems[keyof ConfigItems]>(section: ConfigKey): T {
-		return workspace.getConfiguration(CONFIG_NAMESPACE).get<T>(section);
+		return workspace.getConfiguration(CONFIG_NAMESPACE).get<T>(section) as T;
 	}
 
-	public set(section: ConfigKey | string, value: any): Thenable<void> {
+	public set(section: ConfigKey | string, value: unknown): Thenable<void> {
 		return workspace.getConfiguration(CONFIG_NAMESPACE).update(section, value);
 	}
 }

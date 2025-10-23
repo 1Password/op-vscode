@@ -60,12 +60,13 @@ describe("matchFromRegexp", () => {
 		const exampleUuid = "49ff1802-9bb4-4cc1-9093-f790e7663399";
 		const brand = "Heroku";
 		const suggestion = getPatternSuggestion("uuid");
-		suggestion.item = brand;
+		expect(suggestion).toBeDefined();
+		suggestion!.item = brand;
 		const match = matchFromRegexp(`${brand} ${exampleUuid}`, true);
 		expect(match).toEqual({
 			value: exampleUuid,
 			index: brand.length + 1,
-			suggestion,
+			suggestion: suggestion!,
 		});
 	});
 });

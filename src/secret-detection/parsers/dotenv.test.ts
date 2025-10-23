@@ -28,9 +28,10 @@ describe("DotEnvParser", () => {
 
 	it("gets suggestions from known field pattern, implied brand name", () => {
 		const suggestion = getPatternSuggestion("ccard");
+		expect(suggestion).toBeDefined();
 		const brand = sample(BRANDS);
 		const value = "4012888888881881";
-		suggestion.item = brand;
+		suggestion!.item = brand;
 
 		const document = createDocument([`${brand}=${value}`]);
 		const parser = new DotEnvParser(document);
@@ -39,7 +40,7 @@ describe("DotEnvParser", () => {
 			{
 				content: value,
 				value,
-				suggestion,
+				suggestion: suggestion!,
 			},
 		]);
 	});

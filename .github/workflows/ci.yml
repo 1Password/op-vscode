@@ -47,7 +47,7 @@ jobs:
           cache-key: ${{ needs.setup.outputs.cache-key }}
 
       - name: Run static analysis
-        run: make analysis
+        run: make static-analysis
 
   test:
     name: Test

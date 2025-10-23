@@ -1,15 +1,3 @@
-// Hack so we can augment global namespace type
-export {};
-
-declare global {
-	namespace jest {
-		interface Matchers<R, T> {
-			toMatchRegExp(pattern: RegExp, exact?: string): R;
-			toHaveRegExpParts(pattern: RegExp, ...parts: string[]): R;
-		}
-	}
-}
-
 expect.extend({
 	toMatchRegExp: (receivedInput: string, pattern: RegExp, exact?: string) => {
 		const match = receivedInput.match(pattern);

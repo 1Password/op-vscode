@@ -85,9 +85,8 @@ export class Items {
 			return;
 		}
 
-		const fieldsWithValues = vaultItem.fields.filter((field) =>
-			Boolean(field.value),
-		);
+		const fieldsWithValues =
+			vaultItem.fields?.filter((field) => Boolean(field.value)) || [];
 		if (fieldsWithValues.length === 0) {
 			await window.showWarningMessage("This item has no fields with values.");
 			return;
@@ -105,15 +104,17 @@ export class Items {
 			return;
 		}
 
-		const field = vaultItem.fields.find((f) => f.label === fieldValue);
-		return this.getItemCallback(field);
+		const field = vaultItem.fields?.find((f) => f.label === fieldValue);
+		if (field) {
+			return this.getItemCallback(field);
+		}
 	}
 
 	public async getReferenceMetadata(
 		vaultId: string,
 		itemId: string,
 		fieldIdOrLabel: string,
-	): Promise<ReferenceMetaData> {
+	): Promise<ReferenceMetaData | undefined> {
 		if (await this.core.cli.isInvalid()) {
 			return;
 		}
@@ -131,7 +132,7 @@ export class Items {
 			throw new Error("Could not find vault item.");
 		}
 
-		const field = vaultItem.fields.find(
+		const field = vaultItem.fields?.find(
 			(f) => f.id === fieldIdOrLabel || f.label === fieldIdOrLabel,
 		);
 
@@ -170,7 +171,7 @@ export class Items {
 
 		const generatePassword = input === generatePasswordArg;
 
-		let titleSuggestion: string;
+		let titleSuggestion: string | undefined;
 		if (input.length === 1 && !generatePassword && input[0].suggestion?.item) {
 			titleSuggestion = formatTitle(input[0].suggestion.item);
 		}
@@ -229,7 +230,7 @@ export class Items {
 	private async getItemCallback(field: Field): Promise<void> {
 		const editor = window.activeTextEditor;
 		const selections = editor?.selections;
-		if (!editor || selections.length === 0) {
+		if (!editor || !selections || selections.length === 0) {
 			await env.clipboard.writeText(field.value);
 			await window.showInformationMessage(
 				"Copied vault item value to the clipboard.",
@@ -247,7 +248,7 @@ export class Items {
 				for (const selection of selections) {
 					editBuilder.replace(
 						selection,
-						useReference ? field.reference : field.value,
+						useReference ? field.reference! : field.value,
 					);
 				}
 			});
@@ -262,16 +263,15 @@ export class Items {
 			await window.showErrorMessage(
 				"Please make a selection to save its value.",
 			);
-			return;
+			return [];
 		}
 
 		return selections.map((selection) => ({
-			fieldValue: editor.document.getText(selection),
+			fieldValue: editor!.document.getText(selection),
 			location: selection,
 		}));
 	}
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	private async createFieldAssignments(
 		input: SaveItemInput[],
 	): Promise<FieldAssignment[]> {
@@ -340,16 +340,18 @@ export class Items {
 
 		if (input === generatePasswordArg) {
 			const selections = editor?.selections;
-			if (selections.length === 1) {
-				const field = vaultItem.fields.find(
+			if (selections && selections.length === 1) {
+				const field = vaultItem.fields?.find(
 					(field) => field.label === "password",
 				);
-				await editor.edit((editBuilder) =>
-					editBuilder.insert(
-						selections[0].active,
-						useReference ? field.reference : field.value,
-					),
-				);
+				if (field) {
+					await editor.edit((editBuilder) =>
+						editBuilder.insert(
+							selections[0].active,
+							useReference ? field.reference! : field.value,
+						),
+					);
+				}
 			}
 
 			return;
@@ -360,12 +362,14 @@ export class Items {
 				const { fieldValue, location } = set;
 				// TODO: this is finding by value, so if there are two items with the
 				// same value this will break. Find a better way to find the field
-				const field = vaultItem.fields.find(
+				const field = vaultItem.fields?.find(
 					(field) => field.value === fieldValue,
 				);
-				await editor.edit((editBuilder) =>
-					editBuilder.replace(location, field.reference),
-				);
+				if (field) {
+					await editor.edit((editBuilder) =>
+						editBuilder.replace(location, field.reference!),
+					);
+				}
 			}
 		}
 	}

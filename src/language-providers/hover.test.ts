@@ -1,5 +1,5 @@
 import { format as formatTime } from "timeago.js";
-import { Hover } from "vscode";
+import { Hover, Position, TextDocument } from "vscode";
 import * as vscode from "../../test/vscode-mock";
 import { Core } from "../core";
 import { ReferenceMetaData } from "../items";
@@ -36,17 +36,13 @@ const mockMetaData: ReferenceMetaData = {
 	},
 };
 
-const createHover = async (textAtLine: string): Promise<Hover> =>
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+const createHover = async (textAtLine: string): Promise<Hover | undefined> =>
 	await provideHover.call(
 		core as unknown as Core,
 		{
 			lineAt: () => ({ text: textAtLine }),
-		},
-		{
-			line: 1,
-			character: 0,
-		},
+		} as unknown as TextDocument,
+		new Position(1, 0),
 	);
 
 describe("provideHover", () => {

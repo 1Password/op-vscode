@@ -36,7 +36,9 @@ export const patternSuggestions = [
 	getPatternSuggestion("ccard"),
 ];
 const patternsRegex = combineRegexp(
-	...patternSuggestions.map((detection) => new RegExp(detection.pattern)),
+	...patternSuggestions
+		.filter(Boolean)
+		.map((detection) => new RegExp(detection!.pattern)),
 );
 
 export const validValueIsolation = (input: string, match: string) =>
@@ -85,7 +87,10 @@ export const matchFromRegexp = (
 	// We know that the value matches one of the patterns,
 	// now let's find out which one
 	for (const patternSuggestion of patternSuggestions) {
-		if (new RegExp(patternSuggestion.pattern).test(value)) {
+		if (
+			patternSuggestion &&
+			new RegExp(patternSuggestion.pattern).test(value)
+		) {
 			suggestion = patternSuggestion;
 
 			// If the suggestion didn't come with an item
@@ -98,15 +103,15 @@ export const matchFromRegexp = (
 		}
 	}
 
-	return { value, index, suggestion };
+	return { value, index, suggestion: suggestion! };
 };
 
-export const suggestionFromKey = (input: string): Suggestion => {
+export const suggestionFromKey = (input: string): Suggestion | undefined => {
 	const extractedBrand = findBrand(input);
 	const extractedKey = SECRET_KEY_HINT.exec(input)?.[0];
 
 	if (!extractedKey || !validValueIsolation(input, extractedKey)) {
-		return;
+		return undefined;
 	}
 
 	return {

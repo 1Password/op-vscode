@@ -2,26 +2,23 @@
 	"compilerOptions": {
 		"target": "ES2022",
 		"module": "ES2022",
-		"lib": [
-			"ES2022",
-			"DOM"
-		],
+		"lib": ["ES2022", "DOM"],
 		"moduleResolution": "Bundler",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
 		"strict": true,
-		"types": [
-			"node",
-			"vscode"
-		],
+		"types": ["node", "vscode", "jest"],
 		"skipLibCheck": true,
 		"outDir": "out",
-		"baseUrl": "."
+		"baseUrl": ".",
+		"typeRoots": ["./node_modules/@types", "./test"]
 	},
 	"include": [
 		"src/**/*.ts",
 		"scripts/**/*.ts",
+		"test/**/*.ts",
+		"test/**/*.d.ts",
+		"compile.ts",
 		"*.config.ts"
-	],
-	"exclude": [
-		"**/*.test.ts"
 	]
 }

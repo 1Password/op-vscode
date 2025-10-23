@@ -1,0 +1,6 @@
+type: Changed
+issues: []
+description: Upgraded ESLint and Prettier deps and configuration, get all tests passing
+public: true
+tags:
+  - None

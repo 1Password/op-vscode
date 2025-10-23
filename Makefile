@@ -16,11 +16,31 @@ watch: ## Build the extension whenever files change
 install i: ## Install project dependencies
 	pnpm install
 
-.PHONY: analysis
-analysis: ## Run static analysis checks against all files
-	pnpm run eslint
-	pnpm run prettier
+.PHONY: format
+format: ## Run Prettier
+	pnpm run format
+
+.PHONY: format/fix
+format/fix: ## Run Prettier and fix issues
+	pnpm run format:fix
+
+.PHONY: lint
+lint: ## Run ESLint
+	pnpm run lint
+
+.PHONY: lint/fix
+lint/fix: ## Run ESLint and fix issues
+	pnpm run lint:fix
+
+.PHONY: typecheck
+typecheck: ## Type check code
 	pnpm run typecheck
+
+.PHONY: static-analysis
+static-analysis: lint format typecheck ## Run static analysis
+
+.PHONY: static-analysis/fix
+static-analysis/fix: lint/fix format/fix typecheck ## Run static analysis and fix issues
 
 .PHONY: test
 test: ## Run test suite

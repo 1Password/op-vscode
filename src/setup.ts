@@ -33,7 +33,6 @@ export class Setup {
 		});
 	}
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	public async configure(): Promise<void> {
 		if (await this.core.cli.isInvalid()) {
 			return;
@@ -171,18 +170,20 @@ export class Setup {
 					account.url === response.description,
 			);
 
-			const isChanged = this.accountUuid !== account.account_uuid;
-			this.accountUuid = account.user_uuid;
-			this.accountUrl = account.url;
-			await this.core.context.secrets.store(
-				STATE.ACCOUNT_UUID,
-				account.account_uuid,
-			);
-			await this.core.context.secrets.store(STATE.ACCOUNT_URL, account.url);
-			this.setAccountIdFlag();
+			if (account) {
+				const isChanged = this.accountUuid !== account.account_uuid;
+				this.accountUuid = account.user_uuid;
+				this.accountUrl = account.url;
+				await this.core.context.secrets.store(
+					STATE.ACCOUNT_UUID,
+					account.account_uuid,
+				);
+				await this.core.context.secrets.store(STATE.ACCOUNT_URL, account.url);
+				this.setAccountIdFlag();
 
-			if (isChanged) {
-				await this.chooseVault();
+				if (isChanged) {
+					await this.chooseVault();
+				}
 			}
 		}
 	}
@@ -219,8 +220,10 @@ export class Setup {
 		if (response) {
 			const vault = vaultsList.find((vault) => vault.name === response);
 
-			this.vaultId = vault.id;
-			await this.core.context.secrets.store(STATE.VAULT_ID, vault.id);
+			if (vault) {
+				this.vaultId = vault.id;
+				await this.core.context.secrets.store(STATE.VAULT_ID, vault.id);
+			}
 		}
 	}
 }

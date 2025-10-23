@@ -19,9 +19,10 @@ describe("GenericParser", () => {
 
 	it("gets suggestions from known field pattern, implied brand name", () => {
 		const suggestion = getPatternSuggestion("uuid");
+		expect(suggestion).toBeDefined();
 		const brand = sample(BRANDS);
 		const value = "887144ef-a12c-49a3-a7f3-0768396a60a4";
-		suggestion.item = brand;
+		suggestion!.item = brand;
 
 		const document = createDocument([`${brand}: ${value}`]);
 		const parser = new GenericParser(document);
@@ -30,7 +31,7 @@ describe("GenericParser", () => {
 			{
 				content: value,
 				value,
-				suggestion,
+				suggestion: suggestion!,
 			},
 		]);
 	});

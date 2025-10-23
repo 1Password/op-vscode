@@ -5,7 +5,7 @@ import { COMMANDS, EXTENSION_ID, REGEXP } from "./constants";
 import type { Core } from "./core";
 
 export class Injection {
-	private activeDocument: TextDocument;
+	private activeDocument: TextDocument | undefined;
 
 	public constructor(private core: Core) {
 		this.core.context.subscriptions.push(
@@ -51,17 +51,22 @@ export class Injection {
 				async (event) => await this.onDocumentChange(event.document),
 			),
 			window.onDidChangeActiveTextEditor(async (editor) => {
-				this.activeDocument = editor?.document;
-				await this.onDocumentChange(this.activeDocument);
+				if (editor?.document) {
+					this.activeDocument = editor.document;
+					await this.onDocumentChange(this.activeDocument);
+				}
 			}),
 		);
 
-		this.activeDocument = window.activeTextEditor?.document;
-		void this.onDocumentChange(this.activeDocument);
+		const activeDocument = window.activeTextEditor?.document;
+		if (activeDocument) {
+			this.activeDocument = activeDocument;
+			void this.onDocumentChange(this.activeDocument);
+		}
 	}
 
-	private async onDocumentChange(document: TextDocument) {
-		if (!document || document !== this.activeDocument) {
+	private async onDocumentChange(document: TextDocument | undefined) {
+		if (!document || !this.activeDocument || document !== this.activeDocument) {
 			return;
 		}
 

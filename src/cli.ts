@@ -48,8 +48,8 @@ export class CLI {
 		try {
 			output = command();
 		} catch (error) {
-			await createErrorHandler(showError)(error);
-			return;
+			await createErrorHandler(showError)(error as Error);
+			throw error;
 		}
 
 		return output;
@@ -68,7 +68,7 @@ export class CLI {
 
 		try {
 			await validateCli();
-		} catch (error: any) {
+		} catch (error: unknown) {
 			this.valid = false;
 
 			if (!(error instanceof ValidationError)) {

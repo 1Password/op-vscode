@@ -42,6 +42,7 @@ if (existsSync(distPath)) {
 
 	if (watch) {
 		await ctx.watch();
+		// eslint-disable-next-line @typescript-eslint/no-misused-promises
 		process.once("SIGINT", () => ctx.dispose());
 	} else {
 		await ctx.rebuild();

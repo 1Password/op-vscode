@@ -37,15 +37,15 @@ export class Editor {
 			),
 			// Windows doesn't persist auth between commands, so authenticating
 			// first has no effect, preventing hover previews from working
-			!isWindows &&
-				languages.registerHoverProvider(
-					{ scheme: "file" },
-					{
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-						provideHover: provideHover.bind(this.core),
-					},
-				),
-		];
+			!isWindows
+				? languages.registerHoverProvider(
+						{ scheme: "file" },
+						{
+							provideHover: provideHover.bind(this.core),
+						},
+					)
+				: undefined,
+		].filter((item): item is Disposable => item !== undefined);
 
 		this.core.context.subscriptions.push(...this.subscriptions);
 	}

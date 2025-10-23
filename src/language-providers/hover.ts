@@ -15,7 +15,7 @@ export async function provideHover(
 	this: Core,
 	document: TextDocument,
 	position: Position,
-): Promise<Hover> {
+): Promise<Hover | undefined> {
 	const line = document.lineAt(position.line).text;
 	const matches = [
 		...line.matchAll(new RegExp(REGEXP.SECRET_REFERENCE.source, "g")),
@@ -63,7 +63,7 @@ export async function provideHover(
 	// This is an issue in the CLI, not the extension.
 	await new Promise((resolve) => setTimeout(resolve, 1000));
 
-	let metaData: ReferenceMetaData;
+	let metaData: ReferenceMetaData | undefined;
 	try {
 		metaData = await this.items.getReferenceMetadata(vault, item, field);
 	} catch (error) {
@@ -73,6 +73,10 @@ export async function provideHover(
 			markdownError.appendMarkdown(error.message);
 			return new Hover(markdownError, range);
 		}
+	}
+
+	if (!metaData) {
+		return;
 	}
 
 	const markdownItem = new MarkdownString();

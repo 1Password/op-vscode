@@ -17,6 +17,9 @@ export const createParserData = <TContent>(
 	Array.from({ length }).map(() => {
 		const [id, value] = sample(testData);
 		const suggestion = getPatternSuggestion(id);
+		if (!suggestion) {
+			throw new Error(`No pattern suggestion found for id: ${id}`);
+		}
 		const content = createContent(suggestion, value);
 		return { content, value, suggestion };
 	});
@@ -31,8 +34,8 @@ export const expectParserMatches = <TContent>(
 		expect(match).toEqual({
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			range: expect.any(Object),
-			fieldValue: item.value,
-			suggestion: item.suggestion,
+			fieldValue: item?.value,
+			suggestion: item?.suggestion,
 		});
 	}
 };

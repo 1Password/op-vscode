@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Field, File, Item } from "@1password/op-js";
 import { generateUUID, randomNumber, sample } from "./utils";
 
@@ -35,7 +34,6 @@ export const createItemField = (overrides: Partial<Field> = {}): Field => {
 	]);
 	return {
 		id: generateUUID(),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		type: type as any,
 		label: `${type} field ${randomNumber()}`,
 		value: "Some Value",

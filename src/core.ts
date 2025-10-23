@@ -48,14 +48,14 @@ export class Core {
 	}
 
 	public get accountUuid(): string {
-		return this.setup.accountUuid;
+		return this.setup.accountUuid!;
 	}
 
 	public get accountUrl(): string {
-		return this.setup.accountUrl;
+		return this.setup.accountUrl!;
 	}
 
 	public get vaultId(): string {
-		return this.setup.vaultId;
+		return this.setup.vaultId!;
 	}
 }

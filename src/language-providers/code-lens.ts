@@ -15,7 +15,7 @@ export const documentMatcher =
 
 export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 	if (!config.get<boolean>(ConfigKey.EditorSuggestStorage)) {
-		return;
+		return [];
 	}
 
 	const matchDocument = documentMatcher(document);
@@ -35,8 +35,7 @@ export const provideCodeLenses = (document: TextDocument): CodeLens[] => {
 		.getMatches()
 		.filter(
 			// Ignore values within secret template variables
-			({ range, fieldValue, suggestion }) =>
-				!new RegExp(/\${{(.*?)}}/).test(fieldValue),
+			({ fieldValue }) => !new RegExp(/\${{(.*?)}}/).test(fieldValue),
 		)
 		.map(
 			({ range, fieldValue, suggestion }) =>

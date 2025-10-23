@@ -50,12 +50,6 @@ describe("Items", () => {
 	describe("getItem", () => {
 		const title = "My Item";
 
-		it.skip("requires a vault to be chosen", async () => {
-			// items.core.vaultId = null;
-			await items.getItem();
-			expect(window.showErrorMessage).toHaveBeenCalled();
-		});
-
 		it("asks for the vault item", async () => {
 			await items.getItem();
 			expect(window.showInputBox).toHaveBeenCalledWith({
@@ -102,7 +96,7 @@ describe("Items", () => {
 			core.cli.execute.mockReturnValue(item);
 			await items.getItem();
 			expect(window.showQuickPick).toHaveBeenCalledWith(
-				item.fields.map((field) => field.label),
+				item.fields?.map((field) => field.label),
 				{
 					ignoreFocusOut: true,
 					title: "Choose which field to use",
@@ -124,10 +118,10 @@ describe("Items", () => {
 			window.showInputBox.mockReturnValue(title);
 			window.activeTextEditor.selections = [];
 			core.cli.execute.mockReturnValue(item);
-			window.showQuickPick.mockReturnValue(item.fields[0].label);
+			window.showQuickPick.mockReturnValue(item.fields?.[0].label);
 			await items.getItem();
 			expect(env.clipboard.writeText).toHaveBeenCalledWith(
-				item.fields[0].value,
+				item.fields?.[0].value,
 			);
 			expect(window.showInformationMessage).toHaveBeenCalledWith(
 				expect.stringContaining("Copied vault item"),
@@ -139,7 +133,7 @@ describe("Items", () => {
 			const item = createItem({ title });
 			window.showInputBox.mockReturnValue(title);
 			core.cli.execute.mockReturnValue(item);
-			window.showQuickPick.mockReturnValue(item.fields[0].label);
+			window.showQuickPick.mockReturnValue(item.fields?.[0].label);
 			await items.getItem();
 			expect(window.activeTextEditor.edit).toHaveBeenCalled();
 		});
@@ -210,7 +204,7 @@ describe("Items", () => {
 					itemTitle,
 					fieldLabel,
 				);
-				expect(result.field.value).toEqual(field.value);
+				expect(result?.field.value).toEqual(field.value);
 			}
 		});
 
@@ -226,7 +220,7 @@ describe("Items", () => {
 					itemTitle,
 					fieldLabel,
 				);
-				expect(result.field.value).toBeUndefined();
+				expect(result?.field.value).toBeUndefined();
 			}
 		});
 	});

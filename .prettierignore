@@ -1,2 +1,10 @@
-*.svg
-*.code-snippets
+.github/
+.vscode/
+changelogs/
+dist/
+node_modules/
+
+*.log
+
+.DS_Store
+pnpm-lock.yaml

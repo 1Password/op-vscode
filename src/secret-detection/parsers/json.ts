@@ -12,8 +12,8 @@ import { REGEXP } from "../../constants";
 
 export const createRange = (node: LiteralNode): Range =>
 	new Range(
-		new Position(node.loc.start.line - 1, node.loc.start.column),
-		new Position(node.loc.end.line - 1, node.loc.end.column - 2),
+		new Position(node.loc!.start.line - 1, node.loc!.start.column),
+		new Position(node.loc!.end.line - 1, node.loc!.end.column - 2),
 	);
 
 export default class JsonParser extends Parser {

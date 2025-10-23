@@ -26,11 +26,11 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			"_______@example.com",
 			"email@example.co.jp",
 			"firstname-lastname@example.com",
-		])("matches the email %s", (email) =>
-			expect(email).toMatchRegExp(
-				new RegExp(getPatternSuggestion("email").pattern),
-			),
-		);
+		])("matches the email %s", (email) => {
+			const patternSuggestion = getPatternSuggestion("email");
+			expect(patternSuggestion).toBeDefined();
+			expect(email).toMatchRegExp(new RegExp(patternSuggestion!.pattern));
+		});
 	});
 
 	describe("url", () => {
@@ -41,13 +41,13 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			"https://github.com/1Password/op-vscode",
 			"https://www.1password.com/",
 			"https://start.1password.com/sign-up/team?l=en&c=STARTER",
-			// eslint-disable-next-line no-restricted-syntax
+
 			"http://www.example.com/",
-		])("matches the URL %s", (url) =>
-			expect(url).toMatchRegExp(
-				new RegExp(getPatternSuggestion("url").pattern),
-			),
-		);
+		])("matches the URL %s", (url) => {
+			const patternSuggestion = getPatternSuggestion("url");
+			expect(patternSuggestion).toBeDefined();
+			expect(url).toMatchRegExp(new RegExp(patternSuggestion!.pattern));
+		});
 	});
 
 	describe("credit card", () => {
@@ -55,17 +55,18 @@ describe("FIELD_TYPE_PATTERNS", () => {
 			["Visa", "4012888888881881"],
 			["MasterCard", "5555555555554444"],
 			["Amex", "371449635398431"],
-		])("matches the credit card %s", (name, num) =>
-			expect(num).toMatchRegExp(
-				new RegExp(getPatternSuggestion("ccard").pattern),
-			),
-		);
+		])("matches the credit card %s", (name, num) => {
+			const patternSuggestion = getPatternSuggestion("ccard");
+			expect(patternSuggestion).toBeDefined();
+			expect(num).toMatchRegExp(new RegExp(patternSuggestion!.pattern));
+		});
 	});
 });
 
 describe("VALUE_PATTERNS", () => {
 	it.each(testData)("matches the value %s", (patternId, value) => {
 		const patternSuggestion = getPatternSuggestion(patternId);
-		expect(value).toMatchRegExp(new RegExp(patternSuggestion.pattern));
+		expect(patternSuggestion).toBeDefined();
+		expect(value).toMatchRegExp(new RegExp(patternSuggestion!.pattern));
 	});
 });

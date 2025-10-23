@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { TextDocument } from "vscode";
 
-// eslint-disable-next-line no-restricted-syntax
 export const randomNumber = (): number => Math.floor(Math.random() * 100);
 
 export const generateUUID = (): string => uuidv4();

@@ -1,6 +1,8 @@
 import { PatternSuggestion } from "./suggestion";
 
-export const getPatternSuggestion = (id: string): PatternSuggestion =>
+export const getPatternSuggestion = (
+	id: string,
+): PatternSuggestion | undefined =>
 	[...FIELD_TYPE_PATTERNS, ...VALUE_PATTERNS].find(
 		(pattern) => pattern.id === id,
 	);
@@ -30,7 +32,6 @@ export const FIELD_TYPE_PATTERNS: PatternSuggestion[] = [
 
 // Hat tip: https://github.com/vietjovi/secret-detection/
 // Hat tip: https://github.com/Skyscanner/whispers
-/* eslint-disable sonarjs/no-duplicate-string */
 export const VALUE_PATTERNS: PatternSuggestion[] = [
 	{
 		id: "aws-access-key-id",
@@ -248,4 +249,3 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 		pattern: "https://chat.twilio.com/v2/Services/[A-Z0-9]{32}",
 	},
 ];
-/* eslint-enable sonarjs/no-duplicate-string */
