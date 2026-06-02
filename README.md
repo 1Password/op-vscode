@@ -26,3 +26,5 @@ You're all set. Learn more about what the extension is capable of by checking ou
 ## License
 
 MIT
+
+*By accessing or using 1Password Developer Tools, you agree to the [API and SDK Terms of Service](https://1password.com/legal/api-sdk-terms-of-service).*
