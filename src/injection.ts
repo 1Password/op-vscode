@@ -1,4 +1,3 @@
-import { inject } from "@1password/op-js";
 import type { TextDocument, Uri } from "vscode";
 import { commands, ProgressLocation, window, workspace } from "vscode";
 import { COMMANDS, EXTENSION_ID, REGEXP } from "./constants";
@@ -75,9 +74,32 @@ export class Injection {
 
 	private async injectSecrets(currentDocument: TextDocument) {
 		const input = currentDocument.getText();
-		const result = await this.core.cli.execute<string>(() =>
-			inject.data(input),
+
+		// The SDK has no bulk text injection, so we find every secret reference
+		// in the document, resolve them in one batch, and substitute the values
+		// back into the text.
+		const matcher = new RegExp(REGEXP.SECRET_REFERENCE.source, "gm");
+		const references = [...new Set(input.match(matcher) ?? [])];
+
+		if (references.length === 0) {
+			return;
+		}
+
+		const resolved = await this.core.op.execute(async (client) =>
+			client.secrets.resolveAll(references),
 		);
+
+		if (!resolved) {
+			return;
+		}
+
+		let result = input;
+		for (const reference of references) {
+			const response = resolved.individualResponses[reference];
+			if (response?.content) {
+				result = result.split(reference).join(response.content.secret);
+			}
+		}
 
 		const injectedDocument = await workspace.openTextDocument({
 			language: currentDocument.languageId,

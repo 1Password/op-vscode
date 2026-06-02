@@ -1,7 +1,6 @@
-import { vault } from "@1password/op-js";
 import type { ExtensionContext } from "vscode";
 import { commands, window } from "vscode";
-import { CLI } from "./cli";
+import { OnePassword } from "./client";
 import { COMMANDS, INTERNAL_COMMANDS } from "./constants";
 import { Editor } from "./editor";
 import { Injection } from "./injection";
@@ -11,7 +10,7 @@ import { Setup } from "./setup";
 import { createOpenOPHandler, OpvsUriHandler } from "./url-utils";
 
 export class Core {
-	public cli: CLI;
+	public op: OnePassword;
 	private setup: Setup;
 	public items: Items;
 
@@ -28,7 +27,7 @@ export class Core {
 			),
 		);
 
-		this.cli = new CLI();
+		this.op = new OnePassword();
 		this.setup = new Setup(this);
 		this.items = new Items(this);
 
@@ -39,20 +38,12 @@ export class Core {
 	}
 
 	private async authenticate(): Promise<void> {
-		if (await this.cli.isInvalid()) {
-			return;
-		}
-
-		// Hack to get CLI to prompt for biometrics
-		await this.cli.execute(() => vault.list(), false);
+		// Creating the SDK client prompts the desktop app for biometric unlock.
+		await this.op.getClient();
 	}
 
-	public get accountUuid(): string {
-		return this.setup.accountUuid;
-	}
-
-	public get accountUrl(): string {
-		return this.setup.accountUrl;
+	public get accountId(): string {
+		return this.setup.accountId;
 	}
 
 	public get vaultId(): string {

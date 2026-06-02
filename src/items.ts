@@ -1,11 +1,10 @@
-import type {
-	Field,
-	FieldAssignment,
-	FieldPurpose,
+import {
 	Item,
-	OutputCategory,
-} from "@1password/op-js";
-import { item } from "@1password/op-js";
+	ItemCategory,
+	ItemField,
+	ItemFieldType,
+	Secrets,
+} from "@1password/sdk";
 import type { Range, Selection } from "vscode";
 import { commands, env, window } from "vscode";
 import { config, ConfigKey } from "./configuration";
@@ -13,16 +12,27 @@ import { COMMANDS, NONSENSITIVE_FIELD_TYPES } from "./constants";
 import type { Core } from "./core";
 import { FIELD_TYPE_PATTERNS } from "./secret-detection/patterns";
 import { Suggestion } from "./secret-detection/suggestion";
-import { formatField, formatTitle, maskString } from "./utils";
+import {
+	buildSecretReference,
+	formatField,
+	formatTitle,
+	maskString,
+	parsePasswordRecipe,
+	toItemFieldType,
+} from "./utils";
 
 export interface ReferenceMetaData {
 	item: {
 		title: string;
-		category: OutputCategory;
-		createdAt: string;
-		updatedAt: string;
+		category: ItemCategory;
+		createdAt: Date;
+		updatedAt: Date;
 	};
-	field: Pick<Field, "label" | "type" | "value">;
+	field: {
+		label: string;
+		type: ItemFieldType;
+		value?: string;
+	};
 }
 
 export interface SaveItemInput {
@@ -51,8 +61,8 @@ export class Items {
 		);
 	}
 
-	public async getItem(): Promise<Field | void> {
-		if (await this.core.cli.isInvalid()) {
+	public async getItem(): Promise<void> {
+		if (await this.core.op.isInvalid()) {
 			return;
 		}
 
@@ -73,12 +83,9 @@ export class Items {
 			return;
 		}
 
-		const vaultItem = await this.core.cli.execute<Item>(
-			() =>
-				item.get(itemValue, {
-					vault: this.core.vaultId,
-					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
-				}) as Item,
+		const vaultItem = await this.core.op.resolveItem(
+			this.core.vaultId,
+			itemValue,
 		);
 
 		if (!vaultItem) {
@@ -94,7 +101,7 @@ export class Items {
 		}
 
 		const fieldValue = await window.showQuickPick(
-			fieldsWithValues.map((field) => field.label),
+			fieldsWithValues.map((field) => field.title),
 			{
 				title: "Choose which field to use",
 				ignoreFocusOut: true,
@@ -105,8 +112,13 @@ export class Items {
 			return;
 		}
 
-		const field = vaultItem.fields.find((f) => f.label === fieldValue);
-		return this.getItemCallback(field);
+		const field = vaultItem.fields.find((f) => f.title === fieldValue);
+		const reference = buildSecretReference(
+			vaultItem.vaultId,
+			vaultItem.id,
+			field.id,
+		);
+		return this.getItemCallback(field, reference);
 	}
 
 	public async getReferenceMetadata(
@@ -114,25 +126,18 @@ export class Items {
 		itemId: string,
 		fieldIdOrLabel: string,
 	): Promise<ReferenceMetaData> {
-		if (await this.core.cli.isInvalid()) {
+		if (await this.core.op.isInvalid()) {
 			return;
 		}
 
-		const vaultItem = await this.core.cli.execute<Item>(
-			() =>
-				item.get(itemId, {
-					vault: vaultId,
-					cache: config.get<boolean>(ConfigKey.ItemsCacheValues),
-				}) as Item,
-			false,
-		);
+		const vaultItem = await this.core.op.resolveItem(vaultId, itemId, false);
 
 		if (!vaultItem) {
 			throw new Error("Could not find vault item.");
 		}
 
 		const field = vaultItem.fields.find(
-			(f) => f.id === fieldIdOrLabel || f.label === fieldIdOrLabel,
+			(f) => f.id === fieldIdOrLabel || f.title === fieldIdOrLabel,
 		);
 
 		if (!field) {
@@ -143,14 +148,13 @@ export class Items {
 			item: {
 				title: vaultItem.title,
 				category: vaultItem.category,
-				createdAt: vaultItem.created_at,
-				updatedAt: vaultItem.updated_at,
+				createdAt: vaultItem.createdAt,
+				updatedAt: vaultItem.updatedAt,
 			},
 			field: {
-				label: field.label,
-				type: field.type,
-				// @ts-expect-error TODO: op-js needs to update these types
-				value: NONSENSITIVE_FIELD_TYPES.includes(field.type)
+				label: field.title,
+				type: field.fieldType,
+				value: NONSENSITIVE_FIELD_TYPES.includes(field.fieldType)
 					? field.value
 					: undefined,
 			},
@@ -160,7 +164,7 @@ export class Items {
 	public async saveItem(
 		input?: SaveItemInput[] | typeof generatePasswordArg,
 	): Promise<void> {
-		if (await this.core.cli.isInvalid()) {
+		if (await this.core.op.isInvalid()) {
 			return;
 		}
 
@@ -185,9 +189,22 @@ export class Items {
 			return;
 		}
 
-		let fields: FieldAssignment[] = [];
+		let fields: ItemField[] = [];
 
-		if (!generatePassword) {
+		if (generatePassword) {
+			const { password } = Secrets.generatePassword(
+				parsePasswordRecipe(config.get<string>(ConfigKey.ItemsPasswordRecipe)),
+			);
+
+			fields = [
+				{
+					id: "",
+					title: "password",
+					fieldType: ItemFieldType.Concealed,
+					value: password,
+				},
+			];
+		} else {
 			fields = await this.createFieldAssignments(input);
 
 			if (fields.length === 0) {
@@ -195,26 +212,16 @@ export class Items {
 			}
 		}
 
-		let vaultItem = await this.core.cli.execute<Item>(() =>
-			item.create(fields, {
+		const vaultItem = await this.core.op.execute(async (client) =>
+			client.items.create({
+				vaultId: this.core.vaultId,
 				title: itemTitle,
-				category: "Login",
-				vault: this.core.vaultId,
-				generatePassword: generatePassword
-					? config.get<string>(ConfigKey.ItemsPasswordRecipe)
-					: false,
+				category: ItemCategory.Login,
+				fields,
 			}),
 		);
 
 		// If the vault is locked this will be undefined
-		if (!vaultItem) {
-			return;
-		}
-
-		vaultItem = await this.core.cli.execute<Item>(
-			() => item.get(vaultItem.id) as Item,
-		);
-
 		if (!vaultItem) {
 			return;
 		}
@@ -226,7 +233,10 @@ export class Items {
 		);
 	}
 
-	private async getItemCallback(field: Field): Promise<void> {
+	private async getItemCallback(
+		field: ItemField,
+		reference: string,
+	): Promise<void> {
 		const editor = window.activeTextEditor;
 		const selections = editor?.selections;
 		if (!editor || selections.length === 0) {
@@ -247,7 +257,7 @@ export class Items {
 				for (const selection of selections) {
 					editBuilder.replace(
 						selection,
-						useReference ? field.reference : field.value,
+						useReference ? reference : field.value,
 					);
 				}
 			});
@@ -271,13 +281,11 @@ export class Items {
 		}));
 	}
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	private async createFieldAssignments(
 		input: SaveItemInput[],
-	): Promise<FieldAssignment[]> {
-		const fields: FieldAssignment[] = [];
+	): Promise<ItemField[]> {
+		const fields: ItemField[] = [];
 		const isOnlyOne = input.length === 1;
-		let passwordPurposeAssigned = false;
 
 		for (const set of input) {
 			const { fieldValue } = set;
@@ -293,8 +301,7 @@ export class Items {
 			}
 
 			const suggestedLabel = suggestion?.field || "value";
-			const fieldType = suggestion?.type || "concealed";
-			let purpose: FieldPurpose | undefined;
+			const fieldType = toItemFieldType(suggestion?.type);
 
 			const fieldLabel = await window.showInputBox({
 				title: isOnlyOne
@@ -310,16 +317,12 @@ export class Items {
 				continue;
 			}
 
-			if (!passwordPurposeAssigned) {
-				switch (fieldLabel) {
-					case "password":
-						purpose = "PASSWORD";
-						passwordPurposeAssigned = true;
-						break;
-				}
-			}
-
-			fields.push([fieldLabel, fieldType, fieldValue, purpose]);
+			fields.push({
+				id: "",
+				title: fieldLabel,
+				fieldType,
+				value: fieldValue,
+			});
 		}
 
 		return fields;
@@ -342,12 +345,17 @@ export class Items {
 			const selections = editor?.selections;
 			if (selections.length === 1) {
 				const field = vaultItem.fields.find(
-					(field) => field.label === "password",
+					(field) => field.title === "password",
+				);
+				const reference = buildSecretReference(
+					vaultItem.vaultId,
+					vaultItem.id,
+					field.id,
 				);
 				await editor.edit((editBuilder) =>
 					editBuilder.insert(
 						selections[0].active,
-						useReference ? field.reference : field.value,
+						useReference ? reference : field.value,
 					),
 				);
 			}
@@ -363,8 +371,13 @@ export class Items {
 				const field = vaultItem.fields.find(
 					(field) => field.value === fieldValue,
 				);
+				const reference = buildSecretReference(
+					vaultItem.vaultId,
+					vaultItem.id,
+					field.id,
+				);
 				await editor.edit((editBuilder) =>
-					editBuilder.replace(location, field.reference),
+					editBuilder.replace(location, reference),
 				);
 			}
 		}
