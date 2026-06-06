@@ -25,14 +25,14 @@ export const INTERNAL_COMMANDS = {
 
 export const STATE = {
 	ACCOUNT_UUID: "accountUuid",
-	ACCOUNT_URL: "accountUrl",
 	VAULT_ID: "vaultId",
 	DISABLE_CONFIG_REMINDER: "disableConfigReminder",
 };
 
 export const URLS = {
-	CLI_INSTALL_DOCS: "https://developer.1password.com/docs/cli/get-started",
-	CLI_UPGRADE_DOCS: "https://developer.1password.com/docs/cli/upgrade",
+	DESKTOP_APP_DOCS:
+		"https://developer.1password.com/docs/sdks/setup-authentication/#desktop-app-integration",
+	SDK_DOCS: "https://developer.1password.com/docs/sdks",
 };
 
 export const REGEXP = {
@@ -41,22 +41,21 @@ export const REGEXP = {
 	CAPITALIZED_WORDS: /(api|aws|id|uuid|url)/gi,
 };
 
-// Used for testing
-export const SENSITIVE_FIELD_TYPES = [
-	"CONCEALED",
-	"SSHKEY",
-	"CREDIT_CARD_NUMBER",
-] as const;
+// These map to the 1Password SDK's `ItemFieldType` enum values.
+export const SENSITIVE_FIELD_TYPES: readonly string[] = [
+	"Concealed",
+	"SshKey",
+	"CreditCardNumber",
+];
 
-export const NONSENSITIVE_FIELD_TYPES = [
-	"ADDRESS",
-	"CREDIT_CARD_TYPE",
-	"DATE",
-	"EMAIL",
-	"GENDER",
-	"MENU",
-	"MONTH_YEAR",
-	"PHONE",
-	"STRING",
-	"URL",
-] as const;
+export const NONSENSITIVE_FIELD_TYPES: readonly string[] = [
+	"Address",
+	"CreditCardType",
+	"Date",
+	"Email",
+	"Menu",
+	"MonthYear",
+	"Phone",
+	"Text",
+	"Url",
+];
