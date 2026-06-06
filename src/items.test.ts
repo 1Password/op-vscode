@@ -31,7 +31,7 @@ describe("Items", () => {
 
 	describe("constructor", () => {
 		it("registers commands for getting and saving items", () => {
-			expect(commands.registerCommand).toHaveBeenCalledTimes(3);
+			expect(commands.registerCommand).toHaveBeenCalledTimes(4);
 			expect(commands.registerCommand).toHaveBeenCalledWith(
 				COMMANDS.GET_VALUE_FROM_ITEM,
 				expect.any(Function),
@@ -42,6 +42,10 @@ describe("Items", () => {
 			);
 			expect(commands.registerCommand).toHaveBeenCalledWith(
 				COMMANDS.CREATE_PASSWORD,
+				expect.any(Function),
+			);
+			expect(commands.registerCommand).toHaveBeenCalledWith(
+				COMMANDS.GET_VALUE_FROM_REFERENCE,
 				expect.any(Function),
 			);
 		});
@@ -269,6 +273,153 @@ describe("Items", () => {
 			window.showInputBox.mockReturnValue(title);
 			await items.saveItem([input] as any);
 			expect(core.cli.execute).toHaveBeenCalled();
+		});
+	});
+
+	describe("getReferenceValue", () => {
+		const vaultName = "Demo";
+		const itemTitle = "API Keys";
+		const fieldLabel = "token";
+
+		describe("reference as argument", () => {
+			it("aborts if the cli is not valid", async () => {
+				core.cli.isInvalid.mockReturnValue(true);
+				await items.getReferenceValue(
+					`op://${vaultName}/${itemTitle}/${fieldLabel}`,
+				);
+				expect(core.cli.execute).not.toHaveBeenCalled();
+			});
+
+			it("rejects invalid format", async () => {
+				await expect(items.getReferenceValue("foo")).rejects.toThrow(
+					"Invalid reference provided.",
+				);
+			});
+
+			it("uses the cli to get the vault item, throws if no vault item found", async () => {
+				await expect(
+					items.getReferenceValue(
+						`op://${vaultName}/${itemTitle}/${fieldLabel}`,
+					),
+				).rejects.toEqual(new Error("Could not find vault item."));
+				expect(core.cli.execute).toHaveBeenCalled();
+			});
+
+			describe("throws if unable to find the specified field in a vault item", () => {
+				it("basic", async () => {
+					const item = createItem();
+					core.cli.execute.mockReturnValue(item);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/${fieldLabel}`,
+						),
+					).rejects.toEqual(new Error("Could not find vault item field."));
+				});
+				it("sectionless ref @ sectioned fields", async () => {
+					const value = `${fieldLabel}_VALUE`;
+					const item = createItem({
+						title: itemTitle,
+						fields: [
+							createItemField({
+								label: fieldLabel,
+								section: { id: "foo" },
+								value,
+							}),
+							createItemField({
+								label: fieldLabel,
+								section: { id: "bar" },
+								value,
+							}),
+						],
+					});
+					core.cli.execute.mockReturnValue(item);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/${fieldLabel}`,
+						),
+					).rejects.toEqual(new Error("Could not find vault item field."));
+				});
+				it("sectioned ref @ sectionless field", async () => {
+					const value = `${fieldLabel}_VALUE`;
+					const item = createItem({
+						title: itemTitle,
+						fields: [
+							createItemField({
+								label: fieldLabel,
+								value,
+							}),
+						],
+					});
+					core.cli.execute.mockReturnValue(item);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/foo/${fieldLabel}`,
+						),
+					).rejects.toEqual(new Error("Could not find vault item field."));
+				});
+			});
+
+			describe("returns value for item", () => {
+				it("basic", async () => {
+					const value = `${fieldLabel}_VALUE`;
+					const item = createItem({
+						title: itemTitle,
+						fields: [
+							createItemField({
+								label: fieldLabel,
+								value,
+							}),
+						],
+					});
+					core.cli.execute.mockReturnValue(item);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/${fieldLabel}`,
+						),
+					).resolves.toEqual(value);
+				});
+				it("sectioned", async () => {
+					const item = createItem({
+						title: itemTitle,
+						fields: ["foo", "bar"].map((sectionId) =>
+							createItemField({
+								label: fieldLabel,
+								section: { id: sectionId },
+								value: `VALUE@${sectionId}`,
+							}),
+						),
+					});
+					core.cli.execute.mockReturnValue(item);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/foo/${fieldLabel}`,
+						),
+					).resolves.toEqual(item.fields[0].value);
+					await expect(
+						items.getReferenceValue(
+							`op://${vaultName}/${itemTitle}/bar/${fieldLabel}`,
+						),
+					).resolves.toEqual(item.fields[1].value);
+				});
+			});
+		});
+		describe("reference omitted", () => {
+			it("asks for the reference", async () => {
+				await expect(items.getReferenceValue()).rejects.toThrow();
+
+				expect(window.showInputBox).toHaveBeenCalledWith({
+					title: expect.stringContaining(
+						"Enter a 1Password reference",
+					) as string,
+					ignoreFocusOut: true,
+				});
+			});
+			it("validates provided reference", async () => {
+				window.showInputBox.mockReturnValue("wrong");
+				await expect(items.getReferenceValue()).rejects.toThrow(
+					"Invalid reference provided.",
+				);
+			});
 		});
 	});
 });
