@@ -92,6 +92,16 @@
 				"command": "op-vscode.openLogs",
 				"title": "Open logs",
 				"category": "1Password"
+			},
+			{
+				"command": "op-vscode.ignorePattern",
+				"title": "Ignore pattern",
+				"category": "1Password"
+			},
+			{
+				"command": "op-vscode.createCustomPattern",
+				"title": "Create custom pattern",
+				"category": "1Password"
 			}
 		],
 		"configuration": [
@@ -129,6 +139,38 @@
 						"type": "boolean",
 						"default": false,
 						"description": "Log debugger data. Reload required."
+					},
+					"1password.patterns.disabled": {
+						"order": 6,
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"default": [],
+						"description": "Patterns that have been disabled from being suggested."
+					},
+					"1password.patterns.custom": {
+						"order": 7,
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"item": {
+									"type": ["string", "null"],
+									"description": "The name associated with the pattern."
+								},
+								"field": {
+									"type": ["string", "null"],
+									"description": "The field that the pattern detects (e.g., password, API token...)."
+								},
+								"pattern": {
+									"type": "string",
+									"description": "The pattern to detect."
+								}
+							}
+						},
+						"default": [],
+						"description": "User-made patterns to be detected and suggested."
 					}
 				}
 			}

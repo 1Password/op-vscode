@@ -1,5 +1,10 @@
 import testData from "./pattern-test-data.json";
-import { FIELD_TYPE_PATTERNS, getPatternSuggestion } from "./patterns";
+import {
+	FIELD_TYPE_PATTERNS,
+	getPatternSuggestion,
+	patterns,
+} from "./patterns";
+import { ConfigKey, config } from "../configuration";
 
 describe("getPatternSuggestion", () => {
 	it("should return a pattern suggestion", () => {
@@ -67,5 +72,26 @@ describe("VALUE_PATTERNS", () => {
 	it.each(testData)("matches the value %s", (patternId, value) => {
 		const patternSuggestion = getPatternSuggestion(patternId);
 		expect(value).toMatchRegExp(new RegExp(patternSuggestion.pattern));
+	});
+});
+
+describe("patterns", () => {
+	describe("getDisabledPatterns", () => {
+		it("should return an empty array if no disabled patterns are set", () => {
+			expect(patterns.getDisabledPatterns()).toEqual([]);
+		});
+	});
+	describe("getCustomPatterns", () => {
+		it("should return an empty array if no custom patterns are set", () => {
+			expect(patterns.getCustomPatterns()).toEqual([]);
+		});
+	});
+	describe("patternsFilter", () => {
+		it("should filter out disabled patterns", () => {
+			jest.spyOn(patterns, "getDisabledPatterns").mockReturnValue(["ccard"]);
+			expect(
+				patterns.patternsFilter(getPatternSuggestion("ccard")),
+			).toBeFalsy();
+		});
 	});
 });

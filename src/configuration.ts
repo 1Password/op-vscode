@@ -8,6 +8,8 @@ export enum ConfigKey {
 	ItemsUseSecretReferences = "items.useSecretReferences",
 	EditorSuggestStorage = "editor.suggestStorage",
 	DebugEnabled = "debug.enabled",
+	PatternsDisabled = "patterns.disabled",
+	PatternsCustom = "patterns.custom",
 }
 
 interface ConfigItems {
@@ -16,6 +18,8 @@ interface ConfigItems {
 	[ConfigKey.ItemsUseSecretReferences]: boolean;
 	[ConfigKey.EditorSuggestStorage]: boolean;
 	[ConfigKey.DebugEnabled]: boolean;
+	[ConfigKey.PatternsDisabled]: string[];
+	[ConfigKey.PatternsCustom]: object[];
 }
 
 class Config {

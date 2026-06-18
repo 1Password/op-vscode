@@ -5,6 +5,7 @@ import GenericParser, * as genericParser from "../secret-detection/parsers/gener
 import JsonParser, * as jsonParser from "../secret-detection/parsers/json";
 import YamlParser, * as yamlParser from "../secret-detection/parsers/yaml";
 import { documentMatcher, provideCodeLenses } from "./code-lens";
+import { patterns } from "../secret-detection/patterns";
 
 describe("documentMatcher", () => {
 	const languageDocument = createDocument([], "properties", "test.js");
@@ -31,6 +32,28 @@ describe("provideCodeLenses", () => {
 		jest.spyOn(config, "get").mockReturnValue(false);
 		const codeLenses = provideCodeLenses(createDocument([]));
 		expect(codeLenses).toBeUndefined();
+	});
+
+	it("retrieves custom patterns", () => {
+		const getCustomPatternsSpy = jest
+			.spyOn(patterns, "getCustomPatterns")
+			.mockReturnValue([]);
+		jest.spyOn(config, "get").mockReturnValue(true);
+		provideCodeLenses(createDocument([]));
+		expect(getCustomPatternsSpy).toHaveBeenCalled();
+	});
+
+	it("ignores disabled patterns", () => {
+		jest.spyOn(patterns, "getDisabledPatterns").mockReturnValue(["ccard"]);
+		jest.spyOn(config, "get").mockReturnValue(true);
+		const codeLenses = provideCodeLenses(
+			createDocument([
+				"Visa 4012888888881881",
+				"MasterCard 5555555555554444",
+				"Amex 371449635398431",
+			]),
+		);
+		expect(codeLenses).toHaveLength(0);
 	});
 
 	it("uses the generic parser for an unmatched language", () => {
