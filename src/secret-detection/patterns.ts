@@ -167,6 +167,13 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 		type: "concealed",
 		pattern: "(gh[pous]_[a-zA-Z0-9]{36}|ghr_[a-zA-Z0-9]{76})",
 	},
+    {
+    id: "pypi-token",
+    item: "PyPI",
+    field: "token",
+    type: "concealed",
+    pattern: "pypi-[A-Za-z0-9_-]{265}$",
+    },
 	{
 		id: "hubspot-webhook",
 		item: "HubSpot",
