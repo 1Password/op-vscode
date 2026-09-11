@@ -11,6 +11,7 @@ export const COMMANDS = {
 	CHOOSE_ACCOUNT: makeCommand("chooseAccount"),
 	CHOOSE_VAULT: makeCommand("chooseVault"),
 	GET_VALUE_FROM_ITEM: makeCommand("getValueFromItem"),
+	GET_VALUE_FROM_REFERENCE: makeCommand("getValueFromReference"),
 	SAVE_VALUE_TO_ITEM: makeCommand("saveValueToItem"),
 	INJECT_SECRETS: makeCommand("injectSecrets"),
 	CREATE_PASSWORD: makeCommand("createPassword"),
