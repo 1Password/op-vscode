@@ -1,4 +1,3 @@
-import os from "os";
 import { Disposable, languages } from "vscode";
 import { config } from "./configuration";
 import type { Core } from "./core";
@@ -16,8 +15,6 @@ export class Editor {
 	}
 
 	private configure(): void {
-		const isWindows = os.platform() === "win32";
-
 		for (const subscription of this.subscriptions) {
 			subscription.dispose();
 		}
@@ -35,16 +32,13 @@ export class Editor {
 					provideDocumentLinks,
 				},
 			),
-			// Windows doesn't persist auth between commands, so authenticating
-			// first has no effect, preventing hover previews from working
-			!isWindows &&
-				languages.registerHoverProvider(
-					{ scheme: "file" },
-					{
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-						provideHover: provideHover.bind(this.core),
-					},
-				),
+			languages.registerHoverProvider(
+				{ scheme: "file" },
+				{
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+					provideHover: provideHover.bind(this.core),
+				},
+			),
 		];
 
 		this.core.context.subscriptions.push(...this.subscriptions);

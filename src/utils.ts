@@ -1,10 +1,61 @@
+import { ItemFieldType, PasswordRecipe } from "@1password/sdk";
 import { REGEXP } from "./constants";
+import type { FieldAssignmentType } from "./secret-detection/suggestion";
 
 export const semverToInt = (input: string) =>
 	input
 		.split(".")
 		.map((n) => n.padStart(2, "0"))
 		.join("");
+
+// Build a secret reference (op://vault/item/field) from IDs. The SDK resolves
+// references that use either names or IDs, and IDs are unambiguous.
+export const buildSecretReference = (
+	vaultId: string,
+	itemId: string,
+	fieldId: string,
+): string => `op://${vaultId}/${itemId}/${fieldId}`;
+
+// Map the extension's internal field assignment types (used by secret
+// detection) to the SDK's `ItemFieldType` enum used when creating items.
+export const toItemFieldType = (
+	type: FieldAssignmentType = "concealed",
+): ItemFieldType => {
+	switch (type) {
+		case "text":
+			return ItemFieldType.Text;
+		case "email":
+			return ItemFieldType.Email;
+		case "url":
+			return ItemFieldType.Url;
+		case "concealed":
+		default:
+			return ItemFieldType.Concealed;
+	}
+};
+
+// Parse a CLI-style password recipe string (e.g. "letters,digits,symbols,32")
+// into the SDK's `PasswordRecipe` object.
+export const parsePasswordRecipe = (recipe: string): PasswordRecipe => {
+	const parts = (recipe || "")
+		.split(",")
+		.map((part) => part.trim().toLowerCase())
+		.filter(Boolean);
+
+	const length =
+		parts
+			.map((part) => Number.parseInt(part, 10))
+			.find((n) => !Number.isNaN(n)) ?? 32;
+
+	return {
+		type: "Random",
+		parameters: {
+			includeDigits: parts.includes("digits"),
+			includeSymbols: parts.includes("symbols"),
+			length,
+		},
+	};
+};
 
 export const titleCase = (value: string): string =>
 	value.replace(

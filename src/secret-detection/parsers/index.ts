@@ -1,8 +1,12 @@
-import { FieldAssignmentType } from "@1password/op-js";
 import { Range, TextDocument } from "vscode";
 import { combineRegexp } from "../../utils";
 import { getPatternSuggestion, VALUE_PATTERNS } from "../patterns";
-import { BRANDS, SECRET_KEY_HINT, Suggestion } from "../suggestion";
+import {
+	BRANDS,
+	FieldAssignmentType,
+	SECRET_KEY_HINT,
+	Suggestion,
+} from "../suggestion";
 
 export interface ParserMatch {
 	range: Range;

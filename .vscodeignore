@@ -10,7 +10,9 @@
 compile.ts
 coverage/
 jest.config.js
-node_modules/
+node_modules/**
+!node_modules/@1password/sdk/**
+!node_modules/@1password/sdk-core/**
 package-lock.json
 src/
 !src/op-vscode.code-snippets

@@ -34,7 +34,10 @@ if (existsSync(distPath)) {
 		entryPoints: [`${srcPath}/extension.ts`],
 		bundle: true,
 		platform: "node",
-		external: ["vscode"],
+		// The 1Password SDK ships a ~10MB WebAssembly core that it loads from
+		// disk at runtime (via __dirname), so it can't be bundled. Keep the SDK
+		// packages external and ship them in node_modules instead.
+		external: ["vscode", "@1password/sdk", "@1password/sdk-core"],
 		outfile: `${distPath}/extension.js`,
 		minify: isProd,
 		plugins: [createLoggerPlugin("extension")],

@@ -1,4 +1,6 @@
-import { FieldAssignmentType } from "@1password/op-js";
+// The subset of field types secret detection can suggest when creating an
+// item. These are mapped to the SDK's `ItemFieldType` at item-creation time.
+export type FieldAssignmentType = "concealed" | "text" | "email" | "url";
 
 export interface Suggestion {
 	item?: string;

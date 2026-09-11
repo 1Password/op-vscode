@@ -1,4 +1,3 @@
-import { ListAccount, whoami } from "@1password/op-js";
 import { format as formatTime } from "timeago.js";
 import type { TextDocument } from "vscode";
 import { Hover, MarkdownString, Position, Range } from "vscode";
@@ -45,11 +44,9 @@ export async function provideHover(
 		new Position(position.line, index + value.length - 1),
 	);
 
-	const authenticated = await this.cli.execute<ListAccount | null>(() =>
-		whoami(),
-	);
+	const client = await this.op.getClient(false);
 
-	if (!authenticated) {
+	if (!client) {
 		const markdownUnauthed = new MarkdownString();
 		markdownUnauthed.isTrusted = true;
 		markdownUnauthed.appendMarkdown(
@@ -57,11 +54,6 @@ export async function provideHover(
 		);
 		return new Hover(markdownUnauthed, range);
 	}
-
-	// HACK / FIXME: In Windows the CLI cannot perform succesive commands too quickly,
-	// so we need to give it a second after the whoami call before looking up item details.
-	// This is an issue in the CLI, not the extension.
-	await new Promise((resolve) => setTimeout(resolve, 1000));
 
 	let metaData: ReferenceMetaData;
 	try {
@@ -90,7 +82,6 @@ export async function provideHover(
 	markdownField.supportThemeIcons = true;
 	markdownField.appendMarkdown(
 		`$(output-view-icon) Field: **${metaData.field.label}**\n\n${
-			// @ts-expect-error TODO: op-js needs to update these types
 			NONSENSITIVE_FIELD_TYPES.includes(metaData.field.type)
 				? `\`\`\`\n${metaData.field.value}\n\`\`\``
 				: "_Value hidden_"
