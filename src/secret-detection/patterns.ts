@@ -168,6 +168,13 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 		pattern: "(gh[pous]_[a-zA-Z0-9]{36}|ghr_[a-zA-Z0-9]{76})",
 	},
 	{
+		id: "gitlab-token",
+		item: "GitLab",
+		field: "token",
+		type: "concealed",
+		pattern: "gl(?:pat|oas|dt|rt|cbt)-[a-zA-Z0-9-_]{20}",
+	},
+	{
 		id: "hubspot-webhook",
 		item: "HubSpot",
 		field: "webhook",
