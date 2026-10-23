@@ -73,6 +73,11 @@
 				"category": "1Password"
 			},
 			{
+				"command": "op-vscode.getValueFromReference",
+				"title": "Get from 1Password reference",
+				"category": "1Password"
+			},
+			{
 				"command": "op-vscode.saveValueToItem",
 				"title": "Save in 1Password",
 				"category": "1Password"
