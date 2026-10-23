@@ -29,7 +29,8 @@
 		"test": "jest",
 		"typecheck": "tsc --noEmit",
 		"vscode:prepublish": "yarn build",
-		"watch": "yarn compile --watch"
+		"watch": "yarn compile --watch",
+		"package": "vsce package"
 	},
 	"keywords": [
 		"1password",
@@ -104,6 +105,7 @@
 						"order": 1,
 						"type": "boolean",
 						"default": true,
+						"markdownDeprecationMessage": "**Deprecated**: The 1Password SDK does not cache values, so this setting no longer has any effect.",
 						"markdownDescription": "Use CLI cache when performing operations. Learn more about [caching](https://developer.1password.com/docs/cli/reference#cache-item-and-vault-information)."
 					},
 					"1password.items.passwordRecipe": {
@@ -158,7 +160,7 @@
 		]
 	},
 	"dependencies": {
-		"@1password/op-js": "^0.1.13",
+		"@1password/sdk": "^0.4.0",
 		"json-to-ast": "^2.1.0",
 		"open": "^8.4.0",
 		"timeago.js": "^4.0.2",
@@ -173,6 +175,7 @@
 		"@types/uuid": "^9.0.1",
 		"@types/vscode": "^1.66.0",
 		"@typescript-eslint/eslint-plugin": "^7.10.0",
+		"@vscode/vsce": "2.25.0",
 		"cross-env": "^7.0.3",
 		"esbuild": "^0.21.3",
 		"esbuild-register": "^3.5.0",
@@ -188,5 +191,8 @@
 		"typescript": "^5.4.5",
 		"uuid": "^9.0.0",
 		"yaml": "^2.3.1"
+	},
+	"resolutions": {
+		"cheerio": "^0"
 	}
 }

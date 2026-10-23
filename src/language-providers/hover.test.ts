@@ -1,10 +1,16 @@
+import { ItemCategory, ItemFieldType } from "@1password/sdk";
 import { format as formatTime } from "timeago.js";
 import { Hover } from "vscode";
 import * as vscode from "../../test/vscode-mock";
-import { Core } from "../core";
+import type { Core } from "../core";
 import { ReferenceMetaData } from "../items";
 import { formatTitle } from "../utils";
 import { provideHover } from "./hover";
+
+jest.mock("@1password/sdk", () => ({
+	ItemCategory: { Login: "Login" },
+	ItemFieldType: { Text: "Text", Concealed: "Concealed" },
+}));
 
 const appendMarkdownSpy = jest.fn<{ value: string }, string[]>();
 const hoverSpy = jest.spyOn(vscode, "Hover");
@@ -15,8 +21,8 @@ const markdownStringSpy = jest
 	}));
 const reference = "op://vault/item/field";
 const core = {
-	cli: {
-		execute: jest.fn(),
+	op: {
+		getClient: jest.fn(),
 	},
 	items: {
 		getReferenceMetadata: jest.fn(),
@@ -25,13 +31,13 @@ const core = {
 const mockMetaData: ReferenceMetaData = {
 	item: {
 		title: "Item Test",
-		category: "LOGIN",
-		createdAt: "2017-10-15T23:26:32Z",
-		updatedAt: "2019-06-20T22:09:59Z",
+		category: ItemCategory.Login,
+		createdAt: new Date("2017-10-15T23:26:32Z"),
+		updatedAt: new Date("2019-06-20T22:09:59Z"),
 	},
 	field: {
 		label: "Field Test",
-		type: "STRING",
+		type: ItemFieldType.Text,
 		value: "Value Test",
 	},
 };
@@ -63,7 +69,7 @@ describe("provideHover", () => {
 	});
 
 	it("provides a 'please authenticate' hover if the user is not authenticated", async () => {
-		core.cli.execute.mockResolvedValueOnce(null);
+		core.op.getClient.mockResolvedValueOnce(null);
 		const result = await createHover(reference);
 
 		expect(result).toBeDefined();
@@ -76,7 +82,7 @@ describe("provideHover", () => {
 
 	it("provides an error hover if one occured in getReferenceMetadata while retrieving reference metadata", async () => {
 		const errorMessage = "you've done it again!";
-		core.cli.execute.mockResolvedValueOnce({});
+		core.op.getClient.mockResolvedValueOnce({});
 		core.items.getReferenceMetadata.mockRejectedValueOnce(
 			new Error(errorMessage),
 		);
@@ -89,7 +95,7 @@ describe("provideHover", () => {
 	});
 
 	it("provides a hover with the reference metadata", async () => {
-		core.cli.execute.mockResolvedValueOnce({});
+		core.op.getClient.mockResolvedValueOnce({});
 		core.items.getReferenceMetadata.mockResolvedValueOnce(mockMetaData);
 		const result = await createHover(reference);
 

@@ -1,4 +1,3 @@
-import { Item, item } from "@1password/op-js";
 import { default as open } from "open";
 import { commands, env, Uri, UriHandler } from "vscode";
 import { COMMANDS, QUALIFIED_EXTENSION_ID } from "./constants";
@@ -35,12 +34,14 @@ export const createOpenOPHandler =
 					itemValue: string;
 				};
 
-				const vaultItem = await core.cli.execute<Item>(
-					() => item.get(itemValue, { vault: vaultValue }) as Item,
-				);
+				const vaultItem = await core.op.resolveItem(vaultValue, itemValue);
 
-				url.searchParams.append("a", core.accountUuid);
-				url.searchParams.append("v", vaultItem.vault.id);
+				if (!vaultItem) {
+					return;
+				}
+
+				url.searchParams.append("a", core.accountId);
+				url.searchParams.append("v", vaultItem.vaultId);
 				url.searchParams.append("i", vaultItem.id);
 				break;
 		}
