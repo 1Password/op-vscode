@@ -1,4 +1,68 @@
-import { PatternSuggestion } from "./suggestion";
+import { PatternSuggestion, Suggestion } from "./suggestion";
+import { window } from "vscode";
+import { config, ConfigKey } from "../configuration";
+
+export class Patterns {
+	public getCustomPatterns(): PatternSuggestion[] {
+		return config.get<PatternSuggestion[]>(ConfigKey.PatternsCustom) || [];
+	}
+
+	public getDisabledPatterns(): string[] {
+		return config.get<string[]>(ConfigKey.PatternsDisabled) || [];
+	}
+
+	public async disablePattern(id: string): Promise<void> {
+		const newDisabledPatterns = [...this.getDisabledPatterns(), id];
+		await config.set(ConfigKey.PatternsDisabled, newDisabledPatterns).then(
+			() => window.showInformationMessage(`Pattern ${id} disabled.`),
+			() => window.showErrorMessage(`Could not disable pattern.`),
+		);
+	}
+
+	public async addCustomPattern(): Promise<void> {
+		const regex = await window.showInputBox({
+			title: "Enter a regex pattern.",
+			ignoreFocusOut: true,
+		});
+
+		if (!regex || regex.length === 0) {
+			return;
+		}
+
+		const item = await window.showInputBox({
+			title: "Enter an item name (optional).",
+			ignoreFocusOut: true,
+		});
+
+		const field = await window.showInputBox({
+			title: "Enter a field name (optional).",
+			ignoreFocusOut: true,
+		});
+
+		const newPattern = {
+			item,
+			field,
+			pattern: regex,
+		};
+
+		const customPatterns = [...this.getCustomPatterns(), newPattern];
+		await config.set(ConfigKey.PatternsCustom, customPatterns).then(
+			() => window.showInformationMessage(`Custom pattern added`),
+			() => window.showErrorMessage(`Could not add custom pattern.`),
+		);
+	}
+
+	public patternsFilter(suggestion: Suggestion) {
+		// If the suggestion is not a PatternSuggestion or the suggestion is not disabled
+		return (
+			suggestion === undefined ||
+			(suggestion as PatternSuggestion).id === undefined ||
+			!this.getDisabledPatterns().includes((suggestion as PatternSuggestion).id)
+		);
+	}
+}
+
+export const patterns = new Patterns();
 
 export const getPatternSuggestion = (id: string): PatternSuggestion =>
 	[...FIELD_TYPE_PATTERNS, ...VALUE_PATTERNS].find(
@@ -248,4 +312,5 @@ export const VALUE_PATTERNS: PatternSuggestion[] = [
 		pattern: "https://chat.twilio.com/v2/Services/[A-Z0-9]{32}",
 	},
 ];
+
 /* eslint-enable sonarjs/no-duplicate-string */
